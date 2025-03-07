@@ -1,0 +1,310 @@
+﻿//---------------------------Mouse Functions--------------------------
+//As you've probably guessed, this .dic file has to do with mouse functions. This includes the petting feature and what happens when you double click your ghost.
+//As a note, this .dic file isn't strictly necessary - I'm pretty sure you can just clear the file and it won't hurt your ghost any, it'll just make it so you can't pet or double click them. And if you're interested in only petting or double clicking one character, all you have to do is delete the chunks of code for the other character you want to be uninvolved. However, I'm assuming most people making ghosts want to make their ghosts pettable and clickable, so this will cover the messages for both.
+
+//Make sure to read the walkthrough page (http://www.ashido.com/ukagaka/walkthrough.html) for more details about how to properly format ghost dialogue!
+//I will reiterate that you should be editing these in Notepad++, and in particular, you should set the Language to C (or Java I guess) to properly highlight all the text. It will make things A LOT EASIER for you, trust me! It will also help you keep track of your brackets in case you forget some. If you click on a line with a bracket in Notepad++, it should highlight where the other bracket ends, or turn purple if there's no finishing bracket (which you should definitely fix!)
+//It will also highlight my commented lines in green, so you'll know where they are. Any line beginning with // is a commented line that the code will not read. It's just for your reference!
+
+
+//--OnMouseMove
+//This is a bunch of code determining who the mouse is over. Don't touch any of it.
+
+OnMouseMove
+ {
+		//---- reference3 determines the character in question
+		if reference3 == 0 //if the character is 0, aka the main character
+		{
+			//---- it will run the mouse functions for that character
+			MouseMoveSakura
+		}
+		else //if the character isn't 0, then it must be the side character.
+		{
+			//---- this will run the mouse functions for the side character.
+			MouseMoveKero
+		}
+ }
+ 
+ //*********************Advanced User Info*******************************
+//These text boxes are meant for those who have an interest in expanding or using more complicated functions in their ghost. Also for my own reference in the future since I plan on using this template too, haha. If you have no interest in any of this and just want to keep things as simple as possible, feel free to skip these boxes.
+
+//If you want to have more than two characters at any point, like for example how I added Charger with my Hunter/Smoker ghost, and you want to be able to interact with that character like you can with the others, you will have to add in that character to OnMouseMove above. You'll need to know the p[] you've assigned your third character to, which in Charger's case was 3. You can assign your third character any p you want, just be consistent about using the same p[] everytime. I touch on \p a bit more in the walkthrough.
+//So anyway, as you can see above, OnMouseMove determines who the user is touching, so you'll just have to add in an elseif checking for reference3 == 3, or reference3 == 4, or whatever p number is you're using. More on elseif in the walkthrough and in bootend.dic. After that, you'll just need to copy and paste the other mouse functions below and change the name as you need (for example, MouseMoveCharger, MouseDoubleClickCharger). 
+
+//Note though that the extra character will not be a hard-coded character like 0 and 1! You're basically tricking the program into thinking there's another character, and some functions in things like menu.dic and aitalk.dic won't work quite right if you put in a value other than 0 or 1, and you'll need to be careful about making sure to remove the third character when you're done. But luckily for you, this won't be a problem with any of the mouse functions as far as I'm aware, and you can fill them out for the third character just like you would for the two main ones.
+//***********************************************************************
+
+
+ //--MouseMoveSakura
+ //The petting function for your main character. Remember how it was referred to as sakura in some of the descript.txt and install.txt files?
+ 
+MouseMoveSakura
+ {
+	if reference4 != "" //ignore
+ 	{
+ 		stroke++ //if you move the mouse over the right areas, the stroke count will go up.
+ 		if stroke >= 40 //if the stroke count is above a certain number, the petting dialogue will kick in. You can change this number to make the petting take longer or shorter if you want. FLELEs have it set to 50 for some reason, which makes it take longer than this.
+		{
+ 			stroke = 0 //resetting the stroke count
+			if reference4 == "Head" //do you remember the names of the areas you set up for your collisions in surfaces.txt? This is where they come into play! This is where you'd put in the name of your collision, such as head, face, horns, tail, ears, whatever. As mentioned in surfaces.txt, you can add as many collisions to a pose as you want, as long as you make sure to add them all in here so they can actually be used.
+ 			{	if peterkisses < 1
+				{"-Are you sure you want to kiss him?-\n\n\![*]\q[Yes,firstkiss]\n\![*]\q[No,nofirstkiss]\e"}
+				else
+				{
+				"\0\s[33]-You kiss his cheek-\x\c\s[34]You're so sweet, %(username)\e"
+				"\0\s[28]-You kiss his nose. He wasn't expecting it-\x\c\s[1]Ah- darling! You're going to be the death of me.\e"
+				"\0\s[28]-You kiss his forhead-.\x\s[50]...I love you so much, %(username).\x\s[55] It's like...being with you, I can finally breathe.\e"
+				"\0\s[28]-You peck his lips-\x\s[56]Ha! %(username)...\w8\n\s[46]So sweet...\x\s[37]I adore you to the moon and back, y'know.\e"
+				"\0\s[28]-You kiss his jaw-\x\s[37]Oh darling...\n\w8\w2\s[57]Don't tell me you're done. You're such a tease.\e"
+				peterkisses += 1
+				peteraff += 1
+				}
+ 			}
+			elseif reference4 == "Face" //Another area set up by the collisions in surfaces.txt. You can expand this list with as many elseifs as you need depending on how many collisions you've set up.
+ 			{
+ 				"\0\s[0]This is petting dialogue for my face.\e"
+ 				"\0\s[0]This is more petting dialogue for my face.\e"
+ 				"\0\s[0]This is another bit of petting dialogue for my face. Well, stroking would probably be more accurate.\e"
+				//Replace with appropriate dialogue as needed.
+ 			}
+			
+ 		}
+	}
+ 	else
+	{
+ 		// If the mouse isn't over the ghost, it'll zero out the stroke value.
+		stroke = 0
+ 	}
+}
+
+Select.nofirstkiss
+{"-It's up to you-\e"}
+
+Select.firstkiss
+	{
+	"\0\s[56]Ah - %(username)?\x\s[62] You've never done that before.\x\s[48] Ah - I love you so much darling. \n\n\![*]\q[I love you too,loveyoutoo]\n\![*]\q[...,noloveyoutoo]\e"
+	peterkisses += 1
+	peteraff += 2
+	}
+		Select.noloveyoutoo
+		{"\0\s[24]I'll do everything I can to deserve you.\e"}
+		
+		Select.loveyoutoo
+		{
+		"\0\s[50]You really are an angel. \x\s[32]I'm so lucky to have you.\e"
+		peteraff += 1
+		toldlove += 1
+		}
+
+
+ //---- MouseMoveKero -----------------------------------------------------------------
+ //MouseMoveKero is exactly like the above, except set up for your second character. 
+ 
+MouseMoveKero
+ {
+	if reference4 != ""
+ 	{
+ 		stroke++
+ 		if stroke >= 40
+		{
+			stroke = 0
+			if reference4 == "Face" //Put in the name of your collision area you set up for your secondary character here.
+ 			{
+				"\1\s[10]This is a face touching dialogue.\e"
+				"\1\s[10]This is another face touching dialogue.\e"
+				"\1\s[10]This is yet another face touching dialogue.\e"
+				//Replace this dialogue with your secondary character's dialogue.
+ 			}
+			elseif reference4 == "Point" //Like above, put in the name of another collision you set up in surfaces.txt for the secondary character. You can keep adding more elseifs like this for any extra collisions you may have set up.
+			{
+				"\1\s[10]This is a point touching dialogue since I don't really have a head, being a triangle.\e"
+				"\1\s[10]This is another point touching dialogue.\e"
+				"\1\s[10]This is yet another point touching dialogue.\e"
+				//Replace this dialogue as appropriate.
+			}	
+ 		}
+	}
+ 	else
+	{
+ 		// If the mouse isn't over the ghost, it'll zero out the stroke value.
+		stroke = 0
+ 	}
+}
+
+//---- OnMouseDoubleClick -------------------------------------------------------
+//This is set up much like OnMouseMove above, except this is checking to see if the user is double clicking on the ghost. You also don't need to touch any of this. 
+//Advanced users adding a third character, the same principles from OnMouseMove apply here as well! Make sure to add an elseif with the right number for your third character.
+
+OnMouseDoubleClick
+ {
+	//---- like with the OnMouseMove function above, this determines who the user is clicking on.
+	if reference5 == 0 //checks which button is being used for the click
+	{
+	 	if reference3 == 0 //if the character is 0, aka your main character
+		{
+		MouseDoubleClickSakura
+		}
+		else
+		{
+ 		MouseDoubleClickKero
+		}
+	}
+ }
+
+ //---- MouseDoubleClickSakura ----------------------------------------------------------
+ //Like the petting animation above, this is the reactions they have to being double clicked. These also rely on the collisions you set up in surfaces.txt! This set is specifically for the main character, as indicated by the Sakura in the name again.
+ 
+ //*********************Advanced User Info*******************************
+ //As a note, double clicking on a certain area of your ghost doesn't have to be the user hitting them. You could instead set up a collision for a piece of clothing, and then have the character talk about that bit of clothing when it's double clicked, for example. One of Smoker's double clicks gives her a high-five when she's in a certain pose. Maybe double clicking is patting them, or pointing behind them, or tapping them, or any number of things. You can be creative here with how they respond depending on what areas you've set up as collisions!
+ 
+ //If you don't want your character to be hittable at all, you can just delete everything in MouseDoubleClickSakura except OpenSakuraMenu. So it'd look like
+ 
+ //MouseDoubleClickSakura
+ //{
+ //OpenSakuraMenu
+ //}
+ 
+ //That's all there is to it. This method also applies to the secondary character, Kero, below this set.
+ //***********************************************************************
+ 
+MouseDoubleClickSakura
+ {
+ 	if reference4 == "Head" || reference4 == "Face" //here, this is checking to see if the user is double clicking on either the character's head OR their face, which for our purposes means they're hitting the ghost. More about operators at the walkthrough.
+			
+	{if peterhits < 1
+		{"-Are you sure you want to punch him?-\n\n\![*]\q[Yes,firsthit]\n\![*]\q[No,nofirsthit]\e"}
+	else
+		{
+		if peteraff == 0 && peterneg >= 105
+		{
+			"\0\s[58]\w5\s[59]...\x\s[105] ...\e"
+		}
+		elseif peteraff == 0 && peterneg >= 80
+		{
+			"\0\s[58]\w5\s[59]Ah-!\x\s[105] \e"
+		}
+		elseif peteraff == 0 && peterneg >= 45
+		{
+			"\0\s[58]\w5\s[59]Ah-!\x\s[105] ...%(username)...\w8\n I love you.\x I always will.\w8\n But why can’t you just love me back?!\n\n \x\s[106] What more do you want from me?!\e"
+			"\0\s[58]\w5\s[59]Gah-!\x\s[103] That’s…that’s enough! You’ve made your point! \w5 \n But you are mine, %(username).\w8\n I know you know it.\x\n\n \x\s[105] So stop this...this nonsense!\e"
+			"\0\s[58]\w5\s[59]Nnh-!\x\s[103] Hah… \w8\s[104] You don’t get it, do you?\w8\n\nI don’t care how cruel you are.\x\n\n \x\s[106] I love you.\x\s[105] I’ll always love you.\x\n\n \x\s[103] You can’t change that.\e"
+			"\0\s[58]\w5\s[59]Ah-!\x\s[106] %(username)… \w8\s[105] Why can’t you just admit it?\w8\n You need me.\x\s[104] You love me.\x\n\n \x\s[105] So why are you doing this?!\e"
+			"\0\s[58]\w5\s[59]Oof-!\x\s[103] …y’know, that…almost didn’t feel as bad. \w8\ Maybe I’m getting to used to it. \w8\n\n\s[107]…I don’t care what you throw at me, you know.\w8\s[106] You’re mine, %(username).\w8\n And I’ll never let you go.\e"
+			"\0\s[58]\w5\s[59]Ah-!\x\s[103] ...You must enjoy this.\x\n\n \x\s[105] Breaking me.\x\s[106] Watching me fall apart.\w8\n But even if you shatter me completely...\n\n \x\s[103] I’ll still love you.\x I’ll always love you.\e"
+			"\0\s[58]\w5\s[59]Gah-!\x\s[106] …\w8\n Are you waiting for me to say I hate you, my love? \x\s[105] It won’t happen. \w5Not ever. \w8\s[102]\n\nI’ll love you until the day I die.\w8 Even if it was at your hand.\e"
+			"\0\s[58]\w5\s[59]Ah-!\x\s[103] ...\x\s[106] …I really hoped you’d have gotten it all out of your system, darling.\x\s[104]...maybe you’re not doing this out of some sense of justice or revenge after all. \w8Maybe you just enjoy it.\x\s[105] Hah...it doesn’t matter. I’ll take it. I’ll take whatever you throw at me. \w8\n Because you’re all I have.\x And I’m all you’ll ever need.\e"
+			peterhits += 1
+			peterneg += 2
+
+		}
+		elseif peteraff == 0 && peterneg >= 25
+		{
+			"\0\s[58]\w5\s[59]Gh-!\x\s[103]\x\s[106] %(username)… \x\s[104]What do you want from me?!\w8 \x\s[103] Whatever it is, just say it.\x\s[102] I’ll give you anything.\w5 Everything.\n\n \x\s[105] Just stop...this.\e"
+			"\0\s[58]\w5\s[59]Ah-!\x\s[103]\x\s[103] ...%(username)...\w8 \x\s[106] Why are you doing this?\w5\n ...You know I’ll never leave, no matter how much you hurt me.\x\n\s[104] So what’s the point?\e"
+			"\0\s[58]\w5\s[59]Nnh-!\x\s[106] ...\w8\n I keep thinking, if you hated me this much, then you should just...\x Just end it.\w5\n But no...\x\s[103] You need me too much for that, don’t you?\x\s[104]…my darling.\e"
+			"\0\s[58]\w5\s[59]Ah-!\x\s[106] ...%(username)...\w8\n Please... \x\s[103] Why do you keep doing this?\w5 Is there something I’m not giving you?\e"
+			"\0\s[58]\w5\s[59]Nh-!\x\s[102]...\x\s[103]...Every time, I think...maybe you’ll stop.\w8\n Maybe you’ll tell me you love me.\w8\s[104] But then...\w8\n\n Heh. You must think that's hilarious\e"
+			"\0\s[58]\w5\s[59]Ah-!\x\s[103]Is this punishment?\x Or are you just bored?\w5 Either way...\x I love you, %(username). I'll love you until all your fight is gone.\n\n\w8\s[105]I'll love you until you love me back.\e"
+			peterhits += 1
+			peterneg += 2
+
+		}
+		elseif peteraff == 0 && peterneg >= 5
+		{
+			"\0\s[58]\w5\s[59]Gh-!\x\s[116] Nnh…I guess I should’ve expected that...\w8\s[105] But is it…too much to ask for you to warn me, darling?\x\s[89] ...Never mind.\e"
+			"\0\s[58]\w5\s[59]Ah-!\x\s[105]...\x\s[104] Are you mad at me?\w8\s[105] Or... are you just bored?\x\s[32] Either way, I’ll stay.\e"
+			"\0\s[58]\w5\s[59]Nh-!\x\s[105] -He catches his breath- \n\n\... \x\s[106] If this is how you want to spend time with me...\w8\s[105] I won’t stop you.\x\s[32] But there are other ways, you know.\e"
+			"\0\s[58]\w5\s[59]Gh-!\x\s[105]… \x\s[106] Is this... fun for you?\w8\s[105] It’s fine if it is. I don’t mind. \x\s[32] I mean, it's not like I matter anyway.\e"
+			"\0\s[58]\w5\s[59]Ah-!\x\s[106]Hah…ha ha ha.\x\s[106] You’re an odd one, you know that?\w8\s[105] But I’m still here.\x\s[32] For some reason.\e"
+			"\0\s[58]\w5\s[59]Nh-!\x\s[102]…\x\s[105] Do you…feel better now?\w8\s[104] I hope so.\x\s[32] That’s all I want.\e"
+			peterhits += 1
+			peterneg += 2
+		}
+
+		else
+		{
+			"Placeholder dialogue for hitting when route is positive and negative\e"
+			peterhits += 1
+			peterneg += 2
+		}
+		}
+
+	}
+
+	else
+ 	{
+		//Otherwise, if the user doubleclicks somewhere else on the character, they will open their menu as detailed in menu.dic.
+ 		OpenSakuraMenu
+	}
+ }
+
+Select.nofirsthit
+{"-It's up to you-\e"}
+
+Select.firsthit
+{"\0\s[58]\w5\s[59]\x\s[60]...%(username)?\x\s[38]Did...I do something wrong?\n\n\![*]\q[Yes,firstrevenge]\n\![*]\q[No,kinkyfirsthit]\e"}
+	Select.kinkyfirsthit
+		{
+		peterhits += 1
+		peterneg += 5
+		"\0\s[4]Then why...\x\s[5]Are you just toying with me here?\x\s[52]…Heh. Alright then darling. I don’t mind\w8\s[27]I’m already yours after all. Your boyfriend, your slave…\w8\s[20]what’s being your punching bag?\n\n\w8\s[4] Go ahead and take everything out on me, love. I can handle it.\e"
+		}
+	Select.firstrevenge
+		{
+		peterhits += 1
+		peterneg += 5
+		"\0\s[4]I...\x\s[5]I see\x\s[52]...so that's why you braught me here.\w8\s[27]Well then you...better get it out of your system.\w8\s[20] Because I'm not going anywhere\e"
+		}
+						
+						
+
+
+
+ //---- MouseDoubleClickKero -----------------------------------------------------------
+ //This is just the same as MouseDoubleClickSakura above, except for your secondary character. The same principles apply, including how to make your character unhittable.
+ 
+ 
+MouseDoubleClickKero
+ {
+ 	if reference4 == "Face" //Triangle doesn't have a separate head really, being a triangle, so this only happens if you doubleclick his face.
+	{
+		"\0\s[58]\w5\s[59]Gh-!\x\s[103] Nnh…I guess I should’ve expected that...\w8\s[105] But is it…too much to ask for you to warn me, darling?\x\s[32] ...Never mind.\e"
+		"\0\s[58]\w5\s[59]Ah-!\x\s[105]...\x\s[104] Are you mad at me?\w8\s[105] Or... are you just bored?\x\s[32] Either way, I’ll stay.\e"
+		"\0\s[58]\w5\s[59]Nh-!\x\s[105] -He catches his breath- \n\n\... \x\s[106] If this is how you want to spend time with me...\w8\s[105] I won’t stop you.\x\s[32] But there are other ways, you know.\e"
+		"\0\s[58]\w5\s[59]Gh-!\x\s[105]… \x\s[106] Is this... fun for you?\w8\s[105] It’s fine if it is. I don’t mind. \x\s[32] I mean, it's not like I matter anyway.\e"
+		"\0\s[58]\w5\s[59]Ah-!\x\s[106]Hah…ha ha ha.\x\s[106] You’re an odd one, you know that?\w8\s[105] But I’m still here.\x\s[32] For some reason.\e"
+		"\0\s[58]\w5\s[59]Nh-!\x\s[102]…\x\s[105] Do you…feel better now?\w8\s[104] I hope so.\x\s[32] That’s all I want.\e"
+		//Replace the dialogue here for the second character with whatever you want. What I said above about adding or trimming still holds here.
+ 	}
+	else //Otherwise if you click anywhere else on Triangle's body
+ 	{
+		OpenKeroMenu //This will open his menu set up in menu.dic.
+	}
+ }
+
+ //*********************Advanced User Info*******************************
+ //There are other mouse related functions you could set up much like the above, such as OnMouseDragStart, OnMouseDragEnd, OnMouseWheel, and others which correspond to various things you can do with your mouse. You can probably guess what those functions do just by their names - OnMouseWheel would be if someone spun their mouse wheel over a certain area, for example. If you're interested in these, I'd recommend doing some reading at the CROW-SSP Encyclopedia to get a better idea of them and settle down for some trial and error learning as you try to put them in.
+ //***********************************************************************
+ 
+ OnMouseDragStart
+ {
+ 	if reference3 == 0 //If Peter is being dragged 
+	{
+			"\0\s[35]Whoa-!\e"
+			"\0\s[35]\e"
+			"\0\s[36]Gently, darling~\e"
+ 	}
+	else //If someone else is being dragged
+ 	{
+	}
+ }
+ OnMouseDragEnd
+ {
+ 	if reference3 == 0
+	{
+			"\0\s[0]"
+ 	}
+	else
+ 	{
+	}
+ }

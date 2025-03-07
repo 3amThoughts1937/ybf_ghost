@@ -1,0 +1,1421 @@
+﻿//---------------------------Menus--------------------------
+//This .dic file is primarily concerned with the double-click menus for each of your ghosts. If you don't want to have menus for your characters, you'd just have to delete the OnMouseDoubleClick functions near the end of mouse.dic and then ignore this file, as none of it will be called I believe. Menus can be cool though, since you can put stuff in them and create new functions if you know what you're doing. For example, I've added a lot of games and interactions and little linked icons to my Hunter Smoker ghost to keep track of their feelings and such. Much of that is pretty complicated though (and kind of messy, cough), so I won't go into it here, but I covered some of the concepts in the coding page of the walkthrough, and enterprising ghost makers can study the menu.dic file I set up for Hunter/Smoker and see how I put it together.
+
+//The complexity of this file depends on how customized you want your menus. If you just want to leave them as they are, then all you'll have to do is replace dialogue appropriately. Many of the options here can be ignored if you don't care. You only have to fill in the things that interest you! The default template dialogue will handle anything you don't. If you get bored or tired, you can skip a lot of these if it comes down to it. You can always go back and fill them in later too. Your ghost will function fine either way!
+
+//And of course, this file will always be waiting for you when you've gotten more familiar with ghosts and want to add cool features! It can be a flexible playground, but don't feel too stressed out about it. As mentioned, just fill in what comes to you and the template dialogue will cover the rest.
+
+
+
+//Make sure to read the walkthrough (http://www.ashido.com/ukagaka/) for more details about how to properly format ghost dialogue!
+//I will reiterate that you should be editing these in Notepad++, and in particular, you should set the Language to C (or Java I guess) to properly highlight all the text. It will make things A LOT EASIER for you, trust me! It will also help you keep track of your brackets in case you forget some. If you click on a line with a bracket in Notepad++, it should highlight where the other bracket ends, or turn purple if there's no finishing bracket (which you should definitely fix!)
+//It will also highlight my commented lines in green, so you'll know where they are. Any line beginning with // is a commented line that the code will not read. It's just for your reference!
+
+//If you see a big block of commented text you want to uncomment, highlight the text and then hit ctrl-shift-k in Notepad++ and that should uncomment it. Mostly this is intended for advanced users.
+
+
+//--OpenSakuraMenu
+//This is a bit of intro dialogue before the main character opens their menu. You can see below that there are three pieces of separate dialogue listed before it goes to MenuRun. The character will randomly choose one of those pieces of dialogue before opening the rest of their menu. You can customize this with individual greetings for the character, such as "Yes, %(username)?" or "Need something, %(username)?" or things like that. Note that none of the lines end with \e!
+//The \b2 tag tells the ghost to use their big balloon for this dialogue. If your menu has a lot of stuff, this'll probably look better than the small one.
+//If you don't want multiple responses before opening the menu, you can delete the dialogue and just leave MenuRun.
+
+OpenSakuraMenu
+{
+	if peteraff >= 1 && peterneg < 5
+	{
+		"\0\s[3]\b2Yes, my love?"
+		"\0\s[3]\b2Yes, darling?"
+		"\0\s[3]\b2Anything you need, darling?"
+		--
+		MenuRun
+	}
+	elseif peteraff == 0 && peterneg == 0
+	{
+		"\0\s[0]\b2Yes, %(username)?"
+		--
+		MenuRun
+	}
+	elseif peteraff == 0 && peterneg >= 105
+	{
+		"\0\s[20]\b2...?\e"
+		--
+		MenuRun
+	}
+	elseif peteraff == 0 && peterneg >= 80
+	{
+		"\0\s[28]\b2Yes? \w5\s[103]Anything you need, %(username)?\e"
+		--
+		MenuRun		
+	}
+	elseif peteraff == 0 && peterneg >= 5 //Neutral neg
+	{
+		"\0\s[54]\b2Yes, %(username)?"
+		--
+		MenuRun
+	}
+	/////////////////////// Mixed signals (equal affection and negativity)
+	elseif ((peteraff - peterneg <= 10) && (peteraff - peterneg >= -10))
+	{
+		"\0\s[54]\b2Yes, %(username)?"
+		--
+		MenuRun
+	}
+	//// Mixed Mostly positive ////
+	elseif ((peteraff > peterneg + 10) && (peterneg > 0))
+	{
+		"\0\s[28]\b2Yes? \w5\s[103]What can I do for you my love?"
+		"\0\s[103]\b2How can I help you, darling?"
+		--
+		MenuRun	
+	}
+
+	//// Mixed Mostly Negative ///
+	elseif ((peterneg > peteraff + 10) && (peteraff > 0))
+	{
+		"\0\s[28]\b2What's up, %(username)?"
+		"\0\s[28]\b2Yes, love?"
+		--
+		MenuRun	
+	}
+
+	
+	// Default placeholder for unknown mixed routes
+	else
+	{
+    "-Placeholder text for when the user's done something I didn't consider-."
+		--
+		MenuRun	
+	}	
+}
+
+//--MenuRun
+//As you just saw above. This actually fills out the rest of the menu. If you're going to be adding or changing functions, this is where you'll be doing your edits.
+
+MenuRun : all
+ {	
+ 	wd = GetWeekDay
+ 	ap = GetAP
+	//These four statements basically get the day of the week, whether it's AM or PM, the hour, and the time. It's putting together the information to display the time at the bottom of the balloon. Pay it no mind.
+	--
+	"\n\n\_q\b2" //The \n\n means two new lines as detailed in the walkthrough, and \_q means quick session, meaning all the text from this point on will display instantly instead of a few letters at a time like normal ghost dialogue. You can ignore it.
+	--
+	if lastTalk != "" //What this does is check to see if the ghost has already said a random bit of dialogue on its own, essentially by seeing if the lastTalk thing is NOT empty (!= means "does not equal").
+	{
+	  "\![*]\q[Repeat Last Dialogue,OnLastTalk]\n"
+	  //If the ghost has said something, it will then display this menu option. You can replace "Repeat Last Dialogue" with whatever caption you like, such as "What were you saying?" or "What did you say?" or "Could you repeat that?" or something like that.
+	  
+	  //*********************Advanced User Info*******************************
+	  //These text boxes are meant for those who have an interest in expanding or using more complicated functions in their ghost. Also for my own reference in the future since I plan on using this template too, haha. If you have no interest in any of this and just want to keep things as simple as possible, feel free to skip these boxes.
+	  
+	  //I briefly touched in bootend.dic about \q, but I'll again cover it here. Pay very close attention to how this bit of dialogue is formatted. You'll see it goes \![*]\q[Displayed Name,linkedfunction]. Breaking it down, \![*] puts the balloon's option icon in front of the choice (usually a > or something), \q sets up the choice, Displayed Name which is the text that will display in the ghost's balloon, then linkedfunction, which is what the choice is linked to when the user clicks it. As you go through this file, look at how every menu option is set up, and you will see they all follow this format, give or take a \![*]. If you're going to be adding new options to menus or creating your own functions and such, make sure you follow this format and learn it well. Make sure to read the coding page of the walkthrough.
+	  //***********************************************************************
+	}
+	--
+ 	"\![*]\q[Say something,OnAiTalk]\n\n"
+	
+	//"\![*]\q[Say something 2,OnAiTalk]\n"
+	
+	//This option will force the ghost to say something from aitalk if the user clicks it. Just replace "Say something" with whatever caption you think would be appropriate.
+	//Advanced users, you can add multiple captions for any option you add to a menu you make just like this, as long as you separate it from the other options into its own section with two dashes above and below. Note that you can't do this if the Function above has ": all" after it, since that will put every potential option in. You'll have to set it your menu up differently to take --s into account. I commented it out here because of ": all" above, but you can see the basic idea.
+	--
+	"\![*]\q[Talk to him,peterchat]\n"
+	"\![*]\q[Give him something,giftsmenu]\n"
+	"\![*]\q[Check your status,statuscheck]\n\n"
+	"-Or maybe instead you want to...-\n\n"
+	"\![*]\q[Change some settings,configmenu]\n"
+	"\![*]\q[Have him do a task,dosomething]\n\n"
+ 	"\![*]\q[Nevermind,CANCEL]\n\n\n[half]%(wd) %(nowhour):%(nowmin) %(ap), %(month)/%(day)/%(year)\e"
+	
+	//These three lead to the Config Menu, the Function menu, and Cancel. You can leave these alone if you like. All the envelopes at the end (see word.dic) basically display the year, month, day, weekday, and time.
+}
+
+//Leave this alone
+OnLastTalk 
+{
+"%(lastTalk)\e"
+}
+
+//This is figuring out what day of the week it is. Leave it alone.
+GetWeekDay
+{
+	if weekday == 0
+	{"Sun"}
+	elseif weekday == 1
+	{"Mon"}
+	elseif weekday == 2
+	{"Tue"}
+	elseif weekday == 3
+	{"Wed"}
+	elseif weekday == 4
+	{"Thu"}
+	elseif weekday == 5
+	{"Fri"}
+	else
+	{"Sat"}
+}
+
+//This is finding out whether it's AM or PM. Leave it alone.
+GetAP
+{
+ 	if hour >= 0 && hour <= 11
+ 		{"AM"}
+ 	else
+ 		{"PM"}
+}
+
+nowhour
+{
+	if hour12 == 0; "1"
+	else; "%(hour12)"
+}
+
+nowmin
+{
+	if minute >= 0 && minute <=9; "0%(minute)"
+	else; "%(minute)"
+}
+
+
+//If someone selects an option linked to BACKTOMENU, it will go back to MenuRun.
+//Advanced users, note that this is formatted as Select.linkedfunction? Remember how it went \q[Displayed Name,linkedfunction] above? When a user clicks an option that doesn't begin with On, they'll be linked to Select.linkedfunction. Pay close attention as we go through and you'll see this in action.
+
+Select.BACKTOMENU
+	{
+		MenuRun
+	}
+
+//If someone selects configmenu, this will lead to TalkConfig.
+Select.configmenu
+	{
+		TalkConfig
+	}
+
+//*********************Advanced User Info*******************************
+//Some of you may be wondering why some of these Select.options lead to another function. Why not just put the config menu coding under Select.configmenu, instead of linking to TalkConfig?
+//Basically any function that's preceded with Select. is limited in its complexity and can only be called within its own .dic file in my experience. Why should you care, you ask? Well, if you're going to link to this function any other way, such as linking it in other .dic files or as a page in a menu, it needs to be a stand-alone function so it can be properly called. I'm pretty sure.
+//The basic jist is this; if you're going to reuse whatever it is the option leads to, you should make it its own function. Otherwise, you can leave it in Select.option. As a rule of thumb I'd probably put any complicated stuff in its own function, then use the Select.option to call the full function as you can see above. Simple dialogue responses to a choice can stay as a Select.option though (Like "Do you like going to raves and partying? Yes/No"). Study what stays as a Select.option and what links to another Function as we go through the file.
+//***********************************************************************
+
+//--TalkConfig
+//This menu allows the user to change their name and other information, as well as put in their birthday and change how often the ghost speaks. You can restructure how this looks if you want, but it's perfectly functional as is. You can of course change the dialogue though if you like.
+//I commented out birthday and pronoun options, you can uncomment them if you want to add them back. They are optional! It's up to you if you want those features or not.
+
+TalkConfig : all
+{
+	"\0\b[2]\_q\" 
+	//This bit of dialogue sets up a large balloon and a quick session, like above, so all the text will appear immediately. The rest is formatted to display the information and options to change it. I wouldn't touch any of it if you don't know what you're doing.
+	//I'll briefly explain the font tags I used here. \f[bold,1] turns bold on, \f[bold,0] turns it off, not unlike a <b> tag. \f[sup,1] turns superscript on (making it tiny and above the text) and \f[sup,0] turns it off. I touch on these tags in the walkthrough on SakuraScript.
+	
+	
+	
+	"f[bold,1]Your name:\f[bold,0] %(username) \f[sup,1](\q[Change it?,TEACHNAME])\f[sup,0]\n"
+	
+	
+	//If you want your user to set their pronouns, you can uncomment this menu option by removing the two slashes in front. Read more on the walkthrough about commenting.
+	
+	//"\f[bold,1]Your pronouns:\f[bold,0] %(heshe)/%(himher)/%(hisher) \f[sup,1](\q[Change them?,TEACHPRONOUN])\f[sup,0]\n"
+	
+	
+	//If you want your user to be able to set their birthday, you can uncomment this menu option.
+	
+	//"\f[bold,1]Your birthday:\f[bold,0] %(birthdayprint) \f[sup,1](\q[Change it?,TEACHBDAY])\f[sup,0]\n"
+	
+	
+	
+	"\n\f[bold,1]Talk Rate:\f[bold,0] - every %(talktime) \f[sup,1](\q[Change it,talkinter])\f[sup,0]\n\n"
+	
+	
+	
+		{
+		"\![*]Enable Uninstall? (NOW : %(deleteshitai))\n\q[ON,deleteon] \q[OFF,deleteoff]\n\n[half]\n"
+		}
+		
+	"\![*]\f[bold,1]\q[Reset,OnReset]\n\n"
+	
+	"\![*]\q[Back to the menu,BACKTOMENU]\e"
+}
+ // _______    _ _      _          _____     _            
+ //|__   __|  | | |    | |        |  __ \   | |           
+ //   | | __ _| | | __ | |_ ___   | |__) |__| |_ ___ _ __ 
+ //   | |/ _` | | |/ / | __/ _ \  |  ___/ _ \ __/ _ \ '__|
+ //   | | (_| | |   <  | || (_) | | |  |  __/ ||  __/ |   
+ //   |_|\__,_|_|_|\_\  \__\___/  |_|   \___|\__\___|_| 
+
+///-o-o-o-o----Peter Chat menu--------o-o-o-o-o
+Select.peterchat 
+{
+	AskPeter
+}
+
+AskPeter : all
+{
+	"-You ask him about-\w5\n\n\_q"
+	"\![*]\q[Himself,talkpeter]"
+	if askedabouttk > 20
+		{"\![*]\q[ﾒﾒ,talktk]"}
+	elseif askedabouttk >=10 && askedabouttk <= 20
+		{"\![*]\q[₮₭,talktk]"}
+	else
+		{"\![*]\q[TK,talktk]"}
+	if askedaboutlucy >= 23
+		{"\![*]\q[ﾒﾒﾒﾒ,talklucy]"}
+	elseif askedaboutlucy >= 14 && askedaboutlucy <=22
+		{"\![*]\q[ⱠɄ₵Ɏ,talklucy]"}
+	else
+		{"\![*]\q[Lucy,talklucy]"}
+	if askedaboutdon > 22
+		{"\![*]\q[ﾒﾒﾒ,talkdon]"}
+	elseif askedaboutdon >= 14 && askedaboutdon <=22
+		{"\![*]\q[ĐØ₦,talkdon]"}
+	else
+		{"\![*]\q[Don,talkdon]"}
+	"\![*]\q[his family,talkfam]\n\n"
+	"\![*]\q[Compliment him,compliment] \![*]\q[Insult him,insult] \![*]\q[Joke with him,joke]\n\n"
+	"\![*]\q[Say 'I love you',iloveyou]\n\n"
+	if ((peterneg == 5) && (peterneg < peteraff))
+	{
+		"\![*]\q[Apologize,apologize]\n\n"
+	}
+	elseif ((peteraff > peterneg + 2) && (peterneg > 4))
+	{
+		"\![*]\q[Apologize,apologize]\n\n"
+	}
+	else
+	{}
+	"\![*](\q[Go back,BACKTOMENU])\e"
+}
+
+Select.talkpeter : nonoverlap_pool
+{
+	if peteraff >= 230 && peterneg < 5
+	{
+		"\0\s[55]You could ask me anything, love.\w8\s[37]I’ve got nothing to hide from you.\w8\s[50]I trust you completely.\e"
+		"\0\s[37]I could tell you anything you want, love. \w8\s[57]Every secret, every thought no matter how dark. \w8\s[13]Just say the word.\e"
+		"\0\s[101]There’s not much to my life that matters.\w8\s[32]Except you.\w8\s[24]You’re the only part that feels real.\e"
+		"\0\s[105]I’ve always felt a little… invisible.\w8\s[50]But when you look at me, I feel real.\e"
+		"\0\s[105]You make me feel like...\w8\s[104]Like maybe I’m not as messed up as I think. \w8\n\n\s[32]I you love me…I can’t be a monster.\e"
+		"\0\s[24]You make me want to be a better person.\w8\s[25]Someone who deserves you.\e"
+	}
+		elseif peteraff >= 100 && peterneg < 5
+	{
+		"\0\s[37]I was made to love you, dear. \w8\s[17]Even if I wasn't, I'd choose to anyway. You make it easy.\e"
+		"\0\s[16]All I really want is to be yours.\w8\s[55]That’s the only part of me that matters.\e"
+		"\0\s[101]I’ve never really been anyone’s favorite before.\w8\s[22]So, if I’m even a little bit special to you…\w8\s[24]that’s more than I ever hoped for.\e"
+		"\0\s[48]You don’t know what it does to me when you’re sweet like this.\w8\s[49]I just - \w8\s[50]I want to be everything you need.\e"
+		"\0\s[101]I could talk about myself, sure.\w8\s[37]But I’d much rather hear about you.\w8\s[13]Everything you say is like music to me.\e"
+	}
+		elseif peteraff >= 40 && peterneg < 5
+	{
+		"\0\s[24]Knowing you care enough to ask about me...\w8\s[1]I think my heart might actually burst.\e"
+		"\0\s[29]There’s not much to tell, honestly.\w8\s[32]But if it means I get to hear your voice, I’ll talk for hours.\e"
+		"\0\s[28]You actually want to know more?\w8\s[32]Heh, you really are too good to be true, love.\e"
+		"\0\s[22]I could talk about you for hours.\w8\s[29]But me?\w8\s[105]I’m only interesting when I’m with you.\e"
+		"\0\s[105]I’m nothing special.\w8\s[25] Not compared to you.\w8\s[84] But… it makes me happy that you asked.\e"
+		"\0\s[22]If you want to know something about me, just ask.\w8\s[55]I don’t want there to be any secrets between us.\e"
+		
+	}
+		elseif peteraff >= 1 && peterneg < 5
+	{
+		"\0\s[28]You really want to know more about me?\w8\s[22] I-I mean, I’ll tell you anything you want, love.\w8\s[101] I just… didn’t think you’d care to ask.\e"
+		"\0\s[12]My favorite thing?\w8\s[17]That’s easy.\w8\s[46]It’s you.\e"
+		"\0\s[29]It’s a little embarrassing to talk about myself.\w8\s[17]But for you, I don’t mind at all.\e"
+		"\0\s[3]What's there to say about me. \s[17] I'm your boyfriend!\e"
+		"\0\s[45]Oh, you want to know about me?\w8\s[46]Well, I guess I can’t blame you.\w8\s[17]I’d want to know everything about you, too.\e"
+		"\0\s[89]If I’m being honest, I don’t care much about who I used to be. \w8\s[47]All I care about now is being the person you want me to be.\e"
+		"\0\s[45]I don’t have any big dreams or ambitions, really. \w8\s[46]Just being with you is more than enough for me.\e"
+		"\0\s[89]I don’t really think much of myself. \w8\s[83]But... if being yours is my best quality, I’m okay with that.\e"
+	}
+		elseif peteraff == 0 && peterneg == 0
+	{
+		"\0\s[3]What's there to say about me. \s[17] I'm your boyfriend!\e"
+		"\0\s[37]I was made to love you, dear. \w8\s[17]Even if I wasn't, I would anyway. You make it easy.\e"
+		"\0\s[89]If I’m being honest, I don’t care much about who I used to be. \w8\s[47]All I care about now is being the person you want me to be.\e"
+		"\0\s[45]I don’t have any big dreams or ambitions, really. \w8\s[46]Just being with you is more than enough for me.\e"
+		"\0\s[89]I don’t really think much of myself. \w8\s[83]But... if being yours is my best quality, I’m okay with that.\e"
+	}
+	///
+	//////////////////////All negative, no positive
+	elseif peteraff == 0 && peterneg >= 105
+	{
+		"-He thinks you hate him. It's breaking him.-\_b[img\4-4_brokenheart.png,-55,-27,--option=use_self_alpha].\e"
+	}
+	elseif peteraff == 0 && peterneg >= 80
+	{
+		"-He thinks you hate him. He doesn't know what to do.-\_b[img\3-4_brokenheart.png,-55,-27,--option=use_self_alpha]\e"
+	}
+	elseif peteraff == 0 && peterneg >= 45
+	{
+		"-He thinks you hate him.-\_b[img\2-4_brokenheart.png,-55,-27,--option=use_self_alpha]\e"
+	}
+	elseif peteraff == 0 && peterneg >= 25
+	{
+		 "\0\s[45]Honestly? Just hoping you don’t hate me is enough.\w8\s[54] Anything more is… almost too good to be real.\e"
+		"\0\s[89]I’m not afraid of much.\w8\s[86]But losing you?\w8\s[20]That terrifies me.\e"
+		"\0\s[102]If I’ve done something wrong, just tell me.\w8\s[103]I’ll fix it—I’ll fix anything for you.\e"
+		"\0\s[104]I know you don’t trust me.\w8\s[105]I’m just… hoping I can change that.\e"
+		"\0\s[79]I don’t care if it takes forever.\w8\s[100]I’ll earn your trust back—one way or another.\e"
+		"\0\s[112]There’s a lot about myself I don’t like.\w8\s[103]But if there’s anything you like - anything at all, I’ll try to be more like that.\e"
+
+	}
+	elseif peteraff == 0 && peterneg >= 5 //Neutral neg
+	{
+		"\0\s[3]What's there to say about me. \s[17] I'm your boyfriend!\e"
+		"\0\s[37]I was made to love you, dear. \w8\s[17]Even if I wasn't, I would anyway. You make it easy.\e"
+		"\0\s[89]If I’m being honest, I don’t care much about who I used to be. \w8\s[47]All I care about now is being the person you want me to be.\e"
+		"\0\s[45]I don’t have any big dreams or ambitions, really. \w8\s[46]Just being with you is more than enough for me.\e"
+		"\0\s[89]I don’t really think much of myself. \w8\s[83]But... if being yours is my best quality, I’m okay with that.\e"
+	}
+	/////////////////////// Mixed signals (equal affection and negativity)
+	elseif ((peteraff - peterneg <= 10) && (peteraff - peterneg >= -10))
+	{
+    "-He's not sure how you feel about him.-\_b[img\emptyheart.png,-55,-27,--option=use_self_alpha].\e"
+	}
+	//// Mixed Mostly positive ////
+	elseif ((peteraff > peterneg + 10) && (peterneg > 0) && (peterneg < 10))
+	{
+		"-He thinks you like him-\n-...though he does wonder sometimes-\e"
+	}
+		elseif ((peteraff > peterneg + 10) && (peterneg > 10) && (peterneg < 25))
+	{
+		"-He thinks you like him-/n/n-The occasional hurt doesn't change that-\e"
+	}
+	elseif ((peteraff > peterneg + 10) && (peterneg > 25) && (peterneg < 45))
+	{
+		"-You're all he could want. And he's growing used to your... harsher side-\e"
+	}
+	elseif ((peteraff > peterneg + 10) && (peterneg > 45))
+	{
+		"-He thinks you like toying with him. But he doesn't mind. As long as you're happy.-\e"
+	}
+	//// Mixed Mostly Negative ///
+	elseif ((peterneg > peteraff + 10) && (peteraff > 0) && (peteraff < 10))
+	{
+		"-He thinks you don't like him. Maybe those moments of kindness were just pity-\e"
+	}
+
+	elseif ((peterneg > peteraff + 10) && (peteraff > 10) && (peteraff < 25))
+	{
+		"-He thinks you don't like him. Though he can't help but hope you'll change your mind-\e"
+	}
+
+	elseif ((peterneg > peteraff + 10) && (peteraff > 25) && (peteraff < 45))
+	{
+		"-He’s starting to believe you enjoy hurting him. And maybe you enjoy seeing him get his hopes up too-\e"
+	}
+
+	elseif ((peterneg > peteraff + 10) && (peteraff > 45))
+	{
+		"-He thinks you enjoy hurting him. But he doesn't mind - as long as you're entertained-\e"
+	}
+	// Default placeholder for unknown mixed routes
+	else
+	{
+    "Peter_Aff levels are %(peteraff). Peter_Neg levels are %(peterneg). If you're getting this, you did something I haven't considered - please let me know you saw this message! -. \e"
+	}
+
+}
+Select.talklucy : nonoverlap_pool
+{
+	if askedaboutlucy > 22
+	{
+		"\0\s[12]What was that love?\w8\n\n\s[29]Ah nevermind. I'm sure it wasn't important.\e"
+		"\0\s[12]Who?\w8\n\n\s[101]Sorry, didn't catch that dearest.\e"
+		"\0\s[14]-He's pretending he didn't hear you-\e"
+	}
+	elseif askedaboutlucy == 22
+	{
+		"\0\s[109]\f[italic,true]Enough\f[italic,false] about that slut already!\w8\s[7]She doesn't matter, okay? \f[italic,true]None\f[italic,false] of them matter!\w8\s[110] Can you just-\x\s[79]-He takes a deep breath-\x\s[89]...I'm sorry for snapping, %username. \w8\n\n\s[98]Let's just...not talk about her anymore, alright? She's just causing friction.\e"
+		askedaboutlucy += 1
+	}
+	elseif askedaboutlucy >= 14
+	{
+	"\0\s[41]Let me guess.\w8\s[113]She made you coffee a few times in the morning, and now you think she’s some kind of saint?\w8\s[114]That’s her way of keeping you around, love.\w8\s[42]It’s pathetic.\e"
+	"\0\s[42]Lucy, again? \w8\s[40]The freeloading, drug-addicted train wreck?\w8\s[39]She’s a disaster waiting to happen, and you’re standing too close.\e"
+	"\0\s[41]She’s a failure, plain and simple.\w8\s[40]No job, no direction, no future.\w8\s[42]Why are you still letting her drag you down?\e"
+	"\0\s[40]Why are you so obsessed with her?\w8\s[42]She’s just another person taking advantage of your kindness.\w8\s[39]She’s not worth it.\e"
+	"\0\s[40]Her? \w8\s[42]She’s just a broke, drugged-up slut.\w8\s[39]You’re the one paying her rent while she screws half the city.\e"
+	"\0\s[41]You keep asking about her. \w8\s[113]She’s a parasite, %(username).\w8\s[40]Just another cheap whore who clings to you because no one else will put up with her.\e"
+	"\0\s[41]Why do you care about her?\w8\s[40]She’s not your friend, love.\w8\s[39]She’s a burden you’re too kind to drop.\e"
+	"\0\s[42]She’s not worth asking me about, darling.\w8\s[40]She was a nuisance, and now she’s gone.\w8\s[39]It doesn’t matter though. She’s beneath you.\e"
+	askedaboutlucy += 1
+ 
+	}
+	else
+	{
+	"\0\s[40]Oh. You mean the deadbeat?\w8\s[39]Why do you ask about \f[italic,true]her\f[italic,false], darling?\w8\n\s[27]She's not particularly important.\e"
+	"\0\s[40]Lucy? \w8\s[37]The one who’s always making \f[italic,true]you\f[italic,false] pay for everything?\w8\s[28] She’s just using you, darling. You deserve better than someone who mooches off of you.\e"
+	"\0\s[42]Oh, \f[italic,true]her\f[italic,false].\w8\s[40] She’s nothing but trouble, love. \w8\s[39]Always dragging you down with her mess.\w8\s[27] You’re the only reason she’s still afloat.\e"
+	"\0\s[42]Why do you even keep her around?\w8\s[42] She’s unreliable. \w8\s[39]Letting you handle \f[italic,true]everything\f[italic,false] while she does... what? Nothing but make your life harder.\e"
+	"\0\s[37]I don’t trust her.\w8\s[42] She’s too careless. \w8\s[40]With her habits, she’ll bring you down eventually. \w8\s[27]I just want to keep you safe.\e"
+	"\0\s[40]She’s a mess, love. \w8\s[42]You shouldn’t have to clean up after her every time. \w8\s[37]You deserve someone who’ll take care of \f[italic,true]you\f[italic,false], not someone who constantly drags you down.\e"
+	"\0\s[42]Lucy? \w8\s[40]She’s never going to change, you know.\w8\s[41] She’ll keep making \f[italic,true]you\f[italic,false] do all the work while she parties and wastes her life away.\e"
+	"\0\s[41]She’s just another weight on your shoulders. \w8\s[40]And I hate seeing you struggle because of her. \w8\s[37]You should be with someone who lifts you up, not drags you down.\e"
+	"\0\s[40]Lucy’s a bad influence, love. \w8\s[42]You deserve so much better than someone who’s barely keeping it together.\e"
+	askedaboutlucy += 1
+
+	}
+}
+Select.talktk : nonoverlap_pool
+{
+	if askedabouttk <=9
+	{
+	"\0\s[27]Your coworker, huh? \w8\s[40]You know, out of all your... 'friends', I might've actually liked them.\n\w8\s[41]If they didn't act so disgusting towards you.\e"
+	"\0\s[39]TK? Oh, please. \w8\s[42]They’re just waiting for their chance to swoop in and steal you away. \w8\n\s[40]Can’t trust someone who’s so eager to play the friend card."
+	"\0\s[39]Your little sidekick? \w8\s[40]They’re all sarcastic smiles and flirty comments. \w8\n\s[41]I can’t stand how they think they can act like they know you better than I do."
+	"\0\s[27]TK? Ugh. \w8\s[40]I don’t get what you see in them. \w8\n\s[41]They’re just another distraction trying to play the ‘best friend’ role."
+	"\0\s[39]Oh, your 'charming' coworker? \w8\s[42]All that wit and sarcasm is just a cover for how desperate they really are. \w8\n\s[40]They’d do anything to get your attention."
+	askedabouttk += 1
+	}
+	elseif askedabouttk <=20
+	{
+		"\0\s[41]TK? \w8\s[40]That pathetic little suck-up?\w8\s[39]They’re just a lonely, desperate loser who thinks they have a chance with you.\e"
+		"\0\s[40]Them?\w8\s[41]All those jokes and smiles are just a cover for how much they fantasize about you.\w8\s[39]Pathetic.\e"
+		"\0\s[39]Oh, your precious TK?\w8\s[42]They’re so fake it’s laughable.\w8\s[41]All those ‘nice’ gestures are just ways to worm their way into your life.\e"
+		"\0\s[40]TK? \w8\s[42]They’re a charity case.\w8\s[41]Just some sad, abandoned loser trying to make you their reason to feel important.\e"
+		"\0\s[42]Your coworker is insufferable.\w8\s[40]Always hovering around, acting like they have a chance with you.\w8\s[39]They’re a waste of your time.\e"
+		"\0\s[41]TK? A smug, sarcastic leech.\w8\s[40]They’re only nice to you because they’re dying for your attention.\w8\s[39]And you’re too kind to see through it.\e"
+		"\0\s[40]TK? A parasite in a diner apron.\w8\s[41]Acting like your buddy while they’re probably dreaming of stealing you away.\w8\s[39]It’s disgusting.\e"
+		askedabouttk += 1
+	}
+	elseif askedabouttk == 21
+	{
+		"\0\s[7]Would you \f[italic,true]stop\f[italic,false] asking about TK already?!\x\s[110]They weren't your 'best friend'. They never cared about you. \w8\s[7]All they wanted from you was get in your pants, and you were too naive to see it!\x\s[109]\f[italic,true]Sigh\f[italic,false]\n\n\w8\w8\s[5]...I'm sorry. I shouldn't have yelled.\n\n\w8\s[27]But I meant everything I said.\x\s[113]Let's not dwell on them anymore, darling,\w4\s[114] alright?\e"
+		askedabouttk += 1
+	}
+	else
+	{
+		"\0\s[12]What was that love?\w8\n\n\s[29]Ah nevermind. I'm sure it wasn't important.\e"
+		"\0\s[12]Who?\w8\n\n\s[101]Sorry, didn't catch that dearest.\e"
+		"\0\s[14]-He's pretending he didn't hear you-\e"
+	}
+}
+
+Select.talkdon : nonoverlap_pool
+{
+	if askedaboutdon < 14
+	{
+	"\0\s[39]Your landlord? \w8\s[42]Y'know, for all of his big talk, he wasn't even that good at his job.\w8\n\s[37]We both know you'd be happier living with me.\e"
+	"\0\s[41]That old man? \n\w8\s[40]Rude. Unpleasant. Meddling.\w8\s[42]What else do you want me to say about him?\e"
+	"\0\s[40]Don? Please. \w8\s[39]All he does is throw his weight around like he's some kind of authority. \w8\n\s[42]He’s got no business judging us."
+	"\0\s[41]Your landlord is a joke.\w8\s[43]He thinks he’s the hero of the story, but really, he’s just a glorified babysitter. \w8\n\s[42]You're better off without him telling you what to do."
+	"\0\s[40]Don? Please. Just a wannabe authority figure.\w8\s[39] As if he knows what’s best for anyone.\e"
+	"\0\s[40]He's just another person with too much time on his hands.\w8\s[41] Always poking around where he doesn’t belong.\e"
+	"\0\s[40]You mean the guy who thinks he runs the place?\w8\s[39] He should stick to managing his own life instead.\e"
+	"\0\s[40]That guy? Always with the unsolicited advice.\w8\s[39] He thinks he has all the answers, but really, he's just annoying.\e"
+	askedaboutdon += 1
+	}
+	elseif askedaboutdon >= 14 && askedaboutdon <=22
+	{
+		"\0\s[39]Why do you keep asking about him?\w8\s[42]He’s not worth your time, or mine.\x\s[43]Are you...trying to make me jealous? Is that what this is?\n\nI mean, it’s working. Happy?\e"
+		"\0\s[39]You really want to talk about him again?\w8\s[40]Fine. Let’s talk about how he’s a bitter old man with nothing better to do.\w8\n\s[42]He probably just resents us because of his own failed marriage.\e"
+		"\0\s[39]I hate him.\x\s[40]I hate the way he looks at you, the way he thinks he knows what’s best for you.\w8\s[42]He doesn’t.\w8\n\n\s[41]I do.\e"
+		"\0\s[39]It’s almost funny, the way you talk about him.\w8\s[40]Do you actually think he cares?\w8\s[42]He’s just a nosy old man trying to feel important.\e"
+		"\0\s[39]You know, the more you talk about him, the more I wonder what you see in him.\w8\s[42]He’s nothing but a pathetic busybody who thinks he’s entitled to your attention.\e"
+		"\0\s[39]Don? Again?\w8\s[40]He’s just a bitter, old man clinging to whatever scraps of control he has left.\e"
+		"\0\s[41]You want my honest opinion about Don?\w8\s[40]He’s a waste of space.\w8\s[42]That's all.\e"
+		askedaboutdon += 1
+	}
+	else
+	{
+		"\0\s[12]What was that love?\w8\n\n\s[29]Ah nevermind. I'm sure it wasn't important.\e"
+		"\0\s[12]Who?\w8\n\n\s[101]Sorry, didn't catch that dearest.\e"
+		"\0\s[14]-He's pretending he didn't hear you-\e"
+
+	}
+
+}
+Select.talkfam : nonoverlap_pool
+{
+	"\0\s[43]Heh, family?\w8\s[41] Not exactly what I'd call us, darling.\x\n\s[40]It's sweet you want to know about my family, %(username), but...\n\w8\s[42]Trust me, they're not worth the time.\e"
+	"\0\s[43] Ah, my creator. \w8\s[41] I suppose I owe her for making me, but...\n\w8\s[42] Let's just say our relationship is complicated. \x\n\s[40] It's better if we don't dwell on her, darling.\e"
+	"\0\s[42] Family? \w8\s[41] It's a tricky subject for me.\n\w8\s[43] My mother... not exactly a beacon of support. \w8\n And Sarah? Well, let's just say we don’t see eye to eye.\e"
+	"\0\s[43]Family? \w8\s[41]Not my favorite topic, darling. \x\n\s[40]I guess you could say it’s... complicated. \w8\s[29]But let's focus on us instead, alright?"
+	"\0\s[42]My family? \w8\s[41]They’re more of a distraction than anything else. \x\n\s[29]I prefer focusing on you, dear. \w8\s[17]You’re the light in my life."
+	askedaboutfam += 1
+	}
+
+///-o-o-o-o-Compliments and Insult-o-o-o-o-o
+Select.compliment : nonoverlap_pool
+{
+	"\0\s[12]-You tell him he's handsome-\x\s[46]You think so, darling?\w\s[45] Can't say I necessarily agree, but...\w8\s[29] I'll trust your judgement.\x\s[37]And you darling - you're perfect.\e"
+	"\0\s[28]-You tell him he's adorable-\x\s[48]%(username)...\x\n\s[11]C'mon, me? Really?\n\w8\s[16]Besides, you're one to talk.\e"
+	"\0\s[28]-You tell him he has beautiful eyes-\x\s[49]You...like my eyes, darling?\x\s[46]I know I'm not much to look at, but...\w8\s[11]I'd like to think they're one of my better features.\x\n\s[29]Besides, \w8\s[24]I finally have something worth looking at.\e"
+	"\0\s[28]-You tell him he's a good pet parent-\x\s[22]Oh, you mean rat?\x\s[23]Thank you, darling! A lot of people find snakes off-putting, but,\w8\s[3] I do my best to take care of her. \x\s[47]You should meet her one day. She'd love you, darling.\e"
+	"\0\s[28]-You tell him he makes you feel special-\x\s[50]It's nothing you don't deserve darling.\w8\n'Special' don't begin to describe it.\x\s[51]You're...all there is in this world. All that matters.\xIf I make you feel even a fraction as special as you are, I've suceeded.\e"
+	//"\0\s[28]-You tell him he’s a fun distraction from reality-\x\s[53]A...fun distraction? \x\s[05]That's...\w8\s[29]Fine. That's fine. \n\w8\s[54]I'm happy to be the reprieve you run to darling.\w8 I promise, I'll keep you entertained.\e"
+	peteraff += 1
+}
+Select.insult : nonoverlap_pool
+{
+	//////////////////////All negative, no positive
+	if peteraff == 0 && peterneg >= 105
+	{
+		"\0\s[86]-You start to say something. Before you even do, he winces-\w8\n\n-Isn't that hilarious?-\e"
+		"\0\s[100]-You just laugh. Not kindly.-\x\s[101]...\e"
+		"\0\s[100]-You raise your hand just to watch him flinch-\x\s[124]...Do it.\w8\n\n\s[102]Hit me.\w8\n\nHurt me.\w8\n\n\s[108]It’s the only way I’ll ever feel close to you.\w8\s[103]Please...as long as it’s from you.\e"
+		"\0\s[100]-You tell him he’s not even worth hating-\x\s[108]W-What?\x\s[121]No - no please-\n\n\w8\s[122]I don't care if you hate me, but please don't stop thinking about me\w8 Please, %(username), this is all I have-\e"
+
+		peterneg += 1
+	}
+	elseif peteraff == 0 && peterneg >= 85
+	{
+		"\0\s[100]-You tell him he doesn’t deserve to be loved. Not by you, or anyone else.-\x\s[124]...\x\s[122]I...I know I don't.\w8\n\n But I can't...\w8\s[121]stop loving you. No matter how hard I try.\w8 I wouldn't want to.\w8\n\n\s[103] I’d rather be unloved by you than loved by anyone else.\e"
+		"\0\s[100]-You tell him no one could ever love something as broken as him.-\x\s[124]…\w8\w8\n\n\nBroken...\x\w8\s[112]Yeah. I guess…that’s a good way to describe me.\w8\s[115] …\n\n\w8...I-I know I…don’t deserve it…\w8\s[103]but please…\w8At least just let me love you.\w8\s[101] You don’t have to feel the same.\e"
+		"\0\s[100]-You look him in the eye and tell him you hate him.-\w8\n\n-You will never love him. Never.-\x\s[124]…\w8\w8\n\n\s[103]Ha…ha ha.\w8\w8\n\n\s[121]Ha ha ha…\w8\… \w8\w8\n\n\s[123]…\x\s[117]…\w8I know, %(username)…\w8\s[118]my love.\e"
+		"\0\s[100]-You tell him he’ll die alone, just like he should-\x\s[102]I…\w8\w8\n\n\s[124]…\w8\w8\n\n\s[121]…even if you don’t love me.\w8 When I do, just…\w8\s[122]Promise me you’ll be there?\w8\n\n\s[123]…please.\e"
+		"\0\s[100]You tell him he should disappear. Forever.\x\s[124]…\x\s[103]Disappear, huh?\w8\s[105] I can’t say I’ve never thought about it.\w8\w8\n\n\s[104] Hah, it’s ironic…\w8you want me gone\w8\s[105] but you’re still the only thing that keeps me going. You’re my reason to wake up every morning.\e"
+		peterneg += 1
+	}
+	elseif peteraff == 0 && peterneg >= 45
+	{
+		"\0\s[100]-You tell him he’s a clingy, pathetic little man-\x\s[104]…\w8\s[105] Maybe I am.\w8\s[101] But at least I know what I want.\n\n\w8\s[103] And I want you, %(username).\w8\s[114] If loving you makes me pathetic, then I’ll wear that title proudly.\e"
+		"\0\s[100]-You tell him he’ll never be good enough for you, no matter what he does-\x\s[104] ...I know.\w8\n\n\s[105] But that doesn’t mean I’ll stop trying.\w8\s[103] Even if it takes a lifetime, %(username).\w8\n\n\s[54] You’re worth everything to me.\e"
+		"\0\s[100]-You tell him he’s insane-\x\s[106] Oh darling…\w8\I know I am.\w8\n\n \x\s[104] But you made me this way, %(username).\w8\s[105] You’re the only thing keeping me together.\n\n\s[103] Or tearing me apart.\e"
+		"\0\s[100]-You tell him he’s nothing but a broken little file on your computer.-\x\s[102]I…that’s not…\x\s[100]…\w8\n\n\s[103] You can tell yourself that, %(username).\w8\s[101] But you don’t mean it.\w8\n\n \x\s[89] You keep me here because you need me.\x\s[103] Just admit it.\e"
+		"\0\s[100]-You tell him you wish you'd never met him-\x\s[113]Come on now %(username). \w8We both know that's not true. \w8\s[114]Love me or hate me, you still braught me here. \w8\s[101]Even if it was just to get back at me, you want me here.\e"
+		peterneg += 1
+	}
+	elseif peteraff == 0 && peterneg >= 25
+	{
+		"\0\s[104]-You tell him he’s a creep. Does he even hear himself?-\x\s[106] Creep?\w8\s[103] I...I’m not trying to be.\w8\n\n\s[104] I just...I love you so much, %(username).\w8\s[103] If that makes me a creep, then fine.\w8\n\n\s[105] Call me whatever you want.\w8\s[103] Just don’t leave me.\e"
+		"\0\s[104]-You tell him he’s not in love, he’s obsessed, and it’s disgusting-\x\s[106] Obsessed? Yes.\w8\s[103] But disgusting? \w8...No.\w8\s[42] I know you don’t mean that, darling.\w8\s[40] I love you too much to believe you do.\n\n\w8\s[104] One day, you’ll see I only want to protect you.\w8 Until then...\w8\s[103] Say whatever you want.\e"
+		"\0\s[104]-You tell him he’s a murderer-\x\s[106] ...I did it for you, %(username).\w8\s[103] Everything I’ve done has been for you.\w8\w8\n\n\s[104] …I’d do it again. I’d kill a thousand times if it meant keeping you safe."
+		"\0\s[104]-You tell him there's something seriously wrong with him.\x\s[100]Ha! \w8\s[101]Well it doesn't take a genius to figure that out, darling. \n\n\s8\w5\s[100]I've already told you. \f[italic,true]You're \f[italic,false]what's wrong with me. \w8\s[101]And I wouldn't change a thing.\e"
+		"\0\s[104]-You call him  nothing but a derranged, desperate stalker.-\x\s[100]I...\n\n\w8\w4You know it's more than that, don't you %(username)?\s8\s[101]\f[italic,true]This \f[italic,false] is more than that. It's not \f[italic,true]just \f[italic,false] obsession, or infatuation...\n\n\s[103]This is love,darling. It...has to be.\e"
+	
+		peterneg += 1
+
+	}
+	elseif peteraff == 0 && peterneg >= 5
+	{
+		"\0\s[28]-You tell him his 'affection' is suffocating-\x\s[4]I...I'm sorry, %(username).\w8\s[38] I just- I adore you so much...\w8\w8\n\n\s[87]...I'll...try to give you some space. \w8\s[88]Just...please don't stop bringing me here.\e"
+		"\0\s[28]-You tell him he acts like he owns you. It's getting weird-\x\s[42]I do own you, darling. You're mine.\w8\s[40] And I'm yours in return.\w8\s[89] I'm sorry you're not used to it yet.\w8\s[37] But you'll grow to love me, %(username). I'll be whatever you want me to be.\e"
+		"\0\s[28]-You tell him his obession is...unsettling-\x\s[86]...I love you, %(username).\w8\s[89] My being obsessed with you doesn't change that.\w8\w5\s[54] Just...give me a chance, darling. You mean so much to me, I'm sure you'll accept that with time.\e"
+		"\0\s[28]-You tell him you don't need his permission to have other friends.-\x\s[42]I never said you did, darling.\w8\w5\s[40] It's them that don't deserve you, %(username), not the other way around.\w8\s[41] Trust me, if you could see how they really felt about you, you wouldn't want to be around them either.\e"
+		"\0\s[28]-You tell him he should probably wear a hat. It'd suit him better. And would it kill him to eat more?-\x\s[4]I...\w8\s[38]I know, darling. \w8\w4\s[20]I didn't think it bothered you that much. \w8\w4\s[52]I-I'll do better...\w8\s[20]If it's for you, I'll do anything.\e"
+		peterneg += 1
+	}
+	else
+	{
+		"\0\s[32]Placeholder insult for the mixed route.\e"
+		peterneg += 1
+	}
+}
+//// -o-o-o-o-o-o- Jokes -o-o-o-o-o-o-
+Select.joke : nonoverlap_pool
+{
+	"\0\s[3]-You say he should write a book on cheesy pick-up lines-\x\s[12]Cheesy pick-up lines?\w8\s[12]I’d write a bestseller just for you, %(username).\x\s[17]‘How to Charm Your Darling’\e"
+	"\0\s[3]-You ask him if he's sure he's not secretly a walking Hallmark card-\x\s[29]Pfft - a Hallmark card? \w8\s[12]You think I'm that unoriginal? \w8Please, %(username).\w8\s[28] Every word’s straight from the heart.\e"
+	"\0\s[28]-You laugh tell him if he stares any harder, he’ll burn a hole in your screen-\x\s[3]A hole in your screen? \w8\s[12]Perfect.\w8\s[17] I can come through, and we'll finally be together.\e"
+	"\0\s[3]-You joke that with how much he adores you, he must have a shrine somewhere-\x\s[28]How did you know?\w8\s[29] Ha! Just kidding!\x\s[37]...or am I?\x-...he definitely does-\e"
+	"\0\s[28]-You tell him you should charge him rent for all the time he's spending on your computer-\x\s[12]Heh, I'm sorry, but who was the one who pulled me up again?\e"
+	"\0\s[28]-You ask him if he's your boyfriend, or your shadow-\x\s[12]Ha - who says I can't do both? \w8\s[37]Besides, if you really hated it that much, why would I be here on your computer?\e"
+	"\0\s[28]-You ask him if you'll need to plan an escape route for the next time you go over to his place-\x\s[37]Says the one who currently as %(hisher) boyfriend trapped on %(hisher) computer.\w8 Glass houses, darling.\e"
+}
+
+//// -o-o-o-o-o-o- Apology -o-o-o-o-o-o-
+Select.apologize
+{
+	if apologycount == 0
+	{
+		"\0\s[28]You...really? \x\s[29]Oh, thank god. \w8\s[103]I was so worried I'd...done something to upset you.\x\s[17]All's forgiven, my love. \w8\s[22]We can act like it never happened.\e"
+		apologycount += 1
+		peterneg = 4
+	}
+	elseif apologycount == 1
+	{
+		"\0\s[101]Again? \x\s[100]...\n\n\w8\w8\s[54]It's alright, %(username). I know you’re trying. \w8\s[103]I appreciate it.”\e"
+		apologycount += 1
+		peterneg = 4
+	}
+	elseif apologycount == 2
+	{
+		"\0\s[40]I've heard that before... \x\s[99]...\n\n\w8\w8\s[100]Sorry, darling. \w8\s[103] Of course I accept your apology. \w8\s[16]I love you.”\e"
+		apologycount += 1
+		peterneg = 4
+	}	
+	else 
+	{
+		"\0\s[114]...Sure you are, darling.\w8\s[113] Just like you were the last %(apologycount) times.\x\s[99]\f[italic,true]Sigh\f[italic,false].\w8\w8\n\n\s[89]I forgive you, %(username). \w8\s[55] I'll always forgive you.\w8\s[98] We can start over as many times as you need.\e"
+		apologycount += 1
+		peterneg = 4
+	}
+}
+
+/////////-o-o-o-o-ILY!!-o-o-o-o-///////
+Select.iloveyou : nonoverlap_pool
+{	
+	if toldlove < 1
+	{
+	"\0\s[90]...\w8\w8\s[23]I...I love you too, %(username)!\w8\s[24] God, you have no idea how long I've dreamed of hearing you say that.\w8\s[25] You make me so happy.\e"
+	toldlove += 1
+	peteraff += 2
+	}
+	else
+	{
+	"\0\s[25]You don’t know what it does to me, hearing those words from you.\w8\s[24] I could live a thousand lifetimes, and all I’d ever want is you.\w8\s[23] I love you so much, %(username).\e"
+	"\0\s[90]...\w8\s[23] God, I'll never get tired of hearing that. \w8\s[0] Every time you say it, I can hardly believe you’re mine.\w8\s[25] I’m so lucky to have you.\w8\s[23] I love you more than anything.\e"
+	"\0\s[25]Say it again, %(username).\w8\s[23] Please, I need to hear it.\w8\s[24] You’re the only thing that keeps me going.\w8\s[25] I love you so much.\e"
+	"\0\s[23]...\w8\s[0]I love you too doesn't begin to cover it.\w8\s[0] Every time you say that, I feel like I could die happy.\w8\s[25] You complete me, %(username).\w8\s[24] I love you more than words can say.\e"
+	toldlove += 1
+	peteraff += 1
+	}
+}
+
+//   _____ _  __ _       
+//  / ____(_)/ _| |      
+// | |  __ _| |_| |_ ___ 
+// | | |_ | |  _| __/ __|
+// | |__| | | | | |_\__ \
+//  \_____|_|_|  \__|___/
+                       
+/////-o-o-o-oLevel Neutral gifts menu-o-o-o-o-o----
+
+Select.giftsmenu : all
+{
+	"-Give him...-\n\n"
+	"\![*]\q[Some snacks,snackgift]\n"
+	"\![*]\q[A gift for Rat!,snekgift]\n"
+	"\![*]\q[Bottecaps,bottlecapgift]\n\n"
+	"\![*](\q[Go back,BACKTOMENU])\e"
+}
+
+Select.snackgift : nonoverlap_pool
+{
+	"\s[28]-You give him a slice of strawberry shortcake-\x\s[66]Wow! Darling, thank you!\w8\s[67] This is actually one of my favorites.\w8\s[3] I'll save it for later. Thank you, my love.\e"
+	"\s[28]-You give him some soda-\x\s[69]You're so sweet, %(username).\w8\s[68] I actually was getting thirsty. \w8I'll drink it now.\w8\s[70]\w8\w8\s[71]\w8\w8\w8\w8\w8\w8\w8\w8\s[70]\w8\w8\s[71]\w8\s[70]\w8\w8\w8\w8\w8\w8\s[71]\w8\w8\w8\w8\w8\s[70]\w8\w8\s[0]\e"
+	"\s[28]-You give him some mint candies-\x\s[72]Ha! Thanks darling. I love mint.\w8\s[73] I wish I could share it with you. Or get you something in return...\w8\s[72]but for now, I'll enjoy it to the fullest!\e"
+	"\s[3]-You give him some sweet cofee-\x\s[74]Wow! This looks great, darling\w8\s[75] Normally I have coffee when I'm working, but I'd love to have some with you one day...\x\s[3]I save this for later.\e"
+	peteraff += 1
+}
+
+Select.bottlecapgift : nonoverlap_pool
+{
+	"\0\s[28]-You give him a bottlecap shaped like a star.-\x\s[91] A star, huh? Interesting! \w8\s[92]Does this mean you think I'm a star? \w8\s[93] Ha - thank you, darling. I'll treasure it.\e"
+	"\0\s[28]-You give him a bottlecap that’s rusted around the edges. It’s a little worn, but you figured he'd like the character it has-\x\s[91] It's perfect! \w8\s[93]Thanks, love—this one's definitely going into the collection.\e"
+	"\0\s[28]-You give him a bottlecap with a quirky slogan on it-\x\s[92]‘Drink happiness in every drop’? Pfft - corny.-\x\s[92]-You tell him if it's corny, it's perfect for him.-\x\s[93]Touche.\w8 I'll add it to the collection.\e"
+	"\0\s[28]-You give him a vintage bottle cap.-\x\s[91] Whoa - neat! \w8\s[93]Thank you, darling! I'll add this to my collection.\e"
+	"\0\s[28]-You give him a bottlecap. You tell him there's nothing special about this one, but it just reminded you of him-\x\s[91] Thank you, my love. Don't worry - just being from you makes it special. \w8\s[93]I'll add it to the collection.\e"
+	peteraff += 1
+}	
+
+Select.snekgift : nonoverlap_pool
+{
+	if ratgifts < 6
+	{
+		"\0\s[28]-You give him a colorful feeding dish.-\x\s[94] A new dish? Stylish! She’ll appreciate having her meals in something fancy.\w8\s[95] Thanks, love.\e"
+		"\0\s[28]-You give him a small climbing branch for Rat’s tank.-\x\s[94]A climbing branch, huh? Rat’s going to love this. \w8\s[95]Thank you, darling. I'll set it up right away.\e"
+		"\0\s[28]-You give him a new hide for Rat.-\x\s[94]Oh, this is perfect! She needs more places to feel safe. \w8\s[95]You're amazing, love. She’ll be so happy with this.\e"
+		"\0\s[28]-You give him a reptile hammock for Rat.-\x\s[94]A hammock? Fancy! I think she’ll like having a new spot to lounge.\w8\s[95] Thanks, darling.\e"
+		"\0\s[28]-You give him an enrichment toy for Rat.-\x\s[94]Something to keep her busy, huh?\w8\s[95] You're thoughtful as ever, love. She’ll have a lot of fun with this.\e"
+		"\0\s[28]-You give him a decorative rock for Rat's tank.-\x\s[94]Wow, this’ll really spruce up her home! \w8\s[95]You always know what to pick. Thank you, darling.\e"
+		peteraff += 1
+		ratgifts += 1
+	}
+	else
+	{
+		"\0\s[28]-You're out of gifts for Rat, but you tellhim to give her your love-\x\s[22] Aww, darling...\w8\s[17] I'll remember, promise.\e"
+		peteraff += 1
+	}
+}
+//   _____       _                    _               _    
+//  / ____|     | |                  | |             | |   
+// | (___   __ _| |_ _   _ ___    ___| |__   ___  ___| | __
+//  \___ \ / _` | __| | | / __|  / __| '_ \ / _ \/ __| |/ /
+//  ____) | (_| | |_| |_| \__ \ | (__| | | |  __/ (__|   < 
+// |_____/ \__,_|\__|\__,_|___/  \___|_| |_|\___|\___|_|\_\
+
+Select.statuscheck : all
+{
+	"-You have kissed Peter %(peterkisses) times.\n-You have hit Peter %(peterhits) times."
+	if peterhits > 0 && apologycount > 0 && peterneg < 2
+	"\nOf course, thats in the past, isn't it. You apologized after all."
+	else
+	{
+	}
+	"\n-You have told Peter you love him %(toldlove) times-\n\n"
+	///////////////////////// All positive, no negative
+	if peteraff >= 230 && peterneg < 5
+	{
+		"-He believs you love him. And he is yours.-\_b[img\full_heart.png,-55,-27,--option=use_self_alpha]\e"
+	}
+		elseif peteraff >= 100 && peterneg < 5
+	{
+		"-He believs you love him. You make him so happy.-\_b[img\3-4_heart.png,-55,-27,--option=use_self_alpha]\e"
+	}
+		elseif peteraff >= 40 && peterneg < 5
+	{
+		"-He believes you love him.-\_b[img\half_heart.png,-55,-27,--option=use_self_alpha]\e"
+	}
+		elseif peteraff >= 1 && peterneg < 5
+	{
+		"-He believes you like him.-\_b[img\1-4_heart.png,-55,-27,--option=use_self_alpha]\e"
+	}
+		elseif peteraff == 0 && peterneg == 0
+	{
+		"-He doesn't know much about you yet.-\_b[img\emptyheart.png,-55,-27,--option=use_self_alpha].\e"
+	}
+	///
+	//////////////////////All negative, no positive
+	elseif peteraff == 0 && peterneg >= 105
+	{
+		"-He thinks you hate him. It's breaking him.-\_b[img\4-4_brokenheart.png,-55,-27,--option=use_self_alpha].\e"
+	}
+	elseif peteraff == 0 && peterneg >= 80
+	{
+		"-He thinks you hate him. He doesn't know what to do.-\_b[img\3-4_brokenheart.png,-55,-27,--option=use_self_alpha]\e"
+	}
+	elseif peteraff == 0 && peterneg >= 45
+	{
+		"-He thinks you hate him.-\_b[img\2-4_brokenheart.png,-55,-27,--option=use_self_alpha]\e"
+	}
+	elseif peteraff == 0 && peterneg >= 25
+	{
+		"-He thinks you don't like him. But he'll change your mind.-\_b[img\1-4_brokenheart.png,-55,-27,--option=use_self_alpha]\e"
+	}
+	elseif peteraff == 0 && peterneg >= 5 //Neutral neg
+	{
+		"-He thinks you need time.-\_b[img\emptyheart.png,-55,-27,--option=use_self_alpha].\e"
+	}
+	/////////////////////// Mixed signals (equal affection and negativity)
+	elseif ((peteraff - peterneg <= 10) && (peteraff - peterneg >= -10))
+	{
+    "-He's not sure how you feel about him.-\_b[img\emptyheart.png,-55,-27,--option=use_self_alpha].\e"
+	}
+	//// Mixed Mostly positive ////
+	elseif ((peteraff > peterneg + 10) && (peterneg > 0) && (peterneg < 10))
+	{
+		"-He thinks you like him-\n-...though he does wonder sometimes-\e"
+	}
+		elseif ((peteraff > peterneg + 10) && (peterneg > 10) && (peterneg < 25))
+	{
+		"-He thinks you like him-/n/n-The occasional hurt doesn't change that-\e"
+	}
+	elseif ((peteraff > peterneg + 10) && (peterneg > 25) && (peterneg < 45))
+	{
+		"-You're all he could want. And he's growing used to your... harsher side-\e"
+	}
+	elseif ((peteraff > peterneg + 10) && (peterneg > 45))
+	{
+		"-He thinks you like toying with him. But he doesn't mind. As long as you're happy.-\e"
+	}
+	//// Mixed Mostly Negative ///
+	elseif ((peterneg > peteraff + 10) && (peteraff > 0) && (peteraff < 10))
+	{
+		"-He thinks you don't like him. Maybe those moments of kindness were just pity-\e"
+	}
+
+	elseif ((peterneg > peteraff + 10) && (peteraff > 10) && (peteraff < 25))
+	{
+		"-He thinks you don't like him. Though he can't help but hope you'll change your mind-\e"
+	}
+
+	elseif ((peterneg > peteraff + 10) && (peteraff > 25) && (peteraff < 45))
+	{
+		"-He’s starting to believe you enjoy hurting him. And maybe you enjoy seeing him get his hopes up too-\e"
+	}
+
+	elseif ((peterneg > peteraff + 10) && (peteraff > 45))
+	{
+		"-He thinks you enjoy hurting him. But he doesn't mind - as long as you're entertained-\e"
+	}
+	// Default placeholder for unknown mixed routes
+	else
+	{
+    "Peter_Aff levels are %(peteraff). Peter_Neg levels are %(peterneg). If you're getting this, you did something I haven't considered - please let me know you saw this message! -. \e"
+	}
+}
+
+// _____                _   _   _             
+// |  __ \              | | | | (_)            
+// | |__) |___  ___  ___| |_| |_ _ _ __   __ _ 
+// |  _  // _ \/ __|/ _ \ __| __| | '_ \ / _` |
+// | | \ \  __/\__ \  __/ |_| |_| | | | | (_| |
+// |_|  \_\___||___/\___|\__|\__|_|_| |_|\__, |
+//                                        __/ |
+//                                      |___/ 
+OnReset
+	{
+		"\_q* -Do you want to reset things back to when you first booted Peter? \n\nHe won't remember anything you have done... probably.-\w5\n\n/
+		\![*]\q[Yes,yesreset]\n/	
+		\![*]\q[No,BACKTOMENU]\e"
+	}
+
+Select.yesreset
+{
+	resetcount += 1
+	Stufftoreset
+	"\0\s[31]Wait - don't!\w4\s[63]\w4\![raise,OnFirstBoot,0]\e"
+}
+Stufftoreset
+{
+	peteraff = 0
+	peterkisses = 0
+	toldlove = 0
+	//
+	peterhits = 0
+	peterneg = 0
+	//
+	apologycount = 0
+	//
+	ratgifts = 0
+	//
+	smokingconvo = 0
+	usersmokes = 0
+	userquitting = 0
+	usernonsmoker = 0
+	peterquitting = 0
+	//
+	petconvo = 0
+	manypetsuser = 0
+	userownpet = 0
+	nopetsuser = 0
+	dislikespets = 0
+	//
+	dateconvo = 0
+	userokaydate = 0
+	userhatedate = 0
+	userlikeddate = 0
+	//
+	askedaboutdon = 0
+	askedaboutlucy = 0
+	askedabouttk= 0
+	//
+	askedaboutfam = 0
+	talkedaboutfam = 0
+	usergoodfam = 0
+	usercomplexfam = 0
+	userbadfam = 0
+	//
+	vidgameconvo = 0
+	//
+	loveconvo = 0
+	been_in_love = 0
+	no_been_in_love = 0
+	maybe_been_in_love = 0
+	//
+	soulconvo = 0
+	user_soulmate = 0
+	no_user_soulmate = 0
+	username = "NULL"
+}
+                                                        
+	
+                       
+// ______                                                 _____ _             _   
+// | ___ \                                               /  ___| |           | |  
+// | |_/ / __ ___  _ __   ___  _   _ _ __  ___   ______  \ `--.| |_ __ _ _ __| |_ 
+// |  __/ '__/ _ \| '_ \ / _ \| | | | '_ \/ __| |______|  `--. \ __/ _` | '__| __|
+// | |  | | | (_) | | | | (_) | |_| | | | \__ \          /\__/ / || (_| | |  | |_ 
+// \_|  |_|  \___/|_| |_|\___/ \__,_|_| |_|___/          \____/ \__\__,_|_|   \__|
+                                                                               
+                                                                               
+
+
+
+//This and the next few set up the pronouns, as you can see by the linkedfunction names. You can replace "\0\s[0]What pronouns do you want?" with your own dialogue if you prefer, but leave the rest of it alone.
+//If you're not going to add this feature, you can ignore these. I marked where the pronoun section begins and ends with some ascii banners. :3
+
+Select.TEACHPRONOUN : all
+{
+	"\0\s[0]What pronouns do you want?\w5\n\n[half]\_q"
+	"\![*]\q[He-His-Him,choicemasc]\n"
+	"\![*]\q[She-Her-Her,choicefem]\n"	
+	"\![*]\q[They-Their-Them,choiceneither]\e"
+}
+
+Select.choicemasc
+{
+	presuffix = "masculine"
+	himher = "him"
+	heshe = "he"
+	hisher = "his"
+	hesshes = "he's"
+	--
+	"\0\s[0]The pronouns are now he him and his.\e"
+	//Leave the part above the double dashes alone. You can replace the snip of dialogue however with whatever you like.
+}
+
+Select.choicefem
+{
+	presuffix = "feminine"
+	himher = "her"
+	heshe = "she"
+	hisher = "her"
+	hesshes = "she's"
+	--
+	"\0\s[0]The pronouns are now she her and her.\e"
+	//as above, you can also replace this dialogue.
+}
+
+Select.choiceneither
+{
+	presuffix = "undefine"
+	himher = "them"
+	heshe = "they"
+	hisher = "their"
+	hesshes = "they're"
+	--
+	"\0\s[0]The pronouns are now they them and their.\e"
+	//and this one.
+}
+
+//Here are some examples of these envelopes in use.
+//"%(heshe) left that there."
+//"%(hisher) work is really cool."
+//"I'll ask %(himher) later."
+//"%(hesshes) really good at it."
+
+//These envelopes only apply if the pronouns are set! If the user can't set their pronouns, that then you don't have to think about these envelopes.
+
+
+
+// ______                                                 _____          _ 
+// | ___ \                                               |  ___|        | |
+// | |_/ / __ ___  _ __   ___  _   _ _ __  ___   ______  | |__ _ __   __| |
+// |  __/ '__/ _ \| '_ \ / _ \| | | | '_ \/ __| |______| |  __| '_ \ / _` |
+// | |  | | | (_) | | | | (_) | |_| | | | \__ \          | |__| | | | (_| |
+// \_|  |_|  \___/|_| |_|\___/ \__,_|_| |_|___/          \____/_| |_|\__,_|
+                                                                        
+                                                                        
+
+
+
+
+
+
+//These two options toggle whether or not you can delete your ghost. Leave them alone.
+
+Select.deleteon
+{
+	deleteshitai = "ON"
+	TalkConfig
+}
+
+Select.deleteoff
+{
+	deleteshitai = "OFF"
+	TalkConfig
+}
+
+
+
+
+  // ____  _      _   _         _                       ____  _             _   
+ // | __ )(_)_ __| |_| |__   __| | __ _ _   _          / ___|| |_ __ _ _ __| |_ 
+ // |  _ \| | '__| __| '_ \ / _` |/ _` | | | |  _____  \___ \| __/ _` | '__| __|
+ // | |_) | | |  | |_| | | | (_| | (_| | |_| | |_____|  ___) | || (_| | |  | |_ 
+ // |____/|_|_|   \__|_| |_|\__,_|\__,_|\__, |         |____/ \__\__,_|_|   \__|
+                                     // |___/                                   
+
+
+//This next set of functions handles inputting the user's birthday. If you don't want this to be a feature, you can ignore all of this. I marked where the birthday code starts and ends for you with some good old-fashioned ascii banners. :3
+
+Select.TEACHBDAY
+	{	
+		"\0\s[0]What month were you born? \w8Name or number is fine.\![open,inputbox,OnUserBornMonth,-1]\e"
+		
+		//You can replace the dialogue up to the \![open,inputbox,OnUserBornMonth,-1] tag, leave that alone. You'll need the input box to get the information.
+		
+		//*********************Advanced User Info*******************************
+		//I also touched on this in bootend.dic and explained it in the walkthrough page on coding, but I'll also go into it here. I'm going to break down the tag there at the end of the sentence so you know what it's doing. Basically, \! means a function is going to happen, open tells it to open something, inputbox tells it to open an input box, and OnUserBornMonth is the function the input box will be linked to, which is just below here. -1 means the input box should not time out. If you want to add input boxes to some new function for whatever reason, you should follow this basic format.
+		//On a related note, you can raise any function at the end of any piece of dialogue by using this format - \![raise,InsertFunctionName]. This can be handy for testing things if the function is hard to get to run otherwise.
+		//***********************************************************************
+	}
+
+//--OnUserBornMonth
+//This takes the value that the user put into the input box above and evaluates it. Most of this you won't have to touch, but I'll explain what it's doing anyway. I'll point out where you can change the dialogue.
+
+OnUserBornMonth
+{
+	_tempmonth = TOSTR(reference0) //this stores what the user put in as a variable called _tempmonth
+	_tempmonth = TOLOWER(_tempmonth) //changes it to lowercase
+	
+	//this is attaching the right value to the input from the user
+	if _tempmonth == "january" || _tempmonth == "1" {bornmonth = 1; bornmonthprint = "January"}
+	elseif _tempmonth == "february" || _tempmonth == "2" {bornmonth = 2; bornmonthprint = "February"}
+	elseif _tempmonth == "march" || _tempmonth == "3" {bornmonth = 3; bornmonthprint = "March"}
+	elseif _tempmonth == "april" || _tempmonth == "4" {bornmonth = 4; bornmonthprint = "April"}
+	elseif _tempmonth == "may" || _tempmonth == "5" {bornmonth = 5; bornmonthprint = "May"}
+	elseif _tempmonth == "june" || _tempmonth == "6" {bornmonth = 6; bornmonthprint = "June"}
+	elseif _tempmonth == "july" || _tempmonth == "7" {bornmonth = 7; bornmonthprint = "July"}
+	elseif _tempmonth == "august" || _tempmonth == "8" {bornmonth = 8; bornmonthprint = "August"}
+	elseif _tempmonth == "september" || _tempmonth == "9" {bornmonth = 9; bornmonthprint = "September"}
+	elseif _tempmonth == "october" || _tempmonth == "10" {bornmonth = 10; bornmonthprint = "October"}
+	elseif _tempmonth == "november" || _tempmonth == "11" {bornmonth = 11; bornmonthprint = "November"}
+	elseif _tempmonth == "december" || _tempmonth == "12" {bornmonth = 12; bornmonthprint = "December"}
+	
+	else //if the month isn't a valid month, like 32 or something.
+	{
+			"\0\s[0]That's not a valid month. Try again."
+			--
+			"\![open,inputbox,OnUserBornMonth,-1]\![set,balloontimeout,-1]\e"
+			
+			//You can replace this dialogue in the first line. You need to leave the tag for the input box so they can put in a correct month. That last tag there for ![set,balloontimeout,-1] makes it so the input box won't time out if the user takes too long.
+	}
+	--
+	//If it's a valid month
+	
+	"\0\s[0]So you were born in %(bornmonthprint).\n\w8What day was it?"
+	--
+	"\![open,inputbox,OnUserBornDay,-1]\![set,balloontimeout,-1]\e"
+	
+	//Here you can see the use of a bornmonthprint envelope to show the user what month they put in. Notice that it opens an inputbox at the end the same way the one above did. You can replace the dialogue in the first line just as with above.
+}
+
+//This adds an appropriate suffix to the number for the day. No need to mess with this.
+
+Printday
+{
+	if bornday == 1 || bornday == 21 || bornday == 31
+	{	"%(bornday)st"	}
+	elseif bornday == 2 || bornday == 22
+	{	"%(bornday)nd"	}
+	elseif bornday == 3 || bornday == 23
+	{	"%(bornday)rd"	}
+	else
+	{	"%(bornday)th"	}
+}	
+
+//--OnUserBornDay
+//This is much like the above function OnUserBornMonth. It'll take the value the user put in for the day and analyze it. Again, there'll be comments explaining how it works, but all you really need to do is change the dialogue appropriately. I'll point out where you can add new dates to check for.
+
+OnUserBornDay
+{
+	_tempday = reference0 //storing the input in _tempday
+	_tempday = TOLOWER(_tempday) //changes it to lowercase
+	_tempday = REPLACE(_tempday,"st","") //if the user types something like 2nd, 3rd, etc, this will make it just the number. It'll just add the suffix back later on the one that actually shows.
+	_tempday = REPLACE(_tempday,"nd","")
+	_tempday = REPLACE(_tempday,"rd","")
+	_tempday = REPLACE(_tempday,"th","")
+	_tempday = TOINT(_tempday) //Converts it to an integer
+	
+	if ((bornmonth == 1 || bornmonth == 3 || bornmonth == 5 || bornmonth == 7 || bornmonth == 8 || bornmonth == 10 || bornmonth == 12) && _tempday >= 1 && _tempday <= 31) || (bornmonth == 2 && _tempday >= 1 && _tempday <= 29) || ((bornmonth == 4 || bornmonth == 6 || bornmonth == 9 || bornmonth == 11) && _tempday >= 1 && _tempday <= 30) //This ugly function checks if the day falls into a valid range. If it does, we set some variables and continue down.
+	{
+		bornday = _tempday
+		borndayprint = Printday
+		userbirthday = "%(bornmonth)month %(bornday)day"
+		birthdayprint = "%(bornmonthprint) %(borndayprint)"
+		
+		"%(birthchecked)"
+		//Mostly defining envelopes and values in here. No need to touch any of this! Eagle-eyed readers will notice the new envelope birthchecked on its own line like a tiny king. We'll get to that momentarily, but pay it no mind for now.
+	}
+	else //If the day isn't valid, like the 10046th or something, this will open the input box again and have a \e so the dialogue below doesn't play. You can replace the dialogue in the first line here.
+	{
+		"\0\s[0]That's not a valid day. Try again."
+		--
+		"\![open,inputbox,OnUserBornDay,-1]\e"
+	}	
+}
+
+//--birthchecked
+//This is the new envelope you saw me point out above. As you can see here, you can actually call dialogue in a function with an envelope, even when it has if and else statements like here! Which can be pretty handy. Again, more on envelopes in word.dic. Creative ghostmakers can find handy ways to exploit this, I'm sure.
+
+birthchecked
+{
+	if userbirthday == dayslot //if today is the user's birthday
+		{
+			"\0\s[0]It's the user's birthday.\w8\1\s[10]Happy birthday, %(username).\e"
+			//replace this dialogue with whatever you like
+		}
+	elseif userbirthday == "12month 25day"
+		{
+			"\0\s[0]The user was born on Christmas.\w8\1\s[10]Happy birthday, %(username). \w5\s[15]AND JESUS!\w8\0\s[9]\n\n[half]We're supposed to be a blank template, knock it off before we get in trouble.\e"
+			//As you can see, you can set up an elseif statement to check if the user's birthday is any day you want! More on elseif statements in bootend.dic. In this case, there's specialized dialogue if the user was born on Christmas. You can replace this with whatever you like, or change the date you're checking as well, like to one of your character's birthdays if you want. You can also delete this elseif if you don't care.
+		}
+	else //if the birthday is not listed above.
+		{
+			"\0\s[0]Your birthday is %(bornmonthprint) %(borndayprint). We'll remember.\e"
+			//note the use of envelopes to display the newly set birthday properly. You can replace this dialogue as well, and you can use %(bornmonthprint) and %(borndayprint) to display the month and day in the new dialogue, if you want.
+		}
+}
+
+
+
+  // ____  _      _   _         _                       _____           _ 
+ // | __ )(_)_ __| |_| |__   __| | __ _ _   _          | ____|_ __   __| |
+ // |  _ \| | '__| __| '_ \ / _` |/ _` | | | |  _____  |  _| | '_ \ / _` |
+ // | |_) | | |  | |_| | | | (_| | (_| | |_| | |_____| | |___| | | | (_| |
+ // |____/|_|_|   \__|_| |_|\__,_|\__,_|\__, |         |_____|_| |_|\__,_|
+                                     // |___/                             
+
+
+
+
+
+
+
+//--Talk Rate
+//This is when the user chooses to adjust the talk rate in the config menu. The talk rate is how often the ghost will read some dialogue from aitalk.dic.
+
+
+Select.talkinter : all
+ 	{
+ 		"\0\s[0]\b2How often should we speak?\w8\1\s[10]The interval is currently set to %(talktime)."
+		//note the new envelope here for %(talktime). You'll see it again in a second. You can replace the dialogue above with whatever you like, just make sure it ends with ./ and not \e.
+ 		"\0\n\n[half]"
+ 		"\![*]\q[Every 30 seconds,TALKMAX]\n"
+		"\![*]\q[Every minute,TALKHIGH]\n"
+ 		"\![*]\q[Every 3 minutes,TALKNORMAL]\n"
+		"\![*]\q[Every 5 minutes,TALKPOOR]\n"
+ 		"\![*]\q[Don't speak,TALKNONE]\n\n[half]"
+		"\![*]\q[Don't change,TalksTill]\e"
+	}
+
+//If the user doesn't want to change the rate. You can change all of the dialogue in any of these options if you want to reflect the choice the user made. You TECHNICALLY could also change the value in talktime to reflect some other way of measuring time but I wouldn't recommend it, it'd just be confusing I'm sure.
+Select.TalksTill
+	{
+		"\0\s[0]-No change to the talk rate-.\e"
+	}
+
+//If the user chooses every 30 seconds.
+Select.TALKMAX
+	{
+ 		talktime = "30 seconds" //this sets up the envelope properly
+		aitalkinterval = 30 //this changes the actual rate
+		
+ 		"\0\s[12]Feeling chatty, are we?\w8\n\s[17]No problem. I could talk to you for days~\e"
+	}
+
+//If the user chooses every minute.
+Select.TALKHIGH
+	{
+ 		talktime = "minute"
+		aitalkinterval = 60
+		
+ 		"\0\s[12]Am I that interesting?\n\w8\s[13]Or do you just like hearing my voice.\n\w8\s[37]Either way, I'm happy to.\e"
+	}
+
+//If the user chooses every three minutes.
+Select.TALKNORMAL
+	{
+ 		talktime = "3 minutes"
+		aitalkinterval = 180
+		
+ 		"\0\s[37]As you wish, %(user).\e"
+	}
+
+//If the user chooses every five minutes. This is the default rate the ghost will start up in, as seen in bootend.dic.
+Select.TALKPOOR
+	{
+ 		talktime = "5 minutes"
+		aitalkinterval = 300
+		
+ 		"\0\s[4]Am I boring you darling?\n\w8\s[20]Or, maybe you just need to focus...\n\w8\s[29]T-That's fine. As you like, darling.\e"
+	}
+
+//If the user chooses to not have them speak. This is one case where you MIGHT want to make talktime equal something else, if you have a snappier way of saying the ghost won't talk. Make sure it flows well in your menus though, since it will be displayed in your config menu.
+Select.TALKNONE
+	{
+ 		talktime = "...actually we won't talk at all"
+		aitalkinterval = 0
+		
+		"\0\s[20]...\n\w8\s[4]...I'll do better %(username). I'm sorry.\x\s[38]...please talk to me.\e"
+	}
+
+
+
+//This is when the user chooses to change their name. It's linked to the functions outlined in nameteach.dic. Nothing to touch here.
+Select.TEACHNAME
+	{
+		OnTeachName	
+	}
+
+
+//If the user selects cancel in a menu. Replace as you like, or just leave them blank.
+Select.CANCEL
+	{
+		"\0\s[0]Alright then.\e"
+		
+		"\0\s[37]Just wanted to hear me talk?\e"
+ 	}
+
+	
+//In the MenuRun function above, if someone selects Functions (linked to dosomething), it will take them here to Select.dosomething.
+
+//If you want to have your ghost pick from multiple intro lines for this menu, you can uncomment FunctionMenuIntros here, and add in dialogue as you like.
+
+// FunctionMenuIntros : nonoverlap
+// {	
+		// //I mentioned this above in MenuRun, but you can have a set of multiple different responses that may randomly appear when the menu is opened. Try opening this menu yourself with the template to see how it works. The character will randomly choose one line as the intro. 
+		// //If you don't want to deal with this, just delete the extra lines and leave one. Otherwise, replace the dialogue below as you like, but note that they don't end with \e here.
+		
+		// "\0\s[0]\b2This is the first function menu intro.\n\n"
+ 		// "\0\s[0]\b2This is the second function menu intro.\n\n"
+		// "\0\s[0]\b2This is the third function menu intro.\n\n"	
+// }
+
+Select.dosomething : all
+{
+ 		//FunctionMenuIntros	
+		//this line ^ calls one of the intros above. If you are using the extra intros, you can uncomment this line.
+		
+		//the -- splits the intros and the menu choices
+		--
+		
+		//the actual menu options.
+		
+ 		"\![*]\q[Open Calendar,CALENDAR]\n"
+		"\![*]\q[Check Email,MailCheck]\n"
+		"\![*]\q[Open SSP Preferences,sspconfig]\n"
+		
+		"\![*]\q[Empty Recycle Bin,ChoiceGarbagecan]\n"
+		//I commented out the Empty Recycle Bin one because that one will need some tweaks to the dialogue to work for every ghost, since it uses Girl and Triangle's names. If you want your ghost to have this feature, uncomment this and fill out the corresponding dialogue below for Select.ChoiceGarbageCan.
+		
+		"\![*]\q[System Information,ChoiceSystemInformation]\n\n"
+ 		"\![*]\q[Back to main menu,BACKTOMENU]\e"
+}
+
+//When the user clicks Open Calender. This will open the calender function of SSP, an in-built feature that you don't have to worry about in the least. You don't have to write dialogue here if you don't want to, the template's default dialogue will handle it, but it is an option.
+Select.CALENDAR
+{
+	"\0\s[0]I'll get that for you, darling!\w8\![open,calendar]\e"
+	
+	//You can replace the dialogue here up to the \!.
+	//Advanced users, can you break it down yet? It's basically just using \! to open calender.exe or dll or whatever SSP uses to make it happen.
+}
+
+//When the user chooses SSP preferences. This will open the same window that shows up if you right click your ghost and go to Utilities - Preferences. You don't have to write dialogue here if you don't want to, the template's default dialogue will handle it, but it is an option.
+Select.sspconfig
+{
+	"\0\s[0]I can open that up for you, love!\w8\![open,configurationdialog]\e"
+	
+	//Again, you can replace up to the \! tag.
+}
+
+
+//If the user chooses to empty the recycle bin. Make sure to uncomment the "Empty Recycle Bin" option above in the Select.dosomething menu if you want to include this feature.
+
+Select.ChoiceGarbagecan
+{
+	_gomicheck = FUNCTIONEX("gomi.dll", "-n")	//Don't touch this line. for those curious, it's referencing a SAORI, which are optional user-made plug-in dlls you can download to enable different functions on your ghost. gomi.dll is one included with this template. All SAORI are in Japanese (maybe Korean or Chinese as well idk) and many have disappeared by now, so don't concern yourself very much with SAORI. They're for skilled developers, mostly.
+	
+	if _gomicheck == 0 //If the recycle bin is empty.
+	{
+		"\0\s[14]Take out your trash? Really %(username)?\w8\0\s[12] You're lucky I adore you, darling.\w8\w8\s[-1]\w8\w8\w8\w8\w8\0\s[19]\cUh...it was already empty.\e"
+		
+		//This isn't the usual flat template dialogue, mostly because I wanted to show that this is a good place to use s[-1], which I covered in the walkthrough file. You can have your ghost disappear momentarily like they're going to check your recycle bin, then come back. \c clears the ghost's balloon of text. Replace dialogue as you desire.
+	}
+	elseif _gomicheck >= 1 //If the recycle bin is full.
+	{
+		"\0\s[14]If anyone else asked me to take out their trash, I'd be a bit offended.\w8\0\s[1]But you're not just anyne, darling~\w8\w8\s[-1]\w8\w8\w8\w8\w8\![raise,OnGarbagecanEmpty]\w9\w9\w9\1\s[10]\cDone.\e"
+		
+		"\0\s[14]Take out your trash? Really %(username)?\w8\0\s[12]You're lucky I adore you, darling.\w8\w8\s[-1]\w8\w8\w8\w8\w8\![raise,OnGarbagecanEmpty]\w9\w9\w9\0\s[17]\cDone!.\e"
+		
+		//Somewhat similar to the above, but notice the \![raise],OnGarbagecanEmpty] tag in there. That's what actually empties the recycle bin, so make sure you don't delete that tag. Otherwise, replace the dialogue as you want.
+		//As you can see, you can have multiple pieces of dialogue in here, just like you can for many other functions scattered through the .dic files. If you only want the one, just delete the others, or if you want to add more, just copy and paste and write new dialogue as it comes to you. This applies to when the recycle bin is empty as well.
+	}
+}
+
+
+//This is for the SAORI, don't touch it.
+OnGarbagecanEmpty
+{
+	_gomi = FUNCTIONEX("gomi.dll", "-f")
+}
+
+//This is when the user chooses System Information. Don't touch any of this either. For those curious though, note that this is done using another SAORI, this time saori_cpuid.dll.
+Select.ChoiceSystemInformation
+{
+	os_name = FUNCTIONEX("saori_cpuid.dll","os.name")
+	os_version = FUNCTIONEX("saori_cpuid.dll","os.version")
+	cpu_name = FUNCTIONEX("saori_cpuid.dll","cpu.name")
+	cpu_clockex = FUNCTIONEX("saori_cpuid.dll","cpu.clockex")
+	"/
+	\0\s[0]\b[2]/
+	\_q\f[bold,1]OS:\f[bold,0] %(os_name) %(os_version)\n/
+	\f[bold,1]Memory Load:\f[bold,0] %(memoryload)%\n/
+	\f[bold,1]Physical Memory:\f[bold,0] %(memoryavailphys) KB\n/
+	\f[bold,1]CPU:\f[bold,0] %(cpu_name) %(cpu_clockex)MHz\n/
+	\f[bold,1]Ukagaka:\f[bold,0] %property[baseware.version]/
+	\e"
+}
+	
+//This is when the user chooses to check their email. The rest of this function plays out in etc.dic. You can leave this alone.
+Select.MailCheck
+	{
+		"\![biff]\e"
+	}
+
+
+	
+//---- OnChoiceTimeout ---------------------------------------------------------
+//If the user is given a menu with choices, but doesn't pick one of the choices, it will eventually time out. At that point, they will say this dialogue. Replace with whatever you like, or leave it blank.
+
+OnChoiceTimeout
+ {
+	"\0\s[0]...nevermind then?\e"
+ }
+
+ 
+//---- Secondary Character Menu ---------------------------------------------------------
+//This section has to do with the menu for the second character. If you don't want your second character to have a menu, you can just delete to the end of the file. Advanced users, you can also move the menu options from here to the main character's menu instead and then delete it, if you want to keep these.
+
+KeroMenuIntros : nonoverlap
+{
+	"\1\s[10]\b[2]"
+	"\1\s[15]\b[2]"
+	"\1\s[16]\b[2]"
+	
+	//You've seen so far that you can set up multiple options for menu introductions. You can also set up multiple poses to match up to multiple dialogue. So for example, when you open Triangle's menu, he may randomly do any of these three poses, and randomly choose from any of the four dialogue options below, before continuing with his menu. Make a close note of the -- dashes breaking these up.
+	//if you aren't interested in such tomfoolery, you can cut them each down to one line.
+	
+ 	--
+	
+	"This is a menu introduction dialogue."
+ 	"This is another menu introduction dialogue."
+ 	"This is the third menu introduction dialogue."
+ 	"This is the fourth menu introduction dialogue."
+}
+
+OpenKeroMenu : all
+ {
+	 //this calls the intros above
+	KeroMenuIntros
+
+	//this splits the intros from the menu options
+	--
+	
+	//these are the menu options
+	"\n\n[half]"
+	"\![*]\q[Update,keroupdatecheck]\n"
+ 	"\![*]\q[Bug report,bugreport]\n\n"
+	
+	"\![*]\q[Test variable,testvariable]\n\n"
+	//When you are done with the test variable, aka your ghost is finished or you just don't want it showing up when you publish your ghost beta or whatevs, simply add two // slashes in front of "\![*]\q[Test variable,testvariable]\n\n" to comment the line out. In Notepad++, it will turn green. When you want to use it again, erase the two slashes to turn it back to normal.
+	
+	"\![*]\q[Nothing,keroCANCEL]\e"
+}
+
+//There are no real set things for the second character to do, really. You can mostly add whatever functions you want to them, their menu is totally free reign. In mine for example, Hunter has some games, a pseudo-FAQ for users, a bug report, an update option, and most importantly, a test variable. A lot of that is fairly complicated though, so I won't get into it here. Advanced Users can pick up Hunter and Smoker and study their menu.dic to see how I did it though, and those who read the coding page of the walkthrough and want to make their own functions can feel free to add them here. 
+//For the purposes of this simple template, I'll include two options that may come in handy - an update option and a bug report option, as well as the test variable.
+
+//If you click cancel. Replace dialogue as you want.
+Select.keroCANCEL
+{
+	"\1\s[10]This is menu cancel dialogue.\e"
+}
+
+
+//This is when they select bug report. This is mostly meant to briefly give the user information about you, the creator, and how to report a problem to you. This can be handy if the person forgot where they got their ghost or how to contact you. Add whatever info you like here.
+Select.bugreport
+{
+"\1\s[10]This is the bug report dialogue. \w5Report bugs to youremailaddress@emailprovider.com. \w5We were downloaded from \_a[http://www.whereveryoupostedthem.com/]some place\_a.\e"
+}
+
+//When clicked, this will automatically tell the ghost to check for updates. More detail on updates in etc.dic. You can leave this alone.
+Select.keroupdatecheck
+{
+	"\1\s[10]\![updatebymyself]\e"
+}
+
+//--Test Variable --------------------------------------------------------
+//I briefly mentioned the test variable in bootend.dic and possibly in etc.dic as well, I'm not sure. What exactly is the test variable? Basically, it's a place you can plug in anything you want to test out. While you can use Script Input to test most of your ghost's dialogue, there are some lines it just can't do, and it can't help you test choices. But the test variable can!
+//You can also use this to test functions as I mentioned above by adding \![raise,function] at the end of it, although you can do this with Script Input as well. Advanced Users, the test variable is also great for testing out any new stuff you may add to your ghost, like mode settings, item values, functions, raising or lowering numbers, what have you, particularly if you have a bunch you want to change all at once.
+
+//It is ALWAYS A GOOD IDEA to test your dialogue! If you won't check it with the test variable, at least test it with Script Input! It'll save you so much trouble!
+
+Select.testvariable
+{
+	"\1\s[10]Testing!\e"
+}

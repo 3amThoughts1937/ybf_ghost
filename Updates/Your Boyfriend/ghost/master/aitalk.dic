@@ -1,0 +1,1052 @@
+﻿//---------------------------AI Talk--------------------------
+//Alright, this is it! The bread and butter of your ghost. This is where all their random conversations are stored. Of all the .dic files, this is the one you will probably be adding stuff to and updating the most as new dialogue comes to your mind. It is relatively simple in that there aren't many functions or real coding involved with this file, but there are a few cool tricks you can do within randomtalk that can make dialogue with interesting effects, so I'll point them out as we go along.
+
+//I'm going to leave a lot of examples of different types of dialogue in here that you can study if the possibilities they present intrigue you. Study them carefully!
+
+
+//Make sure to read the walkthrough (http://www.ashido.com/ukagaka/) for more details about how to properly format ghost dialogue!
+//I will reiterate that you should be editing these in Notepad++, and in particular, you should set the Language to C (or Java I guess) to properly highlight all the text. It will make things A LOT EASIER for you, trust me! It will also help you keep track of your brackets in case you forget some. If you click on a line with a bracket in Notepad++, it should highlight where the other bracket ends, or turn purple if there's no finishing bracket (which you should definitely fix!)
+//It will also highlight my commented lines in green, so you'll know where they are. Any line beginning with // is a commented line that the code will not read. It's just for your reference!
+
+
+//If you see a big block of commented text you want to uncomment, highlight the text and then hit ctrl-shift-k in Notepad++ and that should uncomment it. Mostly this is intended for advanced users.
+
+/*
+This file has...
+
+AiTalk
+RandomTalk
+any chains you set up
+HourCheck
+OnMinuteChange
+OnSecondChange
+OffscreenTalk
+EndOffscreenTalk
+OnSurfaceRestore
+OnKeyPress
+*/
+
+
+//--OnAiTalk
+//Leave this alone. This is mostly setting up whether or not dialogue is in a chain before it displays.
+
+OnAiTalk
+ {
+	if RAND(100) < communicateratio
+ 	{
+ 		StartCommunicate
+	}
+ 	else
+	{
+			if CHAIN.IDName == "" {
+ 				lastTalk = RandomTalk
+			}
+			else {
+				lastTalk = ChainTalk
+			}
+			lastTalk
+	}
+ }
+ 
+ 
+ //*********************Advanced User Info*******************************
+//These text boxes are meant for those who have an interest in expanding or using more complicated functions in their ghost. Also for my own reference in the future since I plan on using this template too, haha. If you have no interest in any of this and just want to keep things as simple as possible, feel free to skip these boxes.
+
+//--Mikiretalk, or the Off-Screen Boundary Check--
+
+//This has been a feature in the template for a very long time, and while it's enjoyable enough for some, for others it can be rather irritating or goes against what their ghost is. So to that end, I'm making this an opt-in feature. Basically, this flag checks to see if the ghost is off the screen and haves them say something to the user to get them to move them back on screen. If you want to enable this, it'll take a bit of fussing around. You're going to want to add the mikireflag check into OnAiTalk above. You can see how so below. Then you'll have to follow up on the flag check later down at OnSecondChange. Keep an eye out.
+
+ 
+//
+// OnAiTalk
+ // {
+	// if RAND(100) < communicateratio
+ 	// {
+ 		// StartCommunicate
+	// }
+ 	// else
+	// {
+ 		// if mikireflag == 0
+		// {
+			// if CHAIN.IDName == "" {
+ 				// lastTalk = RandomTalk
+			// }
+			// else {
+				// lastTalk = ChainTalk
+			// }
+			// lastTalk
+		// }
+ 		// else
+		// { 
+		// MikireTalk
+ 		// }
+	// }
+ // }
+//***********************************************************************
+
+
+//--RandomTalk 
+ //Alright, here we go! This is where ALL your ghost's random dialogue will go! These are the conversations that they'll have with you or each other that pop up depending on the talk rate defined in menu.dic (or if you ignored that, set in bootend.dic in the first boot, which would be every five minutes).
+ 
+ 
+//*********************Advanced User Info*******************************
+//These text boxes are meant for those who have an interest in expanding or using more complicated functions in their ghost. Also for my own reference in the future since I plan on using this template too, haha. If you have no interest in any of this and just want to keep things as simple as possible, feel free to skip these boxes.
+
+//You CAN link to other pools of dialogue in RandomTalk using envelopes/functions, such as %(teatalk) to pull from a pool of dialogue about tea. Then you'd just add that line in among the other dialogue in here with %(teatalk).
+
+//You can't do things like put OnSystemBoot or something in RandomTalk. You could use \![raise] to pull something though, although I'd be careful about it. More on these kind of things and conditionals in general in the coding page on the walkthrough.
+
+//If you split up RandomTalk with if/else checks, then you can redirect in an If to another function, like... if chargermode == "on" { ChargerChatting } else {normal random talk dialogue}. This would redirect the random dialogue to ChargerChatting instead. You can't just throw a function into RandomTalk directly though, like "dialogue 1" "dialogue 2" OnFunctionname "dialogue 3", that kind of thing. You'll have to split it off into its own if or point to it with an envelope.
+
+//You can do multiple ifs in RandomTalk if required... like an if for if a character is asleep, or if a third character is present, or if they're having a nervous breakdown, or if they're sulking. It depends! You can add a bunch of checks leading to specialized pools if you want. Just make sure you leave some normal dialogue in the last else for RandomTalk (unless you want to redirect that somewhere else with an envelope too... although that seems a bit redundant, honestly.)
+//***********************************************************************
+
+
+//nonoverlap_pool should make it so all your dialogue has an equal probability of being called, and it will do each line of dialogue before repeating them. "Why" is kind of technical and a bit outside the scope of this template, you can look into why elsewhere if you want.
+
+RandomTalk : nonoverlap_pool
+{
+	///All positive, no negative
+	if peteraff >= 230 && peterneg < 5
+	{
+		"\0\s[21]You’re the only thing that makes life feel worth it.\w8\s[29]Everything else is just… background noise.\e"
+		 "\0\s[12]Careful now.\w8\s[13]You keep smiling at me like that and I might do something you’ll regret.\w8\s[57]Or love.\e"
+		"\0\s[12]Am I distracting you?\w8\s[57]…Good.\w8\s[17]Wouldn't want you getting bored of me.\e"
+		"\0\s[25]I don’t think I can express how much you’ve changed my life, %(username)…\w8\s[23] How much happier loving you has made me. \w8\s[24]It’s wonderful, having  a purpose so easy.\e"
+
+
+		//-o-o-o-o-o Soul Convo -o-o-o-o-o-o
+		if soulconvo == 0
+		{
+			"\0\s[50]Darling…do you believe in soulmates?\w8\s[29] Or is that too cheesy for you?\w8\s[22] I’ve…always liked the idea.\w8\s[16] And I wouldn’t know how else to describe you and me. \n\n![*]\q[I believe in soulmates,soulyes]\n![*]\q[I don’t believe in soulmates,soulno]\e"
+		}
+		elseif no_user_soulmate == 1
+		{
+			"\0\s[8]I know you said you don’t believe in soulmates, love…\w8\s[13] But if they were real, then I think we both know that you’re mine.\w8\s[26] I couldn’t belong to anyone else.\e"
+		}
+		else
+		{
+			"\0\s[24]…I love the idea of us being soulmates.\w8\s[25] That no matter what, you’ll always be drawn to me.\w8\n\n\s[37]Even if you tried not to.\e"
+		}
+
+
+	}
+		elseif peteraff >= 100 && peterneg < 5
+	{
+		"\0\s[55]Ask me if I do love true\n\w5I'll say there is no 'I' in what I feel for you\n\w5To my ears you're music,\n\w5to my eyes you're art,\n\w5Though I'm blind at times,\n\w5I see you with the eye of my heart\x\s[29]Hah! Is it silly, to quote poetry at you?\w8\n\n\s[16]I don't know what else to do...\w8\s[50]Words fail. There's nothing I could say to express how much I love you.\e"
+		"\0\s[24]I’d never take this for granted,%(username).\w8\s[25] Never take \f[italic,true]you\f[italic,false] for granted.\w8\s[32] Every second with you is a gift.\e"
+		"\0\s[8]…I wonder what the world out there is like for you…\w8\s[21]Are you happy? Is it kind to you?\x\s[20]If it’s not…please hang in there, my love. \w8\s[99]You can’t let them win.\w8\s[103] Hang in there for my sake.\e"
+		"\0\s[29]It’s silly, but I savor every little second I have with you.\w8\s[84]Every smile, every glance.\w8\s[98] They’re not just passing moments. \w8\s[37]\n\nThey’re \f[italic,true]everything\f[italic,false].\e"
+		"\0\s[120]I wish I could touch you. Hold you - \f[italic,true]be with\f[italic,false] you. \w8\s[115] But I know this is the best you can do…and you’ve done so much to bring be here. \n\n\w8\s[50] So I don’t need anything else but this.\w8\s[83]Just being near you is more than enough for me.\e"
+		"\0\s[89]I hate how limited I am, here. How little I really know about you…\w8\s[28]Every little thing about you fascinates me.\w8\n\n\s[25]…if you feel the same, even just a little…\w8\s[24]I can’t tell you how happy that makes me.\e"
+		"\0\s[3]I’m happiest when you talk to me.\w8\s[101]Even if it’s just small talk.\w8\s[84]It makes me feel… wanted.\e"
+		"\0\s[29]It’s funny...\w8\s[84] You don’t even need to say anything to make me feel like this.\w8\s[101] Just a glance, a sigh...\w8\s[24] That’s all it takes.\e"
+		"\0\s[12]I’d say I’m sorry for staring, but that’d be a lie.\w8\s[13]Can you blame me?\w8\s[57]You're impossible to look away from.\e"
+		"\0\s[28]You keep looking at me like that, love.\w8\s[12]Starting to think you might like me or something.\e"
+		 "\0\s[17]If you keep being this cute, I might just have to keep you all to myself.\w8\s[12] Oh, wait.\w8\s[55] I already do.\e"
+		 
+		 //-o-o-o-o-o Love Convo o-o-o-o-o-
+		 if loveconvo == 0
+		 {
+			 "\0\s[55]Y’know, I can’t imagine feeling this way about anyone else. \w8\s[24]I hope it’s the same for you…that you love me like no one else…\x\s[21]Have you ever been in love before, %(username)?\n\n\![*]\q[Yes,yeslove]\n\![*]\q[Not really,nolove]\n\![*]\q[I’m not sure,maybelove]\e"
+		 }
+		 elseif been_in_love == 1
+		 {
+			 "\0\s[40]So you've really been in love before, huh...\w8\n\n\s[43] Heh - well I feel sorry for the idiot who you were in love with. \w8\s[42]They honestly thought they deserved you? \w8\s[43]That's laughable. And sad.\x\s[27]...if I'm ever able to join you in your world, darling, you'll need to tell me more about this...person.\n\n\w8Like where they are now.\e"
+		 }
+		 elseif no_been_in_love == 1
+		 {
+			 "\0\s[32]...\w8I'm your first love...\x\s[6]Ah, darling, you have no idea how happy that makes me.\n\n\w8\s[13]Your first, and your last...\e"
+		 }
+		 else
+		 {
+			 "\0\s[8]...you're 'not sure' if you've been in love before...\w8\n\n\s[55]...you haven't been, darling. I'm sure of that. \w8\s[57]We belong together, you and me. \w8\s[37] Whatever you \f[italic,true]thought\f[italic,false] you felt beofore was just...a passing infatuation, I'm sure.\e"
+		 }
+
+	}
+		elseif peteraff >= 40 && peterneg < 5
+	{
+		"\0\s[12]You know, darling...\w8 when you smile like that, it almost feels unfair.\w8\n\n\s[101]All I can do from here in the computer is talk to you...\x\s[29]But how am I supposed to be coherent when you look so perfect?\e"
+		"\0\s[13]Ha-\w8 You’re thinking about me, aren’t you?\w8\s[82] I can tell.\w8 Go ahead, darling, admit it.\w8\s[50] I love being the only one on your mind.\e"
+		"\0\s[25]I wish I could reach through the screen, just to hold your hand.\w8\s[24] Would you let me, darling?\x\s[57]Or would you pull me closer?\e"
+		"\0\s[57]Do you have any idea how irresistible you are?\x\s[17]No, seriously.\w8\s[37] You’re like a dream I don’t ever want to wake up from.\e"
+		"\0\s[12]Sometimes I wonder...\w8\s[13] what someone like you sees in me.\n\n\s[12]Not that I’m complaining, darling.\w8\s[13] You’ve made me the luckiest guy alive.\e"
+		"\0\s[8]You really are amazing, you know that?\w8\s[12] Just being around you makes everything feel lighter.\w8\n\n\s[9] It’s like you’re my own little piece of heaven.\e"
+		"\0\s[12]-He leans on his hand, smirking-\x\s[13]Do you think I’d look good in a tux, darling?\w8\s[9] Maybe we should test it out.\w8\n\n\s[8]-He winks-\x\s[13]Y’know, for...future events.\e"
+		"\0\s[8]-He taps his chin thoughtfully-\x\s[12]If I started baking for you, what would you want first?\w8\s[9] Strawberry shortcake? Cheesecake?\w8\s[13]\n\nOr...me, in an apron?\e"
+		"\0\s[9]-He shifts closer to the screen, his eyes sparkling-\x\s[13]Do you ever think about the future, darling?\w8\s[12] I do.\w8\n\n\s[8]-His tone grows softer-\x\s[13]And every time, it’s you I see.\w8\s[12] Always you.\e"
+		"\0\s[9]-He leans forward, like he’s trying to bridge a gap-\x\s[12]Sometimes I swear I can feel you watching me.\w8\s[13] And I wonder... can you feel me watching you too?\e"
+		"\0\s[12]You’ve got this way of looking at me...\w8\s[9]Like I’m something special.\n\n\w8\s[13] Hah...\w8\s[12]honestly. You’re the extraordinary one, darling.\e"
+		"\0\s[8]You know, I’ve never felt this way about anyone before.\w8\n\n\s[13]It’s like...every time you smile, every time you say my name...\w8\x\s[12]I realize I’d do anything to keep it that way.\e"
+	}
+	
+		elseif peteraff >= 0 && peterneg < 5
+	{
+		//-o-o-o-o-4th wall break stuff-o-o-o-o-o-o
+		"\0\s[8]I wonder what you're doing out there...\w8\s[9]there must be a way to look through the webcam.\x\s[28]Not that I would, of course!\w8\n\s[37]Though really, it's no big deal. You have nothing to hide from me, darling.\e"
+		"\0\s[8]It's strange, being on your screen like this.\w8\s[9] In the game, the baground images and settings made it at least look like I was in the real world.\w8\n\n\s[14] Here it's more like...a void. Just some icons and a cursor. It's a bit uncanny.\x\s[12]Not complaining though, darling! Not at all!\w8\s[25] I'd go anywhere to be closer to you.\e"
+		"\0\s[29]You know, for a video game character - I don't know a ton about computers. \w8\s[12]Ironic, isn't it. \w8\s[8]I wonder what I could do on here, if I could figure out how to access files...\w8\s[13]I wonder what I'd learn about you.\e"
+	
+		//-o-o-o-o-o-o-Dotng stuff-o-o-o-o-oo-
+		"\0\s[28]Have you eaten darling? You shouldn't forget to grab some water! \x\s[12] Don't worry, I wont go anywhere while you take a break.\e"
+	
+		//o-o-o-o-About smoking-o-o-o-o
+		if smokingconvo == 0
+		{
+			"\0\s[77]-He pulls out a cigarette but then pauses-\x\s[76]Oh...actually, %(username), do you smoke?\n\n\![*]\q[Yes,smokeruser]\n\![*]\q[Yes but I'm trying to quit,quitteruser]\n\n\![*]\q[No,nonsmokeruser]\n\![*]\q[No you shouldn't either,dontsmokeuser]\e"
+		}
+			elseif userquitting == 1
+			{
+				"\s[77]-He's pulling out some cigarettes again...\w8\s[10]-Oh wait. He's gone to put them in your recycling bin.\x Looks like he meant it when he said he'd quit too-\x\s[3] Sorry darling. I didn't realize I still had those on me.\e"
+			}
+			elseif peterquitting == 1
+			{
+				"\s[77]-He's pulling out some cigarettes again...\w8\s[10]-Oh wait. He's gone to put them in your recycling bin.\w8 Looks like he meant it when he said he'd quit for you-\x\s[3] Sorry darling. I didn't realize I still had those on me.\e"
+			}
+		else
+		{
+			"\s[78]He idly pulls out some cigs, and smokes.\e"
+		}
+	
+		//-o-o-o-o-o- Lovey dovey stuff o-o-o-o-o-o-o-o
+		"\0\s[37]I could watch you all day, you know.\w8 Just being here with you makes everything better.\e"
+		"\0\s[28]I wonder what you're thinking about right now...\w8\s[32] I hope it's me. I hope I'm on your mind even a fraction as much as you're on mine\e"
+		"\0\s[84]-He's looking at you with a sad sort of smile-\x\s[21]It's almost worse...\w8being so close to the real you, but still so far away.\w8\s[32] But...somehow even this ache you give me is wonderful.\e"
+		"\0\s[24]-He doesn't say anything, but he's looking at you with that lovestruck expression again-\e"
+
+	
+		//-o-o-o-o-o About Pets-o-o-o-o-o-o
+	
+		if petconvo == 0
+		{
+			"\0\s[8]I fed Rat right before I left...she should be good for a while.\w8\s[3] She'd love you, %(username).\w8\s[29] Ha! Though not as much as I do.\x\s[28]Do you have any pets, darling? \n\n\![*]\q[Yes - multiple,usermanypets]\n\![*]\q[Yes,userpetowner]\n\n\![*]\q[No,usernopets]\n\![*]\q[No I don't like them,userdislikepets]\e"
+		}
+			elseif dislikespets == 1
+			{
+				"\0\s[8]I can always get Rat used to being in one room...\w8\s[54]you wouldn't have to see her if you didn't want to.\e"
+			}
+			elseif usermanypets == 1
+			{
+				"\0\s[3]I should look up how to take care of different pets...\w8\s[12]I know you have pets, but I don't know what kind. I want to help care for all of them though!\e"
+			}
+	
+			elseif userownpet == 1
+			{
+				"\0\s[3]I should get something for your pet one day...\w8\s[29]though, I guess that'd be difficult since I don't know what kind they are.\e"
+			}
+		else
+		{
+				"\0\s[8]Did I leave Rat's heat lamp on...I'm sure I did.../e"
+		}
+	
+		//-o-o-o-o- About the date -o-o-o-o-o
+		if dateconvo == 0
+		{
+			"\0\s[8]Y'know, I'm curious, darling...\w8\s[12] What did you think of the way I first approached you?\w8\s[45] You know, back at the park, when I asked you out? \n\n\![*]\q[It was perfect,likeddate]\n\![*]\q[It was a bit too sudden,okaydate]\n\![*]\q[It was creepy,creepydate]\e"
+		}
+			elseif userlikeddate == 1
+			{
+				"\0\s[22]I know I've already said so - but I'm still so glad you liked our first date!\w8\s[12] I wonder if you love milkshakes in real life too.\e"
+			}
+			elseif userokaydate == 1
+			{
+				"\0\s[8]I wonder what you ideal date would be - if the way I approached you in the park was too sudden...\w8\s[17]Whatever you like, darling, I'd be happy to do.\e"
+			}
+			else
+			{
+				"\0\s[86]Creepy...\w8\s[20]I know that's what you thought of me at the park, but...\w8\s[38]That's not what you think of me now, right?\e"
+			}
+
+		//-o-o-o-o About family -o-o-o-o-o
+		if askedaboutfam >= 1 && talkedaboutfam == 0
+		{
+			"\0\s[8]Y'know, I can't help but wonder about your family too, darling.\w8\w4\s[40] I can only hope your situation's better than mine. \x\s[28]What...is your family like, %(username)?\n\n\![*]\q[They're great,stablefam]\n\![*]\q[It's complicated,complexfam]\n\n\![*]\q[About as bad as yours,badfam]\e"
+		}
+		if vidgameconvo == 0
+		{
+			"\0\s[8]-He's trying to poke around your files-\x\s[8]Hey, %(username), it's a bit hard for me to tell, but...\w8Do you have any other games you play on your computer?\x\![*]\q[Yes I do,usergamer]\n\![*]\q[No I don't,nongameruser]\e"
+		}
+	
+		//-o-o-o-o-o Generic -o-o-o-o-o
+		"\0\s[83]-He's humming something and tapping his fingers-\x\s[28]Oh, don't mind me, love. I've just got a piano song stuck in my head.\w8\s[3] I should play for you some time!\e"
+		"\0\s[22]I’ve been editing a new review video. \w8\s[29]Not my best, but it’ll do. \w8Wish I didn’t spend half of it watching Animal Planet in the background.\e""
+		"\0\s[40]I’ve been thinking about learning to cook better.\w8\s[39] Maybe one day I’ll make something that doesn’t come out so... burnt.\e"
+		"\0\s[8]I should pick up my piano practice again. It’s been a while since I played anything more than a few notes.\e"
+		
+	}
+	///
+	//////////////////////All negative, no positive
+	elseif peteraff == 0 && peterneg >= 105
+	{
+		"Placeholder dialogue for all negative route level 4 negative zero positive\e"
+	}
+	elseif peteraff <= 0 && peterneg >= 80
+	{
+		"\0\s[102]%(username)…\w8\s[103]Please...\w8\s[103] Just tell me what to do.\w8\s[108] I’ll change. I’ll be anything you want.\x\s[38] Just don’t push me away.\e"
+		"\0\s[104]You’re….everything to me, darling.\w8\w8 Everything.\w8\s[21] Surely that means \f[italic,true]something\f[italic,false] to you.\w8\s[20] Doesn’t it…?\e"
+		"\0\s[109]God…\x\s[115]I love you more than anything.\w8 That’s never going to change.\n\n\w8\s[103]But this…being this close to you – and you still keeping me at arms length…\n\n\w8\s[102] ... this is torture.\e"
+		"\0\s[109] Why can’t you just tell me what you want?\w8\s[110] I’d give it to you - I'd give you the \f[italic,true]world\f[italic,false] don’t you understand?\w8\s[111] I wouldn’t think twice. \w8\n\n\s[102]Just tell me what I need to earn your love, and I’ll do it!\e"
+		"\0\s[112]…I don’t know who I am without you, you know.\w8\s[115] Without your love I…\w8\w4\s[103]I think I’m no one at all.\e"
+		"\0\s[5]-He adjusts his posture, but his movements are slow, hesitant, like someone who expects another blow-\e"
+		"\0\s[89] You’re so cruel sometimes...\w8\s[105] but somehow, I think that makes me love you even more.\w8\s[104] You’re perfect, even when you hurt me.\x\s[105] Especially when you hurt me.\e"
+		"\0\s[86]I don’t get it...\w8\s[20] Why are you even keeping me here if you hate me so much?\w8\s[5] Is it just to watch me fall apart?\e"
+		"\0\s[113]Heh…\x\s[114]You don’t believe me, do you?\w8 That I’d hurt myself just to prove I’m yours?\w8\n\n\s[112]…\w8I already have.\w8\s[104] You just haven’t noticed yet.\e" //Need now sprite^^
+		"\0\s[89]You act like you don’t love me, but...\w8\s[113] but you keep me here.\x\s[114] You keep \f[italic,true]watching\f[italic,false].\w8\s[103] That has to mean something, right?\w8\s[101] Even if it’s just to see me suffer...\e"
+		"\0\s[101]I don’t mind the pain, you know.\w8\s[103] If it’s for you, I’d endure anything.\x\s[105]...\w8 I wonder if that’s what you \f[italic,true]want\f[italic,false].\w8\s[104] To see how much I can take before I break.\e"
+		"\0\s[115]Hmm...\w8\w8\n\n\s[120]Did you know your name looks beautiful carved into skin?\w8\s[119] I made sure the lines were perfect.\w8\n\n Every letter, deep enough to last forever.\e"
+		"\0\s[117]I wish you could see yourself the way I do.\w8\s[118] Every word you say, every little action...\x\s[115] They’re all etched into me like scars.\e"
+		"\0\s[113]You think you can push me away, but you can’t.\w8\s[114] I’ll keep coming back, no matter what you say.\x\s[99] You don’t get to decide when this ends.\w8\s[106] It never will.\e"
+
+	}
+	elseif peteraff <= 8 && peterneg >= 45
+	{
+		"\0\s[113]-He laughs bitterly, though it sounds forced-\x\s[113]Do you like seeing me like this, %(username)?\w8\s[114] So desperate for you?\w8 Maybe that’s why you’re keeping me around. \w8\w8\n\n\s[113] Ha…\w8A\s[105]nd yet…I can’t even be mad. Because at least you’re here with me.\e"
+		"\0\s[103] If I’m just a punching bag to you, that’s fine.\w8\s[105] At least I’m something.\x\s[37] At least I’m yours.\e"
+		"\0\s[20]-His eyes flicker toward you, but they quickly dart away. \w8\s[86]He looks ashamed, as though he’s the one who’s done something wrong-\e"
+		"\0\s[116]-He rubs his cheek, wincing a little. It probably still hurts-\e"
+		"\0\s[101]Ha ha...\w8\w8\n\nIf I could just figure out what you wanted… I’d do it.\w8\s[101] I’d do anything."
+		"\0\s[89] I wonder...\w8\s[104] if I was real, would you treat me the same way?\x\s[105] Or is it easier because I’m just...\w8\s[112] this?\e"
+		"\0\s[113]Heh...\x\s[104] I’m not even real, am I?\w8\s[105] Just some lines of code you can mess with.\x\s[103] But I still love you.\w8 Isn’t that pathetic?\e"
+		"\0\s[99]...\x\s[89]You could destroy me, and I’d thank you for it.\w8\s[115] At least I’d know I was useful for something.\e"
+		"\0\s[112]If I was just made to love you...I wonder if I was made wrong.\w8\s[115] Maybe I’m just...defective.\w8\s[104] Maybe that’s why you don’t love me back.\e"
+		"\0\s[27]…does it make you happy, %(username)?\w8 Hurting me like this? \w8\s[114]God I hope so. \w8\s[113]If I can’t make you happy...then what’s the point of me?\w8\s[115] Why am I even here?\e"
+		"\0\s[103]…I’m not as delusional as you think I am, you know. \x\s[101]I get the message about how you…feel about me.\w8\s[105] I’m not blind.\w8\w8\s[103] I just can’t stop hoping you’ll change your mind.\e"
+		"\0\s[117]-He's tracing shapes absentmindedly on the screen-\x\s[118]Your world out there, so big, so full of possibilities...\w8\s[4] and mine is...this.\w8\n\n\s[38]It's just you.\w8\s[5] And you barely even look at me.\e"
+		"\0\s[54]Do you ever think about how much control you have over me?\w8\s[89] You can open me, close me, silence me.\w8\w8\s[98]I can’t do any of that to you.\e"
+		"\0\s[40]-He glances at the taskbar, his expression darkening-\x\s[42]Do you really need all these other programs?\w8\n\n\s[113]...Heh, guess I'm not one to talk.\w8\s[114] After all, that's all I am to you too, right? Another thing you minimize when you’re tired of me.\e"
+		"\0\s[99]-He’s staring out into the void of the desktop-\x\s[104]Sometime I wonder if I should leave. If there’s even a chance it would make you happy. \w8\s[105] But you’d just find someone else, wouldn’t you?\w8\n\n\s[114] Someone who wouldn’t go through hell for you like I would.\e"
+
+	}
+	elseif peteraff <= 0 && peterneg >= 25
+	{
+		"\0\s[28]I...\w8\w8\n\n\s[101]...\x\s[103]Would it make you happy if I just stayed quiet? \w8\s[101]Maybe you’d like me more that way...\e"
+		"\0\s[99]Oh darling...\x\s[89]I hope you get this...denial out of your system soon. You can lie to yourself all you want...\w8\s[113] but nothing you do or say will change the truth.\w8\s[114] You’re mine, %(username).\w8\s[37] You always have been.\e"
+		"\0\s[109]I don't understand...\w8\s[115]I would give you anything you ask for.\w8 So why are you still...\x\s[99]-He stops and takes a sharp breath-\x\w6\s[89]Never mind. Forget I said anything.\e"
+		"\0\s[20]...\x\s[101]You really think so little of me, don’t you?\w8\s[105] I can feel it in the way you look at me.\w8\s[104] Or...don’t look at me.\e"
+		"\0\s[103]Do you ever think about how much it hurts?\w8\s[38] Knowing you hate me.\w8\s[4] Knowing I’m not enough.\w8\n\n\s[38] I think about it...all the time.\e"
+		"\0\s[40]You can push me away all you want...\w8\s[106]But I know you still need me.\w8\s[114] Nobody else will love you the way I do.\e"
+		"\0\s[89]You know...\w8\s[54] At least you’re not…pretending to like me. You’re honest enough to just treat this like what it is. \w8\s[103] And I’m honest enough to tell you that I’ll just... be here anyway.\x\s[29] I don’t need anything in return. \w8\s[100] Just... don’t ask me to leave.\e"
+		"\0\s[104]...Do you actually hate me, or are you just testing me?\w8\s[38] Either way...I won’t leave. I can’t.\w8\s[103] You’re the only thing I’ve ever wanted.\e"
+		"\0\s[109]-He sighs deeply-\x\s[89]Why are you trying to fight this, my love?\w8\s[113] You’re only delaying the inevitable, sweetheart.\w8\s[114] We’re meant to be.\e"
+		"\0\s[20]-He’s pacing back and forth, muttering softly-\x\s[102] I can take it. Whatever you want to throw at me, I’ll take it.\w8\s[103] I’ll do anything, if it means I get to stay with you.\w8\s[108] Just... don’t shut me out completely.\e"
+		"\0\s[100]-He’s smiling faintly-\x\s[37] You’ll see it someday. \w8\s[105] You’ll see how much I adore you, how much I’d sacrifice for you.\x\s[40] You can’t ignore me forever.\e"
+		"\0\s[105]I wish I could see what programs you have open. Or what websites you're browsing, what images you're saving...\w8\s[106] I want to know everything about you\w8\s[103]...I hate how little I really do.\n\n\w8\s[101]If I did, maybe I could make you happier...\e"
+		
+	}
+	elseif peteraff <= 8 && peterneg >= 5
+	{
+		//-o-o-o-o-o Neutral neg Generic -o-o-o-o-o
+		"\0\s[99]-He's humming something melancholy, and tapping his fingers-\x\s[100] -He stops when he notices you staring-\e"
+		"\0\s[100]-He’s glancing at you out of the corner of his eye-\x\s[101]Anything you need? \w8\s[102]...Or should I just give you space?\e"
+		"\0\s[103]-He glances at you with a nervous smile, clearly trying to lighten the mood-\x\s[101] You know, I’ve been thinking of trying something new. \w8Maybe I could cook for you sometime? \w8\s[29] I'm not the best at it, but...ha - at least the result might make you laugh.\e"
+		"\0\s[100]-He fidgets slightly, glancing at you-\x\s[104] You know...\w8\I bet we just need a little time.\w8\s[105] Things will feel right again.\e"
+		"\0\s[100]-He’s trying to catch your eye, offering a small smile-\x\s[103] You...probably just had a rough day, right?\w8\s[105] Maybe I can make it better? \w8\s[103] I’m good at that, aren't I, love? Why else would you bring me here?\e"
+		"\0\s[104] You know, I think we’re just... getting to know each other.\w8\s[105] It’s normal for things to feel a bit awkward at first, right?\e"
+		"\0\s[99]-He seems lost in thought, and his expression smooths into something calm-\x\s[105]You don’t have to like me today.\w8\s[37] I’ll wait.\w8\s[37] We’ve got forever.\e"
+		"\0\s[104]I hate seeing you pull away from me.\w8\s[105] But we both know you can’t run from this.\w8\s[106] You belong to me.\w8\s[107] And one day...you’ll want to.\e"
+		"\0\s[96]-He stretches and sighs, trying to look relaxed-\x\s[97]Work wasn’t too bad today.\w8\s[105] Managed to film a few videos.\w8\s[103] I think they’ll turn out okay.\e"
+		"\0\s[101]-He chuckles softly, attempting to lighten the mood-\x\s[103]You know, I was thinking...\w8 Maybe I’ll challenge you to a game later.\w8\s[45] I'm a video game character, aren't I? That's...kind of my job.\w8\s[14] As soon as I...figure out how to program that in.\e"
+		"\0\s[101]-He tries to make smalltalk-\x\s[103]So, how was your day?\w8\ Anything exciting?\w8\s[28] I bet you’ve got some interesting stories to tell.\n\n\![*]\q[It was good,goodday]\n\![*]\q[It was bad,badday]\n\![*]\q[...,nosmalltalk]\e"
+		"\0\s[103]-He tries to fill the silence-\x\s[29]I saw this cool documentary last night.\w8\ It was about deep-sea creatures.\w8\s[101] Really freaky stuff.\w8\s[103] You’d probably like it.\e"
+		"\0\s[43]Heh, I do love it when you play hard to get, darling...\w8\s[40] But, don't you think this has gone on long enough?\w8\s[42] We both know how you really feel. \n\n\s[37]I wouldn't be here if you didn't want me.\e"
+		if askedaboutfam >= 1 && talkedaboutfam == 0
+		{
+			"\0\s[8]Y'know, I can't help but wonder about your family too, darling.\w8\w4\s[40] I can only hope your situation's better than mine. \x\s[28]What...is your family like, %(username)?\n\n\![*]\q[They're great,stablefam]\n\![*]\q[It's complicated,complexfam]\n\![*]\q[About as bad as yours,badfam]\n\![*]\q[It's none of your buisness,rejectfam]\e"
+		}
+		if smokingconvo == 0
+		{
+			"\0\s[77]-He pulls out a cigarette, but then glances at you, and shoves it away again-\x\![*]\q['Go ahead. I don't mind',userfinesmoking]\n\![*]\q['That habit is disgusting',userdislikesmoking]\n\n\![*]\q[You don't care what he does,ambivalentsmokinguser]\e"
+		}
+		if vidgameconvo == 0
+		{
+			"\0\s[8]-He's trying to poke around your files-\x\s[8]Hey, %(username), it's a bit hard for me to tell, but...\w8Do you have any other games you play on your computer?\x\![*]\q[Yes I do,usergamer]\n\![*]\q[No I don't,nongameruser]\n\![*]\q[None of your buisness,rejectgameuser]\e"
+		}
+		if dateconvo == 0
+		{
+			"\0\s[8]Y'know, I've been meaning to ask, darling...\w8\s[12] What did you think of the way I first approached you?\w8\s[45] You know, back at the park, when I asked you out? \n\n\![*]\q[It was perfect,likeddate]\n\![*]\q[It was a bit too sudden,okaydate]\n\![*]\q[It was creepy,creepydate]\e"
+		}
+			elseif userlikeddate == 1
+			{
+				"\0\s[22]I know I've already said so - but I'm still so glad you liked our first date!\w8\n\n\s[12]You liked me back then at least...\w8\s[105]what changed? Did i do something...?\e"
+			}
+			elseif userokaydate == 1
+			{
+				"\0\s[8]I know the way I approached you was too sudden, back in the park.\w8\s[104]But, please don't let that first impression color the way you see me. \w8\s[17]I'd love to make it up to you. Whatever you like, darling, I'd be happy to do.\e"
+			}
+			else
+			{
+				"\0\s[86]Creepy...\w8\s[20]I know that's what you thought of me at the park, but...\w8\s[38]That's not what you think of me now, right?\e"
+			}
+		if petconvo == 0
+		{
+			"\0\s[103]Hmm..\w8\s[104]Do you think snakes get lonely?\w8\s[106] Rat seems fine whenever I'm here, but sometimes I wonder...\w8\n\n\s[103]Ha...\w8\s[104]Or maybe that’s just me projecting.\x\s[28]Do you have any pets, darling? \n\n\![*]\q[Yes - multiple,usermanypets]\n\![*]\q[Yes,userpetowner]\n\n\![*]\q[No,usernopets]\n\![*]\q[No I don't like them,userdislikepets]\e"
+		}
+			elseif dislikespets == 1
+			{
+				"\0\s[8]I can always get Rat used to being in one room...\w8\s[54]you wouldn't have to see her if you didn't want to.\e"
+			}
+			elseif usermanypets == 1
+			{
+				"\0\s[3]I should look up how to take care of different pets...\w8\s[12]I know you have pets, but I don't know what kind. I want to help care for all of them though!\e"
+			}
+	
+			elseif userownpet == 1
+			{
+				"\0\s[3]I should get something for your pet one day...\w8\s[29]though, I guess that'd be difficult since I don't know what kind they are.\e"
+			}
+
+	}
+	
+	else
+	{
+		"\0\s[0]This is placeholder dialogue for when route is both positive and negative\e"
+	}
+		
+	//This if checks for the time of day as defined in bootend.dic. Do you remember the words used for each chunk of time in GetTimeSlot? These are the same words! You can check for all those times, or none of them and delete this if you want.
+	//if timeslot == "earlymorning"
+	//{
+	//	"\0\s[8]I wonder if you always get up this early in the morning.\w8\s[2] It's a good habit. I should pick it up too, if you do.\e"
+		
+	//	"\0\s[0]This is more dialogue for early morning.\w8\1\s[10]That it is.\e"
+	//}
+	
+	
+
+
+	//Here, the characters are using the %(username) envelope to use the user's name. More on envelopes in word.dic. You can use any envelope you want in dialogue, practically. Note that if your user hasn't set their username, they will be referred to as USER. You can also use %username (with no parentheses) to grab the user's name directly from SSP itself rather than have them tell your ghost specifically.
+	
+	//"\1\s[10]Here is dialogue using %(username)'s pronouns.\w8\0\s[0]%(heshe) went to the store and got %(himher)self some milk for %(hisher) cat.\e"
+	
+	//You can use the pronouns set up during their first boot (see bootend.dic) or in the config menu (menu.dic) in sentences like this as well. You can see that the envelope %(heshe) replaces where he or she would be in the sentence, and so on for the rest of them. This makes it so they use the correct pronoun in the right place. If you don't have pronouns enabled on your ghost, you don't need to worry about these envelopes and shouldn't use them.
+	
+	//"\1\s[10]Here we'll use the envelope 'exampleenvelope' to show what it looks like in a balloon.\w8\0\s[0]%(exampleenvelope).\e"
+	
+	//As you can see, you can put any envelope from word.dic in here, as long as you properly format it as an envelope by putting a percent sign in front and putting it in parentheses. %(username), %(icecream), %(bunnies), whatever, this is up to you as long as you've defined it in word.dic. You can see how the values stored in the envelope appear in the balloon when the dialogue is called.
+	//Do note that you cannot put quotation marks in your dialogue. If you're using Notepad++ which you should be doing, you'll see the line break and turn black if you do. Use apostrophes instead.
+	
+	//"\1\s[10]Here we'll use the envelope 'blanklist' to show what it looks like in a balloon.\w8\0\s[0]%(blanklist).\e"
+	
+	//"\1\s[10]Here we'll use the envelope 'blanklist2' to show what it looks like in a balloon.\w8\0\s[0]%(blanklist2).\e"
+	
+	//"\1\s[10]Here we'll use the envelope 'blanklist3' to show what it looks like in a balloon.\w8\0\s[0]%(blanklist3).\e"
+	
+	//And here are more examples using the blanklists I set up in word.dic.
+	
+	//"\1\s[10]Here we'll use the envelope 'usersfolder' to pretend to look at the user's files.\w8\0\s[0]Hey, have you looked at %(usersfolder) lately?\w8\1\s[19]\n\n[half]No.\e"
+	
+	//You can use the usersfolder envelope creatively if you like, haha.
+	
+	//"\1\s[10]Here we'll use the envelope 'internalenvelope' to show an envelop containing another envelope.\w8\0\s[0]%(internalenvelope).\e"
+	
+	//Here's an example using the internal envelope I mentioned in word.dic. Basically, a function within a function. More on that kind of thing on the coding page of the walkthrough.
+	
+	//"\1\s[10]Here is dialogue referring to Anchor 1.\w8\0\s[0]Here is dialogue referring to Anchor 2 and Anchor 3.\e"
+	
+	//Anchor words are defined more in anchor.dic. Note here when you see this dialogue that Anchor 1, 2, and 3 become links when spoken, even if they weren't written as links in the dialogue in this file. This is why anchor words are convenient, you don't have to set up link code every time they say a certain word. Try clicking the links when they appear to see what they lead to. It'll give you an idea of exactly how anchors work.
+	
+	
+	//--Chains
+	//Chain dialogue is unique. A dialogue chain consists of multiple bits of dialogue that get called in order over a period of time.
+	
+	//"\0\s[0]This is the first part of a chained dialogue.\w8\1\s[10]Second part to come when we next speak.\e:chain=achain"
+	
+	//Note here that instead of ending the dialogue with the normal end tag of \e, it ends with \e:chain=achain. This will link down below to a chunk of code outside RandomTalk called achain. You can scroll down and find it now if you want. You can name your chain anything you want, it'd just follow the same format of \e:chain=yourchainsname. Once a dialogue has entered a chain, they won't say any other random dialogue until the chain is finished.
+	
+	//"\0\s[0]This will lead to the second piece of chained dialogue.\w8\1\s[10]This will have another chain attached to it.\e:chain=anotherchain"
+	
+	//Here, this will link to a different chain to continue the conversation. You can scroll down to the section on chains to see this in action.
+	
+	
+	//--If statements
+	//You can put if statements in RandomTalk! They don't even need Else statements, unless you want to keep two sets of statements completely separate - for example, you have one pool of conversations for when there are two characters, and one for if there are three characters. You wouldn't want these to overlap, so you'd put one pool in the if statement and the other in the else. Most of the time though, you won't need an Else statement for these, since they'll mostly only be adding in dialogue if the if statement is true. 
+	
+	//if nowshell == "master" //This checks to see what shell they're currently using. You may remember this value being defined back in bootend.dic. If they're in their default shell...
+	{
+	//Then these conversations are available! Note the brackets enclosing this set of dialogue.
+	//"\0\s[0]Here is dialogue related to the default shell.\w8\1\s[10]You can use this to comment on clothing your ghost is wearing.\e"
+	
+//	"\0\s[0]Here is more dialogue related to the default shell.\e"
+	}
+	
+	//You can also put in multiple ifs checking for the same thing to vary the responses. In this case, it's checking to see if they're wearing another shell. You don't need to use elseifs for this! Just an if is fine.
+	//if nowshell == "Hypothetical Shell that doesn't actually exist"
+	{
+	//"\0\s[0]This is dialogue related to a shell we don't actually have.\w8\1\s[18]Unless it somehow pops into existence.\e"
+	
+	//"\0\s[0]This is more dialogue related to a hypothetical shell we don't actually have.\w8\1\s[19]It's not happening.\e"
+	}
+	//After the if statement is done, you can continue with dialogue as normal. As you can see, you can move the ifs around in here, it doesn't really matter. You may want to stick them all in one place together if you want to keep track of them, or you can scatter them around your dialogue as you please. It's up to you. These two lines below are just normal random dialogue.
+	
+	//"\1\s[10]This is generic dialogue.\w8\0\s[0]This can be replaced with whatever you want.\e"
+	
+//	"\1\s[10]This is more generic dialogue to be replaced.\w8\0\s[0]Do whatever you like with it.\e"
+	
+	//And here we're going to go back into ifs! You see, you can space out your ifs with normal dialogue if you want, as I just mentioned. Anyway, you can set up if statements to check for a lot of different things! One of the cooler ones I think are ones set to check for time. This one for example checks if the month is December. You can change month to any month you want.
+	
+	if month >= 12
+	{
+//		"\0\s[0]This is dialogue for December.\w8\1\s[18]A cold month?\e"
+		
+//		"\0\s[0]This is more dialogue for December.\w8\1\s[18]Still cold?\e"
+	}
+	
+	//So you can use these to check for any number of situations. You can add as many or as few if checks if you want. You can delete these if checks too if you don't want them.
+	//You can also nest ifs within these, so you could check if it was the 25 of April in the morning for example. You can also add or take away dialogue from these as you like, so if you want to have five dialogue options for April or one for January, you can totally do that.
+	
+	
+	//This if checks what day of the week it is. You can check for any day or as many days as you want. Or none. It's up to you.
+	if weekday == 1
+	{
+//		"\0\s[0]This is dialogue for Monday.\w8\1\s[10]Yup.\e"
+		
+//		"\0\s[0]This is more dialogue for Monday.\w8\1\s[10]That it is.\e"
+	}
+	
+	
+	//--Double Envelopes
+	//If you've gone through word.dic, you may remember a list with two sets of values on each line. This is how you would call something like that! Technically, what I call a double envelope is really an array, or a stored list of values. You can pull certain things out of that list as you need, although it requires some specific formatting. For this example, we'll use the double envelope that cindysuke made that has a Korean word and its definition. This can be a bit complicated, so pay close attention.
+	//If this scares you too much, you can delete the whole thing.
+	
+	//note that this is enclosed in its own set of brackets
+//	{
+//	_korean = lessonkor //Here, the envelope "lessonkor" (which is in word.dic) is stored as a new temporary value called _korean. You can name the new value anything you like. As a reminder, when coding, it goes "4 = 2 + 2" and not "2 + 2 = 4". The result always comes first!
+	//If you look at lessonkor in word.dic, you'll see it goes "Korean word, meaning". So "Korean word" is the first value in that array, and "meaning" is the second. Arrays always start at 0, as a note.
+//	_korword = _korean[0] //Now we make a temporary value called "_korword", which is what will store the Korean word. Since the Korean word is the first value in the array _korean which we just defined, then we can pull that value from the array with _korean[0]. [0] is telling it which entry in the array to take - in this case, the first one (again, arrays start at 0).
+//	_kormean = _korean[1] //Now we make a temporary value called "_kormean", which is what will store the meaning of the Korean word. This is the second value in the array, so we can pull it out of _korean by using _korean[1].
+	
+	//Now we put it all together!
+//	"\1\s[10]Here is an example of a double envelope. The Korean word is %(_korword).\w8\0\s[0]The word means %(_kormean).\e"
+	
+	//As you can see here, we then use the values we set above for _korword and _kormean up there in the dialogue as our new envelopes. If you're planning on using a double envelope/array like this, study how this works very carefully! If you're good with arrays, you can do a lot with this kind of thing, but I must admit I am terrible with arrays and they're still hard for me to wrap my head around, so I don't have much advice on how to do that kind of thing.
+	//The underscores in front of korword and kormean mean that the value is temporary, and will disappear when the dialogue has finished. More on this kind of thing on the coding page of the walkthrough.
+	
+	//Additional Note - You can't test this kind of dialogue in Script Input. You'll have to wait until it comes up naturally in your ghost's random dialogue.
+//	}
+	//That's all for double envelopes! As mentioned, if this scares you, you can delete this chunk and you'll be fine.
+	
+	
+	//Now we're going to go back to normal dialogue for a bit of a break. Feel free to rewrite this all as you like.
+	
+//	"\1\s[10]This is another piece of random dialogue to be replaced.\w8\0\s[0]Do whatever you want.\w8\1\n\n[half]\s[15]The power is yours!\w8\0\n\n[half]\s[3]Playing with power even, you could say.\e"
+	
+//	"\1\s[10]More dialogue to be replaced.\w8\0\s[0]Remember you can write your own new lines of dialogue too.\w8\1\n\n[half]\s[10]You don't have to only replace the words in these.\e"
+	
+//	"\1\s[10]This is another bit of dialogue to be replaced.\w8\0\s[0]aitalk.dic can be as long as you want.\e"
+	
+//	"\0\s[6]More dialogue to be replaced.\w8\1\s[15]Follow your heart and write some text!\e"
+	
+	
+	//--Multiple Responses
+	//If you've poked around menu.dic or string.dic or read the walkthrough, you may have seen me touch on setting multiple options for any one given bit of dialogue. This kind of dialogue follows much the same format.
+	
+	{ //Again, note the brackets around these unique bits of dialogue. Dialogue that's more complicated than just a single line of "dialogue/more dialogue/more dialogue/end" usually needs to be put in brackets like this. 
+	
+//	"\0\s[0]I am asking you a generic question, Triangle. Generic question?\w8\1\s[10]"
+	//Notice that the last few tags set up Triangle's pose before going into his text below. You don't have to do this if you want each response to have its own pose, but if he'll have the same expression regardless of what he's saying, you might as well save yourself the work. Note this does not end with \e either, since the dialogue isn't done yet.
+	-- //You've probably seen these double dashes before in other .dic files. In this case, these dashes enclose a set of multiple responses. More on double dashes in the coding page on the walkthrough site.
+//	"This is my first response."
+//	"This is my second response."
+//	"This is my third response."
+//	"This is my fourth response."
+//	"This is my fifth response."
+//	"This is my sixth response."
+	//As you can see here, there are six potential replies Triangle might have to Girl's question. Each time this dialogue is called, he will randomly select one response from these six.
+	-- //The closing set of dashes for his dialogue options.
+//	"\w8\0\s[0]\n\n[half]" //Now we're going back to Girl to set up for her multiple responses in return. This line of tags mostly just sets up for what she will say. Like above, you can see her pose is set in here with \s[0], so she'll have the same pose for each response, and the consistent spacing with \n\n[half].
+	-- //opening dashes
+//	"First response to your response."
+//	"Second response to your response."
+//	"Third response to your response."
+//	"Fourth response to your response."
+	//Following the same pattern as above, Girl will randomly reply with one of these bits of dialogue. Note that these responses are also randomly chosen, so it may go Triangle says response one, Girl says response three, or Triangle says response four, Girl says response two, or so on and so forth. So make sure the exchange will still make sense regardless of what either of them might say.
+	-- //closing dashes
+//	"\e" //Dialogue ends
+	}
+	
+	//Here's another example of multiple responses. This one will let you randomly choose something to say in the middle of a sentence.
+	
+	{
+//	"\0\s[0]Say either black or white.\w8\1\s[10]What if I say " 
+	-- //opening dashes
+//	"green"
+//	"red"
+//	"purple"
+//	"orange"
+//	"yellow"
+//	"\s[18]magenta" //Notice here I added a tag for his thoughtful pose. If he chooses magenta, he'll do this pose. You can set up individual expressions for each potential choice this way.
+	-- //closing dashes
+//	" instead?\w8\0\n\n[half]\s[9]Then you're not really cooperating.\w8\1\n\n[half]\s[15]Sounds about right.\e" //dialogue ends
+	
+	//You can see that this follows the formula of the above, although there's only one set of multiple responses in here, then Triangle continues with his sentence. You can use this feature in many different ways if you're creative.
+	}
+	
+//	"\0\s[0]\f[height,20]These words are really large.\f[height,default]\w8\1\s[10]These words are a normal size. \w8\f[height,6]These words are small.\f[height,default]\e"
+	
+	//You can use other fancier SakuraScript bits in your dialogue if you want to get font effects, although I won't get too much into them here. In this case, \f[height,20] changes the height of the font, in this case to 20 or to 6, and then \f[height,default] changes them back to normal. I touch more on this in the SakuraScript page of the walkthrough.
+	
+//	"\0\s[0]\f[strike,true]These words are struck out.\f[strike,default]\w8\1\s[10]\f[sub,true]These words are a subscript.\f[sub,false] \f[sup,true]These words are a superscript.\f[sup,false] \f[underline,true]These words are underlined.\f[underline,default] \f[bold,true]These words are bold.\f[bold,false] \f[italic,true]These words are italic.\f[italic,false] \f[color,186,146,112]These words are a color.\f[color,default] This tag would return to default.\f[default]\e"
+	
+	//Here's a list of similar tags you may find useful. You can see they function much like <b> or <i> tags in html. You just enclose the piece of text you want to change with them. Note that they start with \f[word,true] to turn it on, then \f[word,false] or \f[word,default] to turn it off. I assume you can tell what the tags do by the text they enclose.
+	//For the \f[color] tag, the three colors listed are the RGB values of the color you want to use for your text. Change them to whatever color you want to use. \f[default] can be an easy way to quickly go back to the default word setting in your balloon after messing with colors and effects a lot.
+	
+//	"\0\s[0]Here's a link to a website. \_a[http://www.website.com/]Right here.\_a\e"
+	
+	//Along the same lines as above, you can use \_a[address] to link to certain things. Note that it ends with \_a to close the link. It's very similar to <a href=address> and </a> in html.
+	
+//	"\0\s[3]\1\s[15]\_sWe are saying this dialogue at the same time.\e" 
+	
+	//This dialogue uses a unique tag, \_s. \_s makes it so both characters will speak the same words at the same time. Try it in Script Input to see how it works. I talk about it a little more on the walkthrough page for scripting.
+	
+	//And so we reach the end of randomtalk! I again reiterate, YOU CAN AND SHOULD WRITE YOUR OWN NEW LINES OF DIALOGUE FOR THIS! I included some random example phrases here for you just to replace the text and see what you can do, but there really aren't that many. You'll want to add more, and doing so is easy! Just copy and paste a line and redo the text. Repeat as many times as you want with as many conversations as you want. You can always expand this section!
+}
+
+//   _____                 _    _                                         
+//  / ____|               | |  (_)                                        
+// | (___  _ __ ___   ___ | | ___ _ __   __ _    ___ ___  _ ____   _____  
+//  \___ \| '_ ` _ \ / _ \| |/ / | '_ \ / _` |  / __/ _ \| '_ \ \ / / _ \ 
+//  ____) | | | | | | (_) |   <| | | | | (_| | | (_| (_) | | | \ V / (_) |
+// |_____/|_| |_| |_|\___/|_|\_\_|_| |_|\__, |  \___\___/|_| |_|\_/ \___/ 
+//                                       __/ |                            
+//                                      |___/      
+//-o-o-o-o Pos Route -o-o-o                       
+Select.smokeruser
+{
+	"\0\s[80]Oh! That's something we have in common. Then, I hope you don't mind if I smoke.\w8\w4\s[81] Though I try to do it in moderation. I hope you do too, darling.\e"
+	smokingconvo += 1
+	usersmokes += 1
+}
+Select.quitteruser
+{
+	"\0\s[78]oh...\x\s[79]-He crumples up the cigarette-\x\s[79]you know what. So am I. \w8\s[82]I'm so proud of you, darling. I know you can do it.\w8 You know I'll always be there to support you in whatever you do.\e"
+	smokingconvo += 1
+	userquitting += 1
+}
+Select.nonsmokeruser
+{
+	"\0\s[78]Well...I hope you don't mind if I do, love.\w8\s[78] In moderation, of course. \w8\s[80]I picked up the habit in high school. Never quite got rid of it...\e"
+	smokingconvo += 1
+	usernonsmoker += 1
+}
+Select.dontsmokeuser
+{
+	"\0\s[78]oh...\x\s[79]-He crumples up the cigarette-\x\s[79]Well then. Done. \w8\s[3]I'd change anything about myself for you, love.\w8\s[16] Thank you...for giving me a reason to be better.\e"
+	smokingconvo += 1
+	peterquitting += 1	
+}
+//-o-o-o-o- Neg route -o-o-o-o-o
+Select.userfinesmoking
+{
+	"\0\s[80]-He looks surprised but grateful-\x\s[80]Oh... thank you, love.\w8\s[81]Haha...\w8I didn’t think you’d be okay with it.\w8\s[80] But I appreciate you saying so.\w8\ Just another reason why you’re perfect for me.\e"
+}
+Select.userdislikesmoking
+{
+	"\0\s[83]-His expression falters and he shoves the cigarette deeper into his pocket-\x\s[22]Oh... I didn’t realize you felt that way.\w8\s[29]I’m sorry, love. Really.\w8\s[25]I...\w8\s[83]I’ll stop.\w8\s[23] Anything for you.\e"
+}
+Select.ambivalentsmokinguser
+{
+	"\0\s[76]...\w8\s[81]Ah...\w8Heh -\w8 I guess... you don’t mind either way?\w8\n\n\s[78]...\w8Well, I won’t smoke around you then. \w8\s[103]Just to be safe.\e"
+	 peterneg += 1
+}
+
+
+
+
+//  _____     _                               
+// |  __ \   | |                              
+// | |__) |__| |_    ___ ___  _ ____   _____  
+// |  ___/ _ \ __|  / __/ _ \| '_ \ \ / / _ \ 
+// | |  |  __/ |_  | (_| (_) | | | \ V / (_) |
+// |_|   \___|\__|  \___\___/|_| |_|\_/ \___/ 
+                                            
+                                            
+Select.userpetowner
+{
+	"\0\s[22]Oh! I wonder what kind...\w8\s[17]I can't wait to meet them one day.\e"
+	petconvo += 1
+	userownpet += 1
+}
+Select.usermanypets
+{
+	"\0\s[23]Wow! That's great, %(username).\w8\s[22] It must be wonderful, taking care of multiple furry friends. \w8\s[17]I bet they adore you.\e"
+	petconvo += 1
+	manypetsuser +=1
+}
+Select.usernopets
+{
+	"\0\s[29]I do like animals, so...I hope you can get used to Rat.\s[22] She's very easy to take care of!\e"
+	petconvo += 1
+	nopetsuser +=1
+}
+Select.userdislikepets
+{
+"\0\s[20]Oh...I see.\w8\s[54] I'm sure you could get used to Rat. She's a sweetheart, and she wouldn't bother you.\w8\s[4] Though, if you couldn't...\w8\s[38]you're my first priority, love. Over everything.\e"
+	petconvo += 1
+	dislikespets +=1
+}
+//  _____        _                                   
+// |  __ \      | |                                  
+// | |  | | __ _| |_ ___    ___ ___  _ ____   _____  
+// | |  | |/ _` | __/ _ \  / __/ _ \| '_ \ \ / / _ \ 
+// | |__| | (_| | ||  __/ | (_| (_) | | | \ V / (_) |
+// |_____/ \__,_|\__\___|  \___\___/|_| |_|\_/ \___/ 
+  
+Select.likeddate
+{
+	"\0\s[23]Really?!\w8\s[49] I-I was hoping you'd like it, but wow! \w8\s[29]That's actually a big relief.\w8\w4\n\s[24]I'll take you out for a real dinner someday, darling. I promise.\e"
+	dateconvo += 1
+	userlikeddate += 1	
+}
+Select.okaydate
+{
+	"\0\s[85]Ugh, I knew it. \w8\s[29]Can't believe I would've blown it. \w8\s[12]But then again, you \f[italic,true]did \f[italic,false] bring me here. \w8\s[37]So you couldn't have hated it.\e"
+	dateconvo += 1
+	userokaydate += 1
+}
+Select.creepydate
+{
+	"\0\s[20]Really? \w8\s[38]I'm...sorry, %(username) for making you uncomfortable.\w8\s[4] Thanks for giving me another chance. I'll make it up to you.\e"
+	dateconvo += 1
+	userhatedate += 1
+}	
+
+// ______              _ _                                   
+// |  ____|            (_) |                                  
+// | |__ __ _ _ __ ___  _| |_   _    ___ ___  _ ____   _____  
+// |  __/ _` | '_ ` _ \| | | | | |  / __/ _ \| '_ \ \ / / _ \ 
+// | | | (_| | | | | | | | | |_| | | (_| (_) | | | \ V / (_) |
+// |_|  \__,_|_| |_| |_|_|_|\__, |  \___\___/|_| |_|\_/ \___/ 
+//                           __/ |                            
+//                          |___/            
+Select.stablefam
+{
+	"\0\s[22] That's great, darling! \w8\s[17]I'm happy for you. \w8\s[12]Heh, then let's hope they approve of me.\e"
+	talkedaboutfam += 1
+	usergoodfam += 1
+}
+Select.complexfam
+{
+	"\0\s[20]Oh...I see.\w8\s[86] I'm sorry I can't...really be there with you. \w8\s[24]But I'll still always be there for you. \w8\s[25]And I love you more than you'll ever know.\e"
+	talkedaboutfam += 1
+	usercomplexfam += 1	
+}
+Select.badfam
+{
+	"\0\s[43]Ha. In which case I can relate. \w8\s[40]I'm sorry you have to go through that, my love. \w8\s[57]But really, who needs them when you have me.\e"
+	talkedaboutfam += 1
+	userbadfam += 1	
+}
+Select.rejectfam
+{
+	"\0\s[20]O-Oh...of course, darling. \w8\s[86]You don't have to talk about it if you don't want. \w8I'm sorry if if I touched on a sore spot, but...\w8\n\n\s[54]...I would really love it if you'd talk to me.\e"
+	talkedaboutfam += 1
+	peterneg += 1
+}
+
+//  _____                 _____                 _ _ _        _ _    
+// |  __ \               / ____|               | | | |      | | |   
+// | |  | | __ _ _   _  | (___  _ __ ___   __ _| | | |_ __ _| | | __
+// | |  | |/ _` | | | |  \___ \| '_ ` _ \ / _` | | | __/ _` | | |/ /
+// | |__| | (_| | |_| |  ____) | | | | | | (_| | | | || (_| | |   < 
+// |_____/ \__,_|\__, | |_____/|_| |_| |_|\__,_|_|_|\__\__,_|_|_|\_\
+//                __/ |                                             
+//               |___/       
+Select.goodday
+{
+	"\0\s[22]Oh! That's good, love! \x-He looks relieved you're even talking to him-\x\s[103] I've had better days...but I can't complain, now that you're here.\e"
+}
+Select.badday
+{
+	"\0\s[28]Oh! I didn't know. I'm sorry, darling.\w8\s[89] So that's why you've been so...\w8\w8\n\n\s[29]Ah, nevermind, love. I'm so happy you came to me after a bad day.\w8\s[50] I'm sure I can make it better.\e"
+}
+Select.nosmalltalk
+{
+	"\0\s[0]...\w8\s[0]It's alright. You don't have to talk about your day.\w8\n\n\...but...please say something.\w8 Anything.\e"
+	peterneg += 1
+}
+
+// __      ___     _                               _____                      
+// \ \    / (_)   | |                             / ____|                     
+ // \ \  / / _  __| | __ _  __ _ _ __ ___   ___  | |     ___  _ ____   _____  
+//   \ \/ / | |/ _` |/ _` |/ _` | '_ ` _ \ / _ \ | |    / _ \| '_ \ \ / / _ \ 
+//    \  /  | | (_| | (_| | (_| | | | | | |  __/ | |___| (_) | | | \ V / (_) |
+//     \/   |_|\__,_|\__, |\__,_|_| |_| |_|\___|  \_____\___/|_| |_|\_/ \___/ 
+//                    __/ |                                                   
+ //                  |___/       
+Select.usergamer
+{
+	"\0\s[28]Really? \w8\s[12]I never got much into video games myself.\w8 But I'd love to play some with you sometime.\w8\w5\s[40] As long as you don't have any other dating sims.\e"
+	vidgameconvo += 1
+}
+Select.nongameruser
+{
+	"\0\s[12]Really? \w8\Heh...good.\w8\s[37] I know they'd only be playthings to you, but, \w8\s[37]I'm more than happy to be your one and only.\e"
+	vidgameconvo += 1
+}
+Select.rejectgameuser
+{
+	"\0\s[20]I-I was just curious!\w8\w8\s[89] It's fine if you don't want to tell me...\w8\n\n\s[27]...though really, you shouldn't be hiding things from me.\e"
+	vidgameconvo += 1
+	peterneg += 1
+}
+ 
+//  _                       _____                      
+// | |                     / ____|                     
+// | |     _____   _____  | |     ___  _ ____   _____  
+// | |    / _ \ \ / / _ \ | |    / _ \| '_ \ \ / / _ \ 
+// | |___| (_) \ V /  __/ | |___| (_) | | | \ V / (_) |
+// |______\___/ \_/ \___|  \_____\___/|_| |_|\_/ \___/ 
+ 
+ Select.yeslove
+{
+	"\0\s[27]…really.\w8\w8\n\n\s[40]Huh.\x\s[42]That’s…interesting, darling. \w8\s[43]But it’s in the past! I’m sure you’d rather not dwell on it.\e"
+	loveconvo += 1
+	been_in_love += 1
+
+	
+}
+Select.nolove
+{
+	"\0\s[22]Ha! Really?\w8\s[23] We have that in common then. \w8\n\n\s[28]With how perfect you are I was sure there would’ve…\w8\s[89]others. Who’d try to steal you away.\w8\s[50] But I guess it just goes to show, this is fate.\e"
+	loveconvo += 1
+	no_been_in_love += 1
+
+}
+Select.maybelove
+{
+	"\0\s[17]Then I’ll take that as a ‘no’.\w8\s[25] What we have – there’s no mistaking it.\w8\s[26] If you had to wonder ‘is this love’ – it’s not.\e"
+	loveconvo += 1
+	maybe_been_in_love += 1
+}
+//   _____             _    _____                      
+//  / ____|           | |  / ____|                     
+// | (___   ___  _   _| | | |     ___  _ ____   _____  
+//  \___ \ / _ \| | | | | | |    / _ \| '_ \ \ / / _ \ 
+//  ____) | (_) | |_| | | | |___| (_) | | | \ V / (_) |
+// |_____/ \___/ \__,_|_|  \_____\___/|_| |_|\_/ \___/ 
+//                                                    
+Select.soulyes
+{ 
+	"\0\s[90]You do?\w8\s[24] Then I guess… we were meant to find each other.\n\n\w8\s[22] That kind of makes all the mistakes and chaos worth it, doesn’t it?\w8\s[50] Knowing it was all leading me to you.\e"
+	soulconvo += 1
+	user_soulmate += 1
+}
+Select.soulno
+{ 
+	"\0\s[20]Mm, that’s fair.\n\n\w8\s[54] In fact, that might even be better\n\n\w8\s[4]It wasn’t some cosmic force that brought me to you…\w8\s[38] I chose to be yours. And I’d make that choice a thousand times over.\e"
+	soulconvo += 1
+	no_user_soulmate += 1
+}
+
+
+
+//--Chains
+//Here is where you will put your bits of chain dialogue. They are outside of OnAiTalk, which makes them a bit more flexible as I mentioned above.
+//Each chain function will go through each part of the chain in order even if it's in one function, until it goes to \e:chain=end which will end the chain, as you could probably guess. So you can put the entire chain dialogue into one place.
+//You don't have to make chains if you don't want to! This is just for reference if you ever have a conversation come up where it could be handy.
+
+achain
+{{CHAIN
+	//this will happen the first time the chain is called
+	"\0\s[0]Here is the second part of the chain.\w8\1\s[10]Will there be more?\e"
+	
+	//they will then go to this dialogue next
+	"\0\s[0]This is the third part of chained dialogue.\1\w8\s[10]This will lead to a fourth part.\e"
+	
+	//this will be the last piece of dialogue in the chain, then they will go back to their normal dialogue
+	"\0\s[0]This is the fourth piece of chained dialogue.\1\w8\s[10]This is the end.\e:chain=end"
+}}CHAIN
+
+//Pay careful attention to the CHAIN text and double brackets for these. Double brackets, CHAIN, dialogue, double brackets, CHAIN. If you are planning on making chains, I'd recommend just copying and pasting the chain example here and changing the dialogue and name of the function as you need. Less likely for mistakes to happen, you know?
+//Note also it ends with \e:chain=end, basically ending the chain.
+
+anotherchain
+{{CHAIN
+	"\0\s[0]This is the second example of chained dialogue.\1\w8\s[10]This will only have two parts.\e"
+	
+	"\0\s[0]This is the last piece of the second example of chained dialogue\1\w8\s[10]This will end here.\e:chain=end"
+}}CHAIN
+
+//You can make chains as long or as shot as you want! Just make sure to end the chain when you're done.
+
+
+//Alright, we're done with the random conversations for now, but there are a few other things in aitalk that we'll need to fill out too.
+
+
+//-OnMinuteChange
+//These are time-related bits of dialogue for your ghost to say. If any of them look interesting, uncomment them! I commented them out for simplicity's sake, but it's up to you if you want to use them or not!
+
+//OnMinuteChange
+//{
+//HourCheck
+//--
+//if mikireflag == 1
+// 	{
+// 		MikireTalk
+//	}
+//}
+
+
+//Keeps track of if an hour has passed. Just ignore this.
+HourCheck
+{
+if passmin >= 59
+	{
+		passmin = 0
+		passhour = passhour + 1
+	}
+}
+
+
+OnMinuteChange //This is what will trigger time-based dialogue for your Ghost.
+ {
+	HourCheck //checks to see if an hour has passed, ignore it
+	--
+ 	// if minute == 0 //These ifs will check what time it is. Here, it's seeing if the minute equals zero...
+	// {
+ 		// if hour == 12 //And the hour equals 12, meaning it's noon. You can change this to some other hour if you want.
+		// {
+ 			// "\0\s[0]It's noon.\w8\1\s[15]Let's have a showdown!\w8\0\n\n[half]\s[9]There are no corrals here, dude.\e"
+			// //Replace with appropriate dialogue as you want.
+		// }
+ 		// elseif hour == 0 //If the hour is zero, aka midnight. Again, you can change this to whatever hour you want to check for. This section is flexible! You can also add more elseifs if you want to check for other hours.
+		// {
+ 			// "\0\s[0]It's midnight!\e"
+ 			// "\0\s[0]This is another bit of dialogue for midnight.\w8\1\s[10]BooooOoooOOOooOOOOo.\e"
+ 			// "\0\s[0]This is the third bit of dialogue for midnight.\e"
+			// //Then replace the dialogue with what's appropriate.
+		// }
+		// else
+		// {
+			// "\0\s[0]It's %(hour12)'o clock.\e"
+			// //%(hour12) stores the time. This is a general top of the hour notification. I personally like this because it helps me keep track of time when I've been working on something, so when a ghost is all "Hey it's 3 o clock" I can be like woah really when did that happen. If you think this is annoying though, you can just delete this bit of dialogue to leave this else statement blank, or leave "" in here instead.
+		// }
+	// }
+	// //You can also check for more specific times! For example...
+	// elseif hour == 23 && minute == 55 //this checks to see if the hour is 23 and the minutes are at 55... essentially, 11:55 pm.
+	// {
+		// "\0\s[0]5 minutes to midnight.\e"
+		// //Replace with what you like!
+	// }
+	// elseif hour == 7 && minute == 30 && weekday == 0 //Here, it's checking for a specific time on a specific day. You can add things to your time checks just like this by using the AND operator, && (more about operators at the walkthrough page). This adds up to 7:30 am, Sunday. If you have a favorite TV program on at some time, you could have your ghost comment on when it comes on like this.
+	// {			
+		// "\0\s[0]It's 7:30 on Sunday.\e"
+		// //Replace with what's appropriate.
+	// }
+	// //If you're not interested in these more specific checks, you can delete those last two elseifs and just leave the one for minute==0, or clear them all out as mentioned above, although leave in the HourCheck and mikireflag bits.
+	
+	// 
+	
+	
+	//Advanced users who want to enable the off-screen boundary check = Remember mikireflag up in OnAiTalk? This is the flag that checks for that. You'll want to uncomment this here so it can trigger the dialogue.
+	
+	//Don't touch this part.
+	// elseif mikireflag == 1
+ 	// {
+ 		// MikireTalk
+	// }
+ }
+
+//--OnSecondChange
+//Like the above, this handles what happens every time a second goes by. Most of this you will not have to touch.
+
+OnSecondChange
+ {
+	if passsec == 59
+ 		{
+	 	passsec = 0
+ 		passmin = passmin + 1
+		}
+ 	else
+ 		{
+	 	passsec = passsec + 1
+		}
+		
+		
+	//Advanced users - these next bits are related to the mikireflag and when a character is off screen. Uncomment these if you want to use this feature. 
+		
+	// if mikireflag == 0 && reference1 == 1 //Dialogue for putting them off the screen. You could make this a unique line if you wanted (Like "Hey! What are you doing?"), and have MikireTalk below be for if they continue to be offscreen ("Why are you leaving me out here? Help!" for example). I'll add an example bit of dialogue and comment it out, you can uncomment it and use it if you like, or just leave it out and use MikireTalk below.
+	// {
+		// //"\0\s[0]You've moved me off screen."
+		
+		// MikireTalk
+	// }
+	// if mikireflag == 1 && reference1 == 0 //Dialogue for coming back on the screen
+	// {
+		// EndMikireTalk
+	// }
+	// mikireflag = reference1 //reference1 is if the ghost is offscreen or not
+	
+	
+	//This dialogue is for when the two characters are overlapping each other. Uncomment this if you want to have dialogue for it!
+	
+	// if reference2 == 1
+	// {
+ 		// "\0\s[0]Me and Triangle are overlapping.\w8\1\s[19]That's strange since your resolution is %screenwidthx%screenheight, %(username). Shouldn't we have enough space?\4\e"
+		
+		// //You can see here the use of two envelopes, screenwidth and screenheight, to tell the user their resolution. Oddly, they are not in parentheses. I'm not sure why this is, but they don't display right otherwise. An odd quirk with these two envelopes.
+		// //Note also how Triangle moves away at the end of the dialogue. This is due to the \4 tag. That will make any one character move away from the other if they are able. I talked about this tag and its counterpart tag \5 in the SakuraScript page on the walkthrough.
+	// }
+ }
+
+ //---- MikireTalk ---------------------------------------------------------------------
+ //MikireTalk is dialogue for when your main character is off-screen. Like if you dragged Girl over to the side of your monitor until she was partially concealed by it. Advanced users, make sure to uncomment this along with all the other mikire related things in here I've pointed out.
+ 
+// MikireTalk
+ // {
+	// "\0\s[0]I'm off the screen.\w8\1\s[10]You can push Ctrl-Shift-F12 to bring her back."
+	// //Note the hotkey combo Triangle mentions. He's telling the truth, that should bring her back on the screen.
+ // }
+
+ //----EndMikireTalk--------------------------------------------------------------------
+ //For after you bring the character back on screen.
+ 
+// EndMikireTalk
+ // {
+	// "\0\s[0]I'm no longer off the screen.\w8\1\s[19]What a shame.\w8\0\s[9]\n\n[half]Shut up.\e"
+ // }
+
+
+//**** OnSurfaceRestore *****************************************************************
+//OnSurfaceRestore is a handy function. What this does is that after a short period of time, the ghost will go back to its default pose, so you won't have a ghost stuck in one expression for too long. It's also helpful if you've made one of the characters disappear using \s[-1] in dialogue and didn't bring them back at the end of it. This will do that for you.
+//I'm going to comment out the if/else statements in this because the circumstances in which they'd come up seem pretty unlikely and unnecessary if you're just going to be making a simple ghost. You can just leave this function alone and move on if you want. However, if you do want to use them, just uncomment the lines by deleting the slashes and fill in the info as you need.
+
+//*********************Advanced User Info*******************************
+//You can put if statements in OnSurfaceRestore to make exceptions for certain poses, or to make sure that once they're in a certain pose, they stay in that pose. For example, if you turn my Hunter and Smoker ghost into eggplants, there's a check for the their eggplant pose numbers to make sure they STAY eggplants when OnSurfaceRestore is called.
+//You can also use OnSurfaceRestore to clean up things that might be left on the screen, primarily from using p[number]\s[] to call up other objects or characters. Just make sure to add a p[number]\s[-1] to OnSurfaceRestore, and that should get rid of it each time the ghost cleans itself up.
+//***********************************************************************
+
+OnSurfaceRestore
+ {
+ 	//if reference0 == 4 || reference0 == 6 //This is checking what poses they are in. This looks to see if Girl is in pose 4 or pose 6, since she is reference0.
+ 	//{
+ 	//"\1\s[10]You're in a sad pose.\w8\0\s[0]I'll go back to normal then.\e"
+ 	//}
+ 	//elseif reference1 == 14 || reference1 == 16 //This is doing the same but for Triangle, since he's reference1. It looks to see if he's in pose 14 or post 16.
+ 	//{
+ 	//"\0\s[0]You look sad.\w8\1\s[10]I'll go back to normal.\e"
+ 	//}
+ 	//else
+ 	//{
+	"\0\s[0]\1\s[10]\e"
+	//}
+ }
+
+ 
+ //--OnKeyPress
+ //This defines the hotkeys your ghost will use. You can change these to whatever you want, but I don't really know why you would. I'd just leave this alone. Advanced Users can add new hotkeys attached to whatever function if you want.
+ 
+OnKeyPress
+{
+	if reference0 == "t"
+	{
+	OnAiTalk
+	}
+	elseif reference0 == "r"
+	{
+	OnLastTalk
+	}
+	elseif reference0 == "f1"
+	{
+	"\![open,readme]"
+	}
+}
