@@ -1,4 +1,9 @@
-﻿//These define what character set your ghost will be using. Don't touch any of them.
+﻿dic, config.dic, UTF-8
+dic, shiori3.dic, UTF-8
+dicif, optional.dic, UTF-8
+dicif, compatible.dic, UTF-8
+
+//These define what character set your ghost will be using. Don't touch any of them.
 
 charset, UTF-8
 charset.dic, UTF-8
