@@ -1088,6 +1088,7 @@ Select.snekgift : nonoverlap_pool
 {
 	//// Positive, No Data Yet, Equally Mixed, Mixed-Mostly Positive ////
 	if (peteraff >= peterneg || (peteraff == 0 && peterneg == 0)) 
+	{
 		if (ratgifts < 6)
 		{
 			"\0\s[28]-You give him a colorful feeding dish.-\x\s[94] A new dish? Stylish! She’ll appreciate having her meals in something fancy.\w8\s[95] Thanks, love.\e"
@@ -1105,7 +1106,9 @@ Select.snekgift : nonoverlap_pool
 			"\0\s[28]-You're out of gifts for Rat, but you tell him to give her your love-\x\s[22] Aww, darling...\w8\s[17] I'll remember, promise.\e"
 			peteraff += 1
 		}
+	}
 	elseif  ((peterneg > peteraff + 10) && (peteraff > 0) && (peteraff < 10))
+	{
 			
 		if (ratgifts < 6)
 		{
@@ -1129,7 +1132,9 @@ Select.snekgift : nonoverlap_pool
 		{
 			"\0\s[28]-You're out of gifts for Rat, but you tell him to wish her good luck-\x\s[17] I'll remember darling, promise.\e"
 			peteraff += 1
+		
 		}
+	}
 	else
 	{
 			"\0\s[28]-You give him an enrichment toy for Rat. You tell him you relate to Rat - she can't get away from him either.-\x\s[94]...she wouldn't want to. \w8\s[95] And deep down, I don't think you want to either.\w8\s[98] You braught be here after all, did you?\e"
