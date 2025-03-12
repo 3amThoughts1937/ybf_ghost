@@ -71,7 +71,7 @@ OnNameTeach
 		"\0\s[39]Wow, what a coincidence.\x\s[29]Pff - haha!\w8\n\n\s[98]Really though darling. \w8\s[89]I don't like that name for myself, much less for you. \w8\s[12]So if you don't mind....\![open,inputbox,OnNameTeach,-1]"
 	}
 	
-	elseif reference0 == "tk"
+	elseif reference0 == "tk" || reference0 == "tkleeparker" 
 	{
 		"\0\s[14]Uh...really, darling?\x\c\s[27]You are so much better than \f[color,255,0,0]them.\w8\n\s[27]Try again.\![open,inputbox,OnNameTeach,-1]"
 	}
@@ -81,7 +81,7 @@ OnNameTeach
 		"\0\s[14]Uh...really, darling?\w8\n\s[27]You are so much better than \f[color,255,0,0]her.\x\c\n\s[27]Try again.\![open,inputbox,OnNameTeach,-1]"
 	}
 	
-	elseif reference0 == "don" || reference0 == "donwilliams" || reference0 == "donaldwilliams" || reference0 == "donald"
+	elseif reference0 == "don" || reference0 == "donwilliams" || reference0 == "donavinwilliams" || reference0 == "donavin"
 	{
 		username = tempname
 		"\0\s[14]Uh...really, darling?\w8\n\s[27]You are so much better than \f[color,255,0,0]him.\x\c\n\s[28]Unless...that actually IS your name.\w8\n\s[9]Not...sure how to feel about that, honestly. It'll take some getting used to.\n\w8\s[03]But I'll manage, love.\e"

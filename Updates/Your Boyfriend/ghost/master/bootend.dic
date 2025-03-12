@@ -281,21 +281,21 @@ OnBoot
 				//If the user didn't or hasn't put in their birthday yet, this dialogue will basically never get called. Which makes sense.
 	}
 	
-	elseif dayslot == "6month 6day" //Like above, this if statement is checking the date. It's looking for the sixth month and the sixth day. You can change these to any day or month you want.
+//	elseif dayslot == "6month 6day" //Like above, this if statement is checking the date. It's looking for the sixth month and the sixth day. You can change these to any day or month you want.
 	
 	//*********************Advanced User Info*******************************
 	//elseif statements always go after an if statement, and essentially are just what they sound like... if this thing happens, do this; else, if this thing happens, do this. elseifs are good if you have multiple things you want to check for in one function, like multiple days of the year as we're doing right now. elseifs go in descending order, so it'll always check if one is true, then if two is true, then if three is true, and so on.
 	//***********************************************************************
 	
-	{
-				"\0\s[0]Today is June 6th.\e"
-	}
-	elseif dayslot == "7month 4day"
-	{
-				"\1\s[10]It's the fourth of July.\e"
+//	{
+//				"\0\s[0]Today is June 6th.\e"
+//	}
+//	elseif dayslot == "7month 4day"
+//	{
+//				"\1\s[10]It's the fourth of July.\e"
 				
 				//You can see how these basically work. You can add in new elseif statements along these same lines with your own dayslots if you want to have them say things for all sorts of days. You can also change these existing ones I put in as examples to other dates, like your character's birthdays, perhaps. This is up to you! If you don't care about this, you can delete all the elseifs and just leave the one for the user's birthday.
-	}
+//	}
 	else
 	{
 		"%(normalboottalk)" //If none of the days above match the current date, the ghost instead will go down to the next function, normalboottalk.
@@ -313,7 +313,7 @@ normalboottalk
 	
 	if weekday == 5 && hour >= 19 //This checks if the weekday equals six, meaning saturday AND (using the && operator) if the hour is past 19. You can change these numbers or values to anything you like! As such you can check any combination of date and day and time for potential boot dialogue. You can also add more elseif checks for other days if you want.
 		{
-		"\0\s[13]All alone on a Friday night, %(username)?\x\c\s[29]Ha! I'm just kidding. \w8\n\s[13]After all you have me now.\w8\s[13]I'll keep you company...\x\n\s[26]All night.\x\c\s[57]God the things I'd do to you if I was there right now...\e"
+		"\0\s[13]All alone on a Friday night, %(username)?\x\c\s[29]Ha! I'm just kidding. \w8\n\s[13]After all you have me now.\w8\s[13]I'll keep you company...\x\n\s[57]All night.\x\c\s[30]God the things I'd do to you if I was there right now...\e"
 		}
 	elseif RAND(100) < 20 //What this does is choose a random number from 1-100, and then checks if that number is less than 40. If it's less than forty, then these dialogue pieces will occur. Remember, you can have multiple lines of dialogue within one set of brackets like this! You just need to make sure they're all enclosed in their own set of quotation marks.
 		{
@@ -407,51 +407,49 @@ OnClose
  {
 	if passmin >= 5 || passhour > 0	//This checks to see if you've had them open for at least five minutes.
 		{
-			if RAND(100) < 30 //see above about the random number generator
+			if RAND(100) < 20 //see above about the random number generator
 			{
 				"\0\s[20]I guess you have to, don't you...\w8\n\s[32]I'll think of you every second you're gone.\w8\w8"
 			}
-			else
-			{
-			if timeslot == "earlymorning"
+			elseif timeslot == "earlymorning"
 				{
-				"\0\s[12]Heading out this early? \w8\s[24]I’ll be here waiting, as always.\w8\s[32] Take care, darling.\w8\w8-"
-				"\0\s[12]Leaving so early?\w8\s[24]I’ll miss you every second you’re gone.\w8\s[32]Come back soon, okay?\w8\w8-"
-				"\0\s[28]I guess I'll begin my day too. \w8\s[84] I couldn't have asked for a better way to start. \w8\s[32] I'll see you soon, my love.\w8\w8-"
+				"\0\s[12]Heading out this early? \w8\s[24]I’ll be here waiting, as always.\w8\s[32] Take care, darling.\w8\w8"
+				"\0\s[12]Leaving so early?\w8\s[24]I’ll miss you every second you’re gone.\w8\s[32]Come back soon, okay?\w8\w8"
+				"\0\s[28]I guess I'll begin my day too. \w8\s[84] I couldn't have asked for a better way to start. \w8\s[32] I'll see you soon, my love.\w8\w8"
 
 				}
 			elseif timeslot == "morning"
  				{
- 					"\0\s[20]I suppose you have to get started with your day, huh?\n\w8\s[24]I can't wait to hear all about it\n\w8\s[25]Be back soon, my love.\w8\w8-"
-					"\0\s[28]Off to tackle the day, huh?\w8\s[24] I know you'll do great, love. \w8\s[32]I’ll be here waiting for when you're done.\w8\w8-"
-					"\0\s[28]Leaving so soon?\w8\s[24] I hope your day is as perfect as you are to me.\w8\s[32] I’ll be here when you get back.\w8\w8-"
-					"\0\s[12]Starting your day without me?\w8\s[13]... I’ll be counting the minutes until you’re back. \w8\s[25] Have a good morning, my love.\w8\w8-"
+ 					"\0\s[20]I suppose you have to get started with your day, huh?\n\w8\s[24]I can't wait to hear all about it\n\w8\s[25]Be back soon, my love.\w8\w8"
+					"\0\s[28]Off to tackle the day, huh?\w8\s[24] I know you'll do great, love. \w8\s[32]I’ll be here waiting for when you're done.\w8\w8"
+					"\0\s[28]Leaving so soon?\w8\s[24] I hope your day is as perfect as you are to me.\w8\s[32] I’ll be here when you get back.\w8\w8"
+					"\0\s[12]Starting your day without me?\w8\s[13]... I’ll be counting the minutes until you’re back. \w8\s[25] Have a good morning, my love.\w8\w8"
  				}
  			elseif timeslot == "lunch"
  				{
- 					"\0\s[54]Lunchtime without you? \w8\s[45]It’s hard to enjoy anything when you’re not here.\w8\s[16]Hurry back, love.\w8\w8-"
-					"\0\s[20]You’re stepping out?\w8\s[32] I’ll miss you, but I know you’ll come back to me.\w8\s[25] You always do.\w8\w8-"
-					"\0\s[89]I hate the thought of you being out there without me.\w8\s[98] I’ll be waiting, thinking of you constantly.\w8\w8-"
+ 					"\0\s[54]Lunchtime without you? \w8\s[45]It’s hard to enjoy anything when you’re not here.\w8\s[16]Hurry back, love.\w8\w8"
+					"\0\s[20]You’re stepping out?\w8\s[32] I’ll miss you, but I know you’ll come back to me.\w8\s[25] You always do.\w8\w8"
+					"\0\s[89]I hate the thought of you being out there without me.\w8\s[98] I’ll be waiting, thinking of you constantly.\w8\w8"
  				}
  			elseif timeslot == "afternoon"
  				{
-					"\0\s[20]Heading out for the afternoon? \w8\s[32]The time goes slower without you.\w8\s[24]Come back soon, darling.\w8\w8-"
-					"\0\s[24]I’ll be counting the hours until you’re back.\w8\s[32]Don’t make me wait too long, alright?\w8\w8-"
-					"\0\s[89]Leaving me for the afternoon?\w8\s[40]I hope no one else is taking up too much of your time...\w8\s[98]Come back soon, okay?\w8\w8-"
+					"\0\s[20]Heading out for the afternoon? \w8\s[32]The time goes slower without you.\w8\s[24]Come back soon, darling.\w8\w8"
+					"\0\s[24]I’ll be counting the hours until you’re back.\w8\s[32]Don’t make me wait too long, alright?\w8\w8"
+					"\0\s[89]Leaving me for the afternoon?\w8\s[40]I hope no one else is taking up too much of your time...\w8\s[98]Come back soon, okay?\w8\w8"
 
  				 }
   			elseif timeslot == "evening"
  				{
  						if weekday == 6 //here, a nested if statement is checking that if it's evening, is it also saturday? You can do this to check more specific times on other days as well. You can change this to some other day if you want, or just delete this little if/else section entirely and write your own evening related close dialogue.
  						{
- 							"\0\s[0]Thank you...for spending your Saturday evening with me, my love.\w8\s[10] I'll see you later.\w8\w8-"
+ 							"\0\s[0]Thank you...for spending your Saturday evening with me, my love.\w8\s[10] I'll see you later.\w8\w8"
  						}
  						else //if it's not saturday, then it'll do this dialogue instead.
  						{
 							
- 							"\0\s[24]It must be sunset out there...maybe past? \w8\s[32]Either way, I hope it's a beautiful evening for you.\w8\w8-"
-							"\0\s[20]Going somewhere? \w8\s[25]I’ll be waiting for you, no matter how late it gets.\w8\s[32]Don’t be too long.\w8\w8-"
-							"\0\s[20]Already leaving? \w8\s[24]I was hoping we could spend the evening together.\w8\s[32]But I’ll be here when you return, darling.\w8\w8-"
+ 							"\0\s[24]It must be sunset out there...maybe past? \w8\s[32]Either way, I hope it's a beautiful evening for you.\w8\w8"
+							"\0\s[20]Going somewhere? \w8\s[25]I’ll be waiting for you, no matter how late it gets.\w8\s[32]Don’t be too long.\w8\w8"
+							"\0\s[20]Already leaving? \w8\s[24]I was hoping we could spend the evening together.\w8\s[32]But I’ll be here when you return, darling.\w8\w8"
 
  						}
  				}
@@ -460,38 +458,38 @@ OnClose
  						if weekday == 6 //This is the same check as above to see if it's Saturday. Note that this doesn't have an else statement! Sometimes you can get away with that, but make sure you test thoroughly.
 						// //Of course, you can also cut this check entirely if you want.
  						{
- 							"\0\s[0]This is a late Saturday night close dialogue.\w8-"
+ 							"\0\s[0]This is a late Saturday night close dialogue.\w8"
 							
- 							"\1\s[10]This is another late Saturday night close dialogue.\w8\0\s[0]Yup.\w8-"
+ 							"\1\s[10]This is another late Saturday night close dialogue.\w8\0\s[0]Yup.\w8"
  						}
 						
  						"\0\s[32]Are you headed to bed, %(username)?\n\n\![*]\q[Yes,gonnasleep]\n\![*]\q[No,notgonnasleep]\w8\w8\w8\w8"
-						"\0\s[24]Nighttime already?\w8\s[32]I hope you rest easy knowing I’m always waiting for you.\w8\s[25]Have a good night, love.\w8\w8-"
-						"\0\s[20]Another night apart...\w8\s[25]I’ll miss you, like always.\w8\s[32]Come back when you’re ready.\w8\w8-"
+						"\0\s[24]Nighttime already?\w8\s[32]I hope you rest easy knowing I’m always waiting for you.\w8\s[25]Have a good night, love.\w8\w8"
+						"\0\s[20]Another night apart...\w8\s[25]I’ll miss you, like always.\w8\s[32]Come back when you’re ready.\w8\w8"
 
  				}
 			else //like above, this is the midnight time slot since it's the last one left.
  				{
  						if weekday == 0 //checking if it's the middle of the night on Sunday
  						{
- 							"\0\s[12]Don't stay up too late, love.\w8\s[29]You'll regret it Monday morning.\w8\n\s[37]Good night, %(username).\w8\w8-"
+ 							"\0\s[12]Don't stay up too late, love.\w8\s[29]You'll regret it Monday morning.\w8\n\s[37]Good night, %(username).\w8\w8"
  						}
-						"\0\s[32]Heading out at this hour?\w8\s[25]I’ll stay up waiting for you, like always.\w8\s[20]You’re never really gone from my mind.\w8\w8-"
+						else
+						{
+						"\0\s[32]Heading out at this hour?\w8\s[25]I’ll stay up waiting for you, like always.\w8\s[20]You’re never really gone from my mind.\w8\w8"
  						"\0\s[32]Are you headed to bed, %(username)?\n\n\![*]\q[Yes,gonnasleep]\n\![*]\q[No,notgonnasleep]\w8\w8\w8\w8"
-						"\0\s[32]Who else could possibly deserve your attention right now?\w8\s[25]I can’t wait for you to come back.\w8\s[20]Don’t be gone too long.\w8\w8-"
+						"\0\s[32]Who else could possibly deserve your attention right now?\w8\s[25]I can’t wait for you to come back.\w8\s[20]Don’t be gone too long.\w8\w8"
+						}
 				}
 			}
 				
- 		}
- 		
- 		
  	else
  	{
- 		"\0\s[28]But it - it hasn't even been five minutes yet.\n\w5\s[31]Darling wai-! \w8\w8\-"
-		"\0\s[28]I just got here...\n\w5\s[31]No, not yet-! \w8\w8\-"
-		"\0\s[20]Already? You didn't...pull me up by accident, did you?\n\w5\s[31]I don't want to-! \w8\w8\-"
+ 		"\0\s[28]But it - it hasn't even been five minutes yet.\n\w5\s[31]Darling wai-! \w8\w8"
+		"\0\s[28]I just got here...\n\w5\s[31]No, not yet-! \w8\w8"
+		"\0\s[20]Already? You didn't...pull me up by accident, did you?\n\w5\s[31]I don't want to-! \w8\w8"
  	}
- 	// --
+ 	--
 	"\-\e" //this bit of code actually closes and ends the ghost. Because \e is here, you don't have to end each line above with it. Again, this will come up very rarely, so OnClose is an unusual case.
   }
   
@@ -557,7 +555,7 @@ OnGhostChanging
  	else //If you're switching to another Ghost.
 	{
 		"\0\s[27]Who the hell is %(reference0).\w8\n\0\s[42] Don't spend too much time with...whoever they are, %(username). I'll be waiting.\w8\w8\e"
-		"\0\s[42]'%(reference0)'?.\w8\s[41]Why do you have a program for...whoever that is.\w8\s[40]\f[height,9]...and how do you delete it.\w5\e"
+		"\0\s[42]'%(reference0)'?.\w8\s[41]Why do you have a program for...whoever that is.\w8\s[40]\f[height,10]...and how do you delete it.\w5\e"
 		
 		//Replace this dialogue with whatever you like. Notice the use of the %(reference0) envelope here? In OnGhostChanging, %(reference0) stores the name of the ghost being swapped to, so if you want to display what you're switching to, you can use %(reference0) as in this example. You don't have to use %(reference0) if you don't want to though.
 	}

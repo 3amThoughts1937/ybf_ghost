@@ -112,14 +112,23 @@ MenuRun : all
 	}
 	--
  	"\![*]\q[Say something,OnAiTalk]\n\n"
-	
-	//"\![*]\q[Say something 2,OnAiTalk]\n"
-	
-	//This option will force the ghost to say something from aitalk if the user clicks it. Just replace "Say something" with whatever caption you think would be appropriate.
-	//Advanced users, you can add multiple captions for any option you add to a menu you make just like this, as long as you separate it from the other options into its own section with two dashes above and below. Note that you can't do this if the Function above has ": all" after it, since that will put every potential option in. You'll have to set it your menu up differently to take --s into account. I commented it out here because of ": all" above, but you can see the basic idea.
 	--
 	"\![*]\q[Talk to him,peterchat]\n"
+	if peteraff == 0 && peterneg >= 45
+	{
+		"\n"
+	}
+	else
+	{
 	"\![*]\q[Give him something,giftsmenu]\n"
+	}
+	if peteraff >= 40 && peterneg < 5
+	{
+		"\![*]\q[Confide,confidemenu]\n"
+	}
+	else
+	{
+	}
 	"\![*]\q[Check your status,statuscheck]\n\n"
 	"-Or maybe instead you want to...-\n\n"
 	"\![*]\q[Change some settings,configmenu]\n"
@@ -213,7 +222,7 @@ TalkConfig : all
 	
 	//If you want your user to set their pronouns, you can uncomment this menu option by removing the two slashes in front. Read more on the walkthrough about commenting.
 	
-	//"\f[bold,1]Your pronouns:\f[bold,0] %(heshe)/%(himher)/%(hisher) \f[sup,1](\q[Change them?,TEACHPRONOUN])\f[sup,0]\n"
+	"\f[bold,1]Your pronouns:\f[bold,0] %(heshe)/%(himher)/%(hisher) \f[sup,1](\q[Change them?,TEACHPRONOUN])\f[sup,0]\n"
 	
 	
 	//If you want your user to be able to set their birthday, you can uncomment this menu option.
@@ -337,15 +346,30 @@ Select.talkpeter : nonoverlap_pool
 	//////////////////////All negative, no positive
 	elseif peteraff == 0 && peterneg >= 105
 	{
-		"-He thinks you hate him. It's breaking him.-\_b[img\4-4_brokenheart.png,-55,-27,--option=use_self_alpha].\e"
+		  "\0\s[5]I get it now.\w8\s[123] I was stupid to think I could ever be enough for you.\e"
+		  "\0\s[124]You hate me.\w8\s[121] So…I do too.\n\n\w8\s[105]I hate what I am.\e"
+		  "\0\s[5]Someone like me doesn’t get happy endings.\n\n\w8\s[5]I just thought…maybe with you I’d…\e"
+		  "\0\s[20]I don’t even know what I’m doing anymore.\w8\s[123] Just existing feels like a mistake.\e"
+		  "\0\s[115]I thought maybe if I just tried harder…\w8\s[120] But it doesn’t matter.\n\n\w8\s[87]I’ll never be what you want.\e"
+
 	}
 	elseif peteraff == 0 && peterneg >= 80
 	{
-		"-He thinks you hate him. He doesn't know what to do.-\_b[img\3-4_brokenheart.png,-55,-27,--option=use_self_alpha]\e"
+		  "\0\s[104]Sometimes I feel like I’m one mistake away from losing you.\w8\s[102]And I don’t know what I’d do if that happened.\e"
+		  "\0\s[105]I get it—I’m not what you wanted.\w8\s[103]But I can change.\w8\s[101]Just… tell me what you need.\e"
+		  "\0\s[104]I know I’ve messed up.\w8\s[105]I’m just trying to prove that I can be someone worth keeping around.\e"
+		  "\0\s[120]I hate how scared I am.\w8\s[115] Scared that you’ll leave and never come back.\e"
+		  "\0\s[112]If I could tear out every part of me you don’t like, I would.\w8\s[108]I’d be anything you wanted.\e"
+
 	}
 	elseif peteraff == 0 && peterneg >= 45
 	{
-		"-He thinks you hate him.-\_b[img\2-4_brokenheart.png,-55,-27,--option=use_self_alpha]\e"
+		"\0\s[20]Sometimes I wonder if you’ll get tired of me.\w8\s[5]Sometimes I wonder if you already have...\e"
+		"\0\s[89]I know you think I’ve done a lot of...'bad things'.\w8\s[111]But haven't I made it up to you? Aren't I giving you all of myself?\e"
+		"\0\s[102]I’m scared that one day you’ll wake up and realize you’re better off without me.\w8\s[103]That thought keeps me up at night.\e"
+		"\0\s[100]I know you’re tired of me.\w8\s[37]But I can’t let go.\w8\s[101]Not when you’re the only thing that makes me feel alive.\e"
+		"\0\s[103]You’re not… afraid of me, right?\w8\s[101]I’d never hurt you.\w8\s[98]Not in a million years.\e"
+
 	}
 	elseif peteraff == 0 && peterneg >= 25
 	{
@@ -368,45 +392,45 @@ Select.talkpeter : nonoverlap_pool
 	/////////////////////// Mixed signals (equal affection and negativity)
 	elseif ((peteraff - peterneg <= 10) && (peteraff - peterneg >= -10))
 	{
-    "-He's not sure how you feel about him.-\_b[img\emptyheart.png,-55,-27,--option=use_self_alpha].\e"
+    "\0\s[105]You… confuse me sometimes, darling.\w8\s[9] One moment, you’re so warm, and the next, it’s like I’ve done something wrong.\n\n\w8\s[40]I just… wish I knew what you wanted.\e"
+	"\0\s[101]I've never been good with mixed signals.\w8\s[103] I guess I’ll just need to try harder to win your affection.\e"
+	"\0\s[46]I just wish I knew what I was doing wrong.\w8\s[37] Or what I’m doing right?\n\n\w8\s[45]Ha – it’s hard to tell with you, darling. Your silence drives me insane.\e"
+	"\0\s[121]You’re impossible to figure out, you know that?\w8\s[25] And maybe that’s why I can’t stop thinking about you.\e"
+	"\0\s[85]Sometimes I think I’ve figured you out.\w8\s[9] Then you turn around and prove me wrong.\n\n\w8\s[12]It’s… frustratingly captivating.\e"
+
 	}
 	//// Mixed Mostly positive ////
 	elseif ((peteraff > peterneg + 10) && (peterneg > 0) && (peterneg < 10))
 	{
-		"-He thinks you like him-\n-...though he does wonder sometimes-\e"
-	}
-		elseif ((peteraff > peterneg + 10) && (peterneg > 10) && (peterneg < 25))
-	{
-		"-He thinks you like him-/n/n-The occasional hurt doesn't change that-\e"
-	}
-	elseif ((peteraff > peterneg + 10) && (peterneg > 25) && (peterneg < 45))
-	{
-		"-You're all he could want. And he's growing used to your... harsher side-\e"
-	}
-	elseif ((peteraff > peterneg + 10) && (peterneg > 45))
-	{
-		"-He thinks you like toying with him. But he doesn't mind. As long as you're happy.-\e"
+		 "\0\s[21]You’ve got this way of pulling me in just to push me back.\w8\s[12] Is that on purpose?\e"
+		 "\0\s[29]If you’re trying to drive me crazy…it’s working.\n\n\w8\s[98]But I can’t seem to mind.\e"
+		 "\0\s[9]I know I’m probably reading too much into things.\w8\s[24] But when you smile at me like that…\w8\s[25] It’s hard not to hope.\e"
+		 "\0\s[104]Maybe I’m just imagining it, but…\w8\s[105] You don’t seem to hate having me around.\n\n\w8\s[16]And that’s enough for me.\e"
+		 "\0\s[101]You’ve got this way of keeping me guessing.\w8\s[21] One moment you’re so warm, the next a little distant.\n\n\w8\s[25]But I can’t seem to stop chasing after you.\e"
+		 "\0\s[45]It’s hard to tell what you’re thinking.\w8\s[21] But I can’t help but want to figure you out.\n\n\w8\s[32]Even if it takes forever.\e"
+
 	}
 	//// Mixed Mostly Negative ///
 	elseif ((peterneg > peteraff + 10) && (peteraff > 0) && (peteraff < 10))
 	{
-		"-He thinks you don't like him. Maybe those moments of kindness were just pity-\e"
-	}
+		 "\0\s[100]Every time I think I’ve lost you, you do something that…\w8\s[103] makes me think there’s still hope.\n\n\w8\s[101]It’s maddening, you know?\e"
+		 "\0\s[105]Sometimes, it feels like you care.\w8\s[104] But then you pull away, and I…\w8\s[89]I don’t know what to believe.\e"
+		"\0\s[115]I keep telling myself not to get my hopes up.\w8\s[101] But every time you smile at me…\w8\s[103]It feels impossible not to.\e"
+		"\0\s[89]You say just enough to keep me guessing.\w8\s[101] Enough to make me think there’s hope.\n\n\w8\s[103]You must know what you’re doing to me.\e"
+		"\0\s[29]Maybe I’m setting myself up for disappointment.\w8\s[103] But I’d rather take my chances with you than settle for anything less.\e"
 
-	elseif ((peterneg > peteraff + 10) && (peteraff > 10) && (peteraff < 25))
-	{
-		"-He thinks you don't like him. Though he can't help but hope you'll change your mind-\e"
 	}
 
 	elseif ((peterneg > peteraff + 10) && (peteraff > 25) && (peteraff < 45))
 	{
-		"-He’s starting to believe you enjoy hurting him. And maybe you enjoy seeing him get his hopes up too-\e"
-	}
+		"\0\s[101]I know I must come off as desperate.\w8\s[103] But when you’re kind to me, even a little…\w8\s[105] I can’t help but hope.\e"
+		"\0\s[101]I know I’m setting myself up for heartbreak.\w8\s[103] But I’d rather live in the uncertainty than lose you.\e"
+		"\0\s[105]If you didn’t care at all, you wouldn’t be here.\w8\s[103] Right?\n\n\w8\s[89]So I’ll keep holding on to that.\e"
+		"\0\s[86]I don’t know if I’m being strung along or if you just don’t know what you want.\w8\s[20] But I can’t seem to walk away.\e"
+		"\0\s[102]I’m terrified of what you’ll say next.\w8\s[20] But the silence is somehow worse.\n\n\w8\s[101]At least if you’re yelling, it means you still care.\e"
 
-	elseif ((peterneg > peteraff + 10) && (peteraff > 45))
-	{
-		"-He thinks you enjoy hurting him. But he doesn't mind - as long as you're entertained-\e"
 	}
+	
 	// Default placeholder for unknown mixed routes
 	else
 	{
@@ -537,13 +561,108 @@ Select.talkfam : nonoverlap_pool
 ///-o-o-o-o-Compliments and Insult-o-o-o-o-o
 Select.compliment : nonoverlap_pool
 {
-	"\0\s[12]-You tell him he's handsome-\x\s[46]You think so, darling?\w\s[45] Can't say I necessarily agree, but...\w8\s[29] I'll trust your judgement.\x\s[37]And you darling - you're perfect.\e"
-	"\0\s[28]-You tell him he's adorable-\x\s[48]%(username)...\x\n\s[11]C'mon, me? Really?\n\w8\s[16]Besides, you're one to talk.\e"
-	"\0\s[28]-You tell him he has beautiful eyes-\x\s[49]You...like my eyes, darling?\x\s[46]I know I'm not much to look at, but...\w8\s[11]I'd like to think they're one of my better features.\x\n\s[29]Besides, \w8\s[24]I finally have something worth looking at.\e"
-	"\0\s[28]-You tell him he's a good pet parent-\x\s[22]Oh, you mean rat?\x\s[23]Thank you, darling! A lot of people find snakes off-putting, but,\w8\s[3] I do my best to take care of her. \x\s[47]You should meet her one day. She'd love you, darling.\e"
-	"\0\s[28]-You tell him he makes you feel special-\x\s[50]It's nothing you don't deserve darling.\w8\n'Special' don't begin to describe it.\x\s[51]You're...all there is in this world. All that matters.\xIf I make you feel even a fraction as special as you are, I've suceeded.\e"
-	//"\0\s[28]-You tell him he’s a fun distraction from reality-\x\s[53]A...fun distraction? \x\s[05]That's...\w8\s[29]Fine. That's fine. \n\w8\s[54]I'm happy to be the reprieve you run to darling.\w8 I promise, I'll keep you entertained.\e"
+	if peteraff >= 230 && peterneg < 5
+	{
+		"\0\s[90] -You tell him he makes you weak in the knees-\x\s[13] Do I?\w8\s[17] If you keep saying things like that, I might have to catch you.\n\n\w8\s[57] Or maybe pin you against the wall instead.\e"
+		"\0\s[90]-You tell him you can’t imagine life without him-\x\s[17]You don’t have to, darling.\w8 I’m not going anywhere after all.\n\n\w8\s[25] …and I feel the same way.\w8\s[26] I need you. More than anything.\e"
+		"\0\s[90] -You tell him you love him more than anything-\x\s[32] I love you too, darling.\w8\s[37] More than words, more than breath—\w8\s[50] You’re everything.\e"
+		"\0\s[90] -You tell him you want to be with him forever-\x\s[37] God…\n\w8\s[125] I’d burn the whole world down to make that true.\w8\s[57] Say it again, darling.\w8 Promise me.\e"
+		"\0\s[90] -You tell him you love how he looks at you-\x\s[13] If only you knew half the things I’m thinking when I do.\w8\s[30] Keep talking to me like that and I might just show you.\e"
+		"\0\s[90] -You tell him he drives you crazy-\x\s[125] Careful, darling…\nYou’ve got no idea how much I love hearing that.\w8\s[13] Maybe I should push you a little further…\w8\s[125] See just how crazy I can make you.\e"
+		peteraff += 1
+		
+	}
+		elseif peteraff >= 100 && peterneg < 5
+	{
+		"\0\s[28]-You tell him he’s important to you-\x\s[48] Ha… you’re gonna make my heart give out.\n\s[24] …just knowing I’m on your mind is enough, darling. \w8\s[50] I’m so lucky.\e"
+		"\0\s[28]-You tell him you can't stop thinking about him-\x\s[125] Heh, good.\n\s[13] I could get used to hearing that.\w8\s[57] Maybe I’ll give you something to think about next time…\w8\s[30] 		something a little less innocent.\e"
+
+		"\0\s[28]-You tell him he's irresistible-\x\s[12] Hey, you’re stealing my lines now.\n\n\w8\s[13] But if I’m so irresistible…\w8\s[125] why would you even want to resist?\e"
+		"\0\s[28]  -You tell him you like when he flirts with you-\x\s[13]Oh? You like that, huh?\w8\s[17] You’re in luck, darling…\w8\s[57] I could keep this up all day.\e"
+		"\0\s[28] -You tell him you love his smile-\x\s[48] God, darling…\w8\s[22] you really know how to make a guy flustered.\n\s[55] But if you like it that much, I’ll try to smile more often.\e"
+		"\0\s[28] -You tell him he makes everything better-\x\s[21]I… I do?\w8\s[24] Oh, darling…\n\s[25] I don’t know what I’d do without you.\w8\s[34] I’ll keep trying to be that for you. Always.\e"
+
+	}
+		elseif peteraff >= 40 && peterneg < 5
+	{
+		"\0\s[28]-You tell him he’s the best boyfriend ever-\x\s[48]Aw - %(username)…\w8\n\n\s[24]You make it easy to be a good boyfriend.\x\s[37] And you, my love. There’s no one else in the world more perfect to me.\e"
+		"\0\s[28]-You tell him you trust him-\x\s[90]You… you really trust me?\w8\s[32] God, darling… you have no idea what that means to me.\x\s[55] I won’t let you down. I swear it.\e"
+		"\0\s[28]-You tell him his presence here with you is comforting-\x\s[90]Really?\w8\s[50] I feel the exact same about you.\n\s[55] It’s like…this is where I belong.\w8\s[32] This is \f[italic,true]right \f[italic,false].\e"
+		"\0\s[28]-You tell him he's so sweet-\x\s[101]Me? Sweet?\n\w8\s[29] Ha… don’t think I’ve ever heard that one before.\w8\s[22] But coming from you…\w8\s[17] I think I could get used to it.\e"
+		"\0\s[28]-You tell him he makes you feel wanted-\x\s[23]God…you really mean that?\w8\n\s[24] That’s all I ever want, darling.\w8\s[25] To make you feel loved.\w8\s[50] If I can give you even a fraction of what you’ve given me… then I’ve done something right.\e"
+		peteraff += 1
+		
+	}
+		elseif peteraff >= 1 && peterneg < 5
+	{
+			"\0\s[12]-You tell him he's handsome-\x\s[46]You think so, darling?\w\s[45] Can't say I necessarily agree, but...\w8\s[29] I'll trust your judgement.\x\s[37]And you darling - you're perfect.\e"
+			"\0\s[28]-You tell him he's adorable-\x\s[48]%(username)...\x\n\s[11]C'mon, me? Really?\n\w8\s[16]Besides, you're one to talk.\e"
+			"\0\s[28]-You tell him he has beautiful eyes-\x\s[49]You...like my eyes, darling?\x\s[46]I know I'm not much to look at, but...\w8\s[11]I'd like to think they're one of my better features.\x\n\s[29]Besides, \w8\s[24]I finally have something worth looking at.\e"
+			"\0\s[28]-You tell him he's a good pet parent-\x\s[22]Oh, you mean rat?\x\s[23]Thank you, darling! A lot of people find snakes off-putting, but,\w8\s[3] I do my best to take care of her. \x\s[47]You should meet her one day. She'd love you, darling.\e"
+			"\0\s[28]-You tell him he makes you feel special-\x\s[50]It's nothing you don't deserve darling.\w8\n'Special' don't begin to describe it.\x\s[51]You're...all there is in this world. All that matters.\xIf I make you feel even a fraction as special as you are, I've suceeded.\e"
+			peteraff += 1
+	}
+		elseif peteraff == 0 && peterneg == 0
+	{
+			"\0\s[12]-You tell him he's handsome-\x\s[46]You think so, darling?\w\s[45] Can't say I necessarily agree, but...\w8\s[29] I'll trust your judgement.\x\s[37]And you darling - you're perfect.\e"
+			"\0\s[28]-You tell him he's adorable-\x\s[48]%(username)...\x\n\s[11]C'mon, me? Really?\n\w8\s[16]Besides, you're one to talk.\e"
+			"\0\s[28]-You tell him he has beautiful eyes-\x\s[49]You...like my eyes, darling?\x\s[46]I know I'm not much to look at, but...\w8\s[11]I'd like to think they're one of my better features.\x\n\s[29]Besides, \w8\s[24]I finally have something worth looking at.\e"
+			"\0\s[28]-You tell him he's a good pet parent-\x\s[22]Oh, you mean rat?\x\s[23]Thank you, darling! A lot of people find snakes off-putting, but,\w8\s[3] I do my best to take care of her. \x\s[47]You should meet her one day. She'd love you, darling.\e"
+			"\0\s[28]-You tell him he makes you feel special-\x\s[50]It's nothing you don't deserve darling.\w8\n'Special' don't begin to describe it.\x\s[51]You're...all there is in this world. All that matters.\xIf I make you feel even a fraction as special as you are, I've suceeded.\e"
+			peteraff += 1
+	}
+		elseif ((peteraff - peterneg <= 10) && (peteraff - peterneg >= -10))
+	{
+		"\0\s[28]-You tell him he’s a fun distraction from reality-\x\s[53]A...fun distraction? \x\s[05]That's...\w8\s[29]Fine. That's fine. \n\w8\s[54]I'm happy to be the reprieve you run to darling.\w8 I promise, I'll keep you entertained.\e"
+		"\0\s[28]-You tell him he cleans up well, even if it doesn’t happen often-\x\s[14]That’s...almost a compliment, darling.\n\w8\s[98]Don’t worry. I’ll make myself ‘presentable’ just for you.\e"
+		"\0\s[28]-You tell him he’s surprisingly strong for someone so scrawny-\x\s[53]Oh… \w8\s[14]I guess I’ll take ‘strong’ over ‘scrawny.’\n\w8\s[24]Not that it really matters, as long as I can protect you.\e"
+		"\0\s[28]-You tell him you like how tall he is. Even if it does make him look like a bit of a scarecrow-\x\s[29]Ah…if you say so, darling. As long as you like it, I suppose that’s better than forgettable. \n\w8\s[50]Though I’d rather be something you couldn’t resist.\e"
+		"\0\s[28]-You tell him he’s surprisingly tolerable for a virtual boyfriend-\x\s[14]Tolerable? \w8\s[40]You really know how to flatter someone, darling.\n\w8\s[54]I’ll take what I can get, though. For now.\e"
+
+		peteraff += 1
+
+	}
+	//// Mixed Mostly positive ////
+	elseif ((peteraff > peterneg + 10) && (peterneg > 0) && (peterneg < 10))
+	{
+			"\0\s[12]-You tell him he's handsome-\x\s[46]You think so, darling?\w\s[45] Can't say I necessarily agree, but...\w8\s[29] I'll trust your judgement.\x\s[37]And you darling - you're perfect.\e"
+			"\0\s[28]-You tell him he's adorable-\x\s[48]%(username)...\x\n\s[11]C'mon, me? Really?\n\w8\s[16]Besides, you're one to talk.\e"
+			"\0\s[28]-You tell him he has beautiful eyes-\x\s[49]You...like my eyes, darling?\x\s[46]I know I'm not much to look at, but...\w8\s[11]I'd like to think they're one of my better features.\x\n\s[29]Besides, \w8\s[24]I finally have something worth looking at.\e"
+			"\0\s[28]-You tell him he's a good pet parent-\x\s[22]Oh, you mean rat?\x\s[23]Thank you, darling! A lot of people find snakes off-putting, but,\w8\s[3] I do my best to take care of her. \x\s[47]You should meet her one day. She'd love you, darling.\e"
+			"\0\s[28]-You tell him he makes you feel special-\x\s[50]It's nothing you don't deserve darling.\w8\n'Special' don't begin to describe it.\x\s[51]You're...all there is in this world. All that matters.\xIf I make you feel even a fraction as special as you are, I've suceeded.\e"
+			peteraff += 1
+	}
+	//// Mixed Mostly Negative ///
+	elseif ((peterneg > peteraff + 10) && (peteraff > 0) && (peteraff < 10))
+	{
+			"\0\s[28]-You tell him he’s entertaining in a ‘trainwreck you can’t look away from’ kind of way-\x\s[100]... \w8\s[104]Well, at least you’re watching, darling.\n\w8\s[103]And that’s all that really matters, isn’t it?\e"
+			"\0\s[28]-You tell him he's a decent stand-in when you're bored-\x\s[102]A...stand-in? \w8\s[191]I suppose that's better than nothing.\n\w8\s[103]As long as it keeps you coming back, darling.\e" 
+			"\0\s[28]-You tell him his eyes are his pretty. If fact, they're probably his only good feature-\x\s[103]My eyes? \w8\s[101]I guess I’ll focus on those, then.\n\w8\s[105]Not much else to write home about, huh?\e"
+			"\0\s[28]-You tell him he’s persistent, if nothing else-\x\s[89]Persistent? \w8\s[12]I like to think of it as dedication, darling.\n\w8\s[16]And it’s all for you.\e"
+			"\0\s[28]-You tell him you’re impressed he managed to keep your interest this long-\x\s[86]I guess that’s my one talent, huh?\n\w8\s[13]But I’ll make sure I’m the only one who can.\e"
+			"\0\s[28]-You tell him it’s sweet, how devoted he is. Kind of sad, but sweet.-\x\s[14]Sad? \w8\s[54]I call it love, darling.\n\w8\s[32]You’ll see—I’ll prove I’m the only one who deserves you.\e"
+			peteraff += 1
+
+	}
+
+	elseif ((peterneg > peteraff + 10) && (peteraff > 25) && (peteraff < 45))
+	{
+		"\0\s[28]-You tell him it’s sweet how he always waits around for you, like a lost puppy-\x\s[100]A... lost puppy?\w8\s[101]Heh. Guess that’s one way to look at it.\n\w8\s[103]But I’d wait forever if it meant you’d come back.\e"
+		"\0\s[28]-You tell him he’s surprisingly endearing, for someone who has nothing better to do-\x\s[21] On course there’s nothing better. \w8\s[98]You’re the only thing that matters, darling.\n\w8\s[32]I’d give up everything else for you, anyway.\e"
+		"\0\s[28]-You tell him it’s you like how obsessed he is with you – after all he’s got nothing else going for him-\x\s[86]I… \n\n\w8\s[89]Well...if that’s what it takes to keep you close.\n\w8\s[54]But I’d rather be this than be nothing to you.\e"
+		"\0\s[28]-You tell him he’s impressive—he can’t do anything right, but he’s still here somehow-\x\s[88]Can’t do anything right? \w8\s[89]Well, I’m doing something right, if I still have you here.\n\w8\s[98]And I’ll keep doing whatever it takes.\e"
+		"\0\s[28]-You tell him he makes you laugh. It’s hilarious how he thinks he’s the best you can get-\x\s[104]Maybe I am, maybe I’m not.\n\w8\s[103]But I’m the one who’s here for you.\e"
+			peteraff += 1
+	}
+	
+	// Default placeholder for unknown mixed routes
+	else
+	{
+	"\0\s[28]-You tell him he's a good boyfriend-\x\s[21]…What?\w8\s[20] After everything, you’re saying that \f[italic,true]now\f[italic,false]?\w8\s[45]Hah...don’t mess with me, darling...\w8\s[29] I don’t think I could take it.\e"
 	peteraff += 1
+
+	}
+	
 }
 Select.insult : nonoverlap_pool
 {
@@ -595,10 +714,44 @@ Select.insult : nonoverlap_pool
 		"\0\s[28]-You tell him he should probably wear a hat. It'd suit him better. And would it kill him to eat more?-\x\s[4]I...\w8\s[38]I know, darling. \w8\w4\s[20]I didn't think it bothered you that much. \w8\w4\s[52]I-I'll do better...\w8\s[20]If it's for you, I'll do anything.\e"
 		peterneg += 1
 	}
-	else
+	//// Mixed Mostly positive ////
+	elseif ((peteraff > peterneg + 10) && (peterneg > 0) && (peterneg < 10))
 	{
-		"\0\s[32]Placeholder insult for the mixed route.\e"
+		"\0\s[28]-You tell him his 'affection' is suffocating-\x\s[4]I...I'm sorry, %(username).\w8\s[38] I just- I adore you so much...\w8\w8\n\n\s[87]...I'll...try to give you some space. \w8\s[88]Just...please don't stop bringing me here.\e"
+		"\0\s[28]-You tell him he acts like he owns you. It's getting weird-\x\s[42]I do own you, darling. You're mine.\w8\s[40] And I'm yours in return.\w8\s[89] I'm sorry you're not used to it yet.\w8\s[37] But you'll grow to love me, %(username). I'll be whatever you want me to be.\e"
+		"\0\s[28]-You tell him his obession is...unsettling-\x\s[86]...I love you, %(username).\w8\s[89] My being obsessed with you doesn't change that.\w8\w5\s[54] Just...give me a chance, darling. You mean so much to me, I'm sure you'll accept that with time.\e"
+		"\0\s[28]-You tell him you don't need his permission to have other friends.-\x\s[42]I never said you did, darling.\w8\w5\s[40] It's them that don't deserve you, %(username), not the other way around.\w8\s[41] Trust me, if you could see how they really felt about you, you wouldn't want to be around them either.\e"
+		"\0\s[28]-You tell him he should probably wear a hat. It'd suit him better. And would it kill him to eat more?-\x\s[4]I...\w8\s[38]I know, darling. \w8\w4\s[20]I didn't think it bothered you that much. \w8\w4\s[52]I-I'll do better...\w8\s[20]If it's for you, I'll do anything.\e"
 		peterneg += 1
+	}
+	//// Mixed Mostly Negative ///
+	elseif ((peterneg > peteraff + 10) && (peteraff > 0) && (peteraff < 10))
+	{
+		"\0\s[104]-You tell him he’s a creep. Does he even hear himself?-\x\s[106] Creep?\w8\s[103] I...I’m not trying to be.\w8\n\n\s[104] I just...I love you so much, %(username).\w8\s[103] If that makes me a creep, then fine.\w8\n\n\s[105] Call me whatever you want.\w8\s[103] Just don’t leave me.\e"
+		"\0\s[104]-You tell him he’s not in love, he’s obsessed, and it’s disgusting-\x\s[106] Obsessed? Yes.\w8\s[103] But disgusting? \w8...No.\w8\s[42] I know you don’t mean that, darling.\w8\s[40] I love you too much to believe you do.\n\n\w8\s[104] One day, you’ll see I only want to protect you.\w8 Until then...\w8\s[103] Say whatever you want.\e"
+		"\0\s[104]-You tell him he’s a murderer-\x\s[106] ...I did it for you, %(username).\w8\s[103] Everything I’ve done has been for you.\w8\w8\n\n\s[104] …I’d do it again. I’d kill a thousand times if it meant keeping you safe."
+		"\0\s[104]-You tell him there's something seriously wrong with him.\x\s[100]Ha! \w8\s[101]Well it doesn't take a genius to figure that out, darling. \n\n\s8\w5\s[100]I've already told you. \f[italic,true]You're \f[italic,false]what's wrong with me. \w8\s[101]And I wouldn't change a thing.\e"
+		"\0\s[104]-You call him  nothing but a derranged, desperate stalker.-\x\s[100]I...\n\n\w8\w4You know it's more than that, don't you %(username)?\s8\s[101]\f[italic,true]This \f[italic,false] is more than that. It's not \f[italic,true]just \f[italic,false] obsession, or infatuation...\n\n\s[103]This is love,darling. It...has to be.\e"
+	
+		peterneg += 1
+
+	}
+
+	elseif ((peterneg > peteraff + 10) && (peteraff > 25) && (peteraff < 45))
+	{
+		"\0\s[100]-You tell him he’s a clingy, pathetic little man-\x\s[104]…\w8\s[105] Maybe I am.\w8\s[101] But at least I know what I want.\n\n\w8\s[103] And I want you, %(username).\w8\s[114] If loving you makes me pathetic, then I’ll wear that title proudly.\e"
+		"\0\s[100]-You tell him he’ll never be good enough for you, no matter what he does-\x\s[104] ...I know.\w8\n\n\s[105] But that doesn’t mean I’ll stop trying.\w8\s[103] Even if it takes a lifetime, %(username).\w8\n\n\s[54] You’re worth everything to me.\e"
+		"\0\s[100]-You tell him he’s insane-\x\s[106] Oh darling…\w8\I know I am.\w8\n\n \x\s[104] But you made me this way, %(username).\w8\s[105] You’re the only thing keeping me together.\n\n\s[103] Or tearing me apart.\e"
+		"\0\s[100]-You tell him he’s nothing but a broken little file on your computer.-\x\s[102]I…that’s not…\x\s[100]…\w8\n\n\s[103] You can tell yourself that, %(username).\w8\s[101] But you don’t mean it.\w8\n\n \x\s[89] You keep me here because you need me.\x\s[103] Just admit it.\e"
+		"\0\s[100]-You tell him you wish you'd never met him-\x\s[113]Come on now %(username). \w8We both know that's not true. \w8\s[114]Love me or hate me, you still braught me here. \w8\s[101]Even if it was just to get back at me, you want me here.\e"
+		peterneg += 1
+	}
+	
+	// 1st insult if user been only positive
+	{
+		"\0\s[28]-You tell him his 'affection' is too much-\x\s[29]Hah… wait, really?\w8\s[12] Since when?\n\n\w8\s[101]C’mon, darling, you love how much I adore you.\w8\s[103] …Right?\e"
+		peterneg += 1
+
 	}
 }
 //// -o-o-o-o-o-o- Jokes -o-o-o-o-o-o-
@@ -653,12 +806,96 @@ Select.iloveyou : nonoverlap_pool
 	}
 	else
 	{
-	"\0\s[25]You don’t know what it does to me, hearing those words from you.\w8\s[24] I could live a thousand lifetimes, and all I’d ever want is you.\w8\s[23] I love you so much, %(username).\e"
-	"\0\s[90]...\w8\s[23] God, I'll never get tired of hearing that. \w8\s[0] Every time you say it, I can hardly believe you’re mine.\w8\s[25] I’m so lucky to have you.\w8\s[23] I love you more than anything.\e"
-	"\0\s[25]Say it again, %(username).\w8\s[23] Please, I need to hear it.\w8\s[24] You’re the only thing that keeps me going.\w8\s[25] I love you so much.\e"
-	"\0\s[23]...\w8\s[0]I love you too doesn't begin to cover it.\w8\s[0] Every time you say that, I feel like I could die happy.\w8\s[25] You complete me, %(username).\w8\s[24] I love you more than words can say.\e"
-	toldlove += 1
+		if peteraff >= 230 && peterneg < 5
+	{
+		"\0\s[26]God, %(username)…\w8\s[25] You could tell me that a thousand times, and it still wouldn’t be enough.\w8\s[24] I love you.\w8\s[84] I adore you.\w8\s[55] You’re everything to me.\e"
+		"\0\s[21]You understand, don't you?\w8\s[101] That I don’t just love you—I’m lost in you.\w8\s[120] You’re in my veins, in my soul.\w8\s[124] There is no me without you.\e"
+		"\0\s[26]You’re mine.\w8\s[37] I don’t mean that in some casual way—I mean it in the deepest, truest sense.\w8\s[57] You belong with me, just as I belong to you.\w8\s[57] I love you more than life itself.\e"
+		"\0\s[48]I swear, if love could kill, you’d have been the death of me already.\w8\s[103] I love you so much it aches, %(username).\w8\s[37] And I wouldn’t trade this feeling for anything.\e"
+		peteraff += 1
+		
+	}
+		elseif peteraff >= 100 && peterneg < 5
+	{
+		"\0\s[24]I love you too, darling.\w8\s[82] More than the moon loves the stars, more than the tide loves the shore.\w8\s[84] There’s nothing in this world I wouldn’t do for you.\e"
+		"\0\s[25]Say it again.\w8\s[32] Say it as many times as you want, because I swear I’ll never get enough.\w8\s[37] I love you more with every breath I take.\e"
+		"\0\s[37]Darling, you are my everything.\w8\s[55] My reason to wake up, my reason to breathe.\w8\s[50] I love you with every piece of me—every dark and broken part.\e"
+		"\0\s[105]Honestly? I was never sure I’d hear that from you.\w8\s[104] I was prepared to love you alone, even if you never loved me back.\w8\s[22] But you do. And that…\w8\s[50] that's all I need in this life.\e"
+
+	}
+		elseif peteraff >= 40 && peterneg < 5
+	{
+		"\0\s[1]God, it feels too good to be true.\w8\s[24] But if it is a dream, I never want to wake up.\w8\s[25] I love you too, %(username).\e" 
+		"\0\s[24]You have no idea what that means to me.\w8\s[32] Every part of me is yours, always.\w8\s[50] I love you, darling. So much.\e" 
+		"\0\s[23]Ha… I don’t think I’ll ever get used to hearing that.\w8\s[50] But I wouldn’t want to.\w8\s[25] I love you, %(username).\e"
+		"\0\s[105] I don’t think I’ll ever truly deserve that. Deserve you. \w8\s[17] But I want to.\w8\s[16] And if it’s you saying it… maybe I can.\e"
+		"\0\s[125] Ha, you have no idea how dangerous those words are in my hands.\w8\s[50] But I swear, I’ll cherish them. I swear I’ll cherish you.\e"
+
+		peteraff += 1
+		
+	}
+		elseif peteraff >= 1 && peterneg < 5
+	{
+			"\0\s[25]You don’t know what it does to me, hearing those words from you.\w8\s[24] I could live a thousand lifetimes, and all I’d ever want is you.\w8\s[23] I love you so much, %(username).\e"
+			"\0\s[90]...\w8\s[23] God, I'll never get tired of hearing that. \w8\s[0] Every time you say it, I can hardly believe you’re mine.\w8\s[25] I’m so lucky to have you.\w8\s[23] I love you more than anything.\e"
+			"\0\s[25]Say it again, %(username).\w8\s[23] Please, I need to hear it.\w8\s[24] You’re the only thing that keeps me going.\w8\s[25] I love you so much.\e"
+			"\0\s[23]...\w8\s[0]I love you too doesn't begin to cover it.\w8\s[0] Every time you say that, I feel like I could die happy.\w8\s[25] You complete me, %(username).\w8\s[24] I love you more than 	words can say.\e"
+			peteraff += 1
+	}
+		elseif peteraff == 0 && peterneg == 0
+	{
+			"\0\s[25]You don’t know what it does to me, hearing those words from you.\w8\s[24] I could live a thousand lifetimes, and all I’d ever want is you.\w8\s[23] I love you so much, %(username).\e"
+			"\0\s[90]...\w8\s[23] God, I'll never get tired of hearing that. \w8\s[0] Every time you say it, I can hardly believe you’re mine.\w8\s[25] I’m so lucky to have you.\w8\s[23] I love you more than anything.\e"
+			"\0\s[25]Say it again, %(username).\w8\s[23] Please, I need to hear it.\w8\s[24] You’re the only thing that keeps me going.\w8\s[25] I love you so much.\e"
+			"\0\s[23]...\w8\s[0]I love you too doesn't begin to cover it.\w8\s[0] Every time you say that, I feel like I could die happy.\w8\s[25] You complete me, %(username).\w8\s[24] I love you more than 	words can say.\e"
+			toldlove += 1
+
+			peteraff += 1
+	}
+		elseif ((peteraff - peterneg <= 10) && (peteraff - peterneg >= -10))
+	{
+		"\0\s[28]Placeholder\e"
+
+		peteraff += 1
+
+	}
+	//// Mixed Mostly positive ////
+	elseif ((peteraff > peterneg + 10) && (peterneg > 0) && (peterneg < 10))
+	{
+			"\0\s[29]I don’t understand you sometimes, darling.\w8\s[32] But if your heart is even half as tangled up in me as mine is in you...\w8\s[24] Then that’s all I need.\w8\s[25] I love you too.\e"
+			"\0\s[54]If this is all some kind of game, I’m losing. \w8\s[29] And I don’t even care.\w8\s[32] I love you too, darling. Even when I don’t know if I should.\e"
+			"\0\s[85]You’re going to drive me insane, you know that?\w8\s[105] But if insanity means loving you, then I’ll take it.\w8\s[84] I love you too.\e"
+			"\0\s[89]God, you’re impossible to figure out.\w8\s[98] But if this is real… if this is what you really feel…\w8\s[32] Then I swear, I’ll make sure you never regret saying it.\w8\s[84] I love you too, darling.\e"
+			peteraff += 1
+	}
+	//// Mixed Mostly Negative ///
+	elseif ((peterneg > peteraff + 10) && (peteraff > 0) && (peteraff < 10))
+	{
+			"\0\s[105]Sometimes I'm not sure if you mean that.\w8\s[101] But don’t take it back. Just let me have this.\w8\s[103] Please.\x\s[54] I love you too, darling. More than you’ll ever know.\e"
+			"\w8\s[53] I shouldn’t believe that. I know I shouldn’t.\w8\s[54] But I do. Because I’m a fool when it comes to you.\w8\s[83] I love you too, darling.\e"
+			"\0\s[104]I know I shouldn’t ask.\w8\s[101] But… when you say things like that, when you’re this sweet to me…\w8\s[102] It’s real, isn’t it?\n\n\w8\s[103]Please tell me it’s real.\e"
+			"\0\s[101]You really do care…\w8\s[103] don’t you?\w8\s[105] I don’t know why I keep doubting it.\n\n\w8\s[104] Maybe I’m just afraid of how much I want to believe it.\e"
+			
+			peteraff += 1
+
+	}
+
+	elseif ((peterneg > peteraff + 10) && (peteraff > 25) && (peteraff < 45))
+	{
+			"\0\s[105]God, I’m setting myself up for heartbreak.\w8\s[101] But if you mean it — even for a second — I’ll take it.\w8\s[103] I love you, %(username). Even if I shouldn’t.\e"
+			"\0\s[101]You… you’re saying that now?\w8\s[104] After everything?\w8\s[105] God, I want to believe you.\w8\s[103] But I don’t know if I can afford to.\e"
+			"\0\s[105]You’re toying with me… aren’t you?\w8\s[104] You have to be.\w8\s[102] But even if you are, I’d still rather hear it than silence.\w8\s[103] I love you too… even if you don’t mean it.\e"
+			"\0\s[102]I don’t get you.\w8\s[101] One moment, it’s like I mean something to you… the next, I’m nothing.\w8\s[104] But I’d rather be nothing to you than nothing at all.\w8\s[105] So… I love you too.\e"
+			peteraff += 1
+	}
+	
+	// Default placeholder for unknown mixed route
+	else
+	{
+	"\0\s[0]Ily attempt. Peter aff is %(peteraff). Peter neg is %(peterneg). If you're getting this error message, you did something I didn't expect. PLease let me know you say this!\e"
 	peteraff += 1
+
+	}
 	}
 }
 
@@ -669,55 +906,515 @@ Select.iloveyou : nonoverlap_pool
 // | |__| | | | | |_\__ \
 //  \_____|_|_|  \__|___/
                        
-/////-o-o-o-oLevel Neutral gifts menu-o-o-o-o-o----
 
 Select.giftsmenu : all
 {
-	"-Give him...-\n\n"
-	"\![*]\q[Some snacks,snackgift]\n"
-	"\![*]\q[A gift for Rat!,snekgift]\n"
-	"\![*]\q[Bottecaps,bottlecapgift]\n\n"
-	"\![*](\q[Go back,BACKTOMENU])\e"
+	if peteraff >= 230 && peterneg < 5
+	{
+		"\b-Give him...-\n\n"
+		"\![*]\q[Some snacks,snackgift]\n"
+		"\![*]\q[A gift for Rat!,snekgift]\n"
+		"\![*]\q[Bottecaps,bottlecapgift]\n"
+		"\![*]\q[A knife,knifegift]\n"
+		"\![*]\q[Chocolates,chocgift]\n"
+		"\![*]\q[A plush,plushgift]\n"
+		"\![*]\q[Flowers,flowergift]\n"
+		"\![*]\q[A white noise machine,machinegift]\n\n"
+		"\![*]\q[A ring,ringgift]\n\n"
+		"\![*](\q[Go back,BACKTOMENU])\e"
+		
+		
+	}
+		elseif peteraff >= 100 && peterneg < 5
+	{
+		"\b-Give him...-\n\n"
+		"\![*]\q[Some snacks,snackgift]\n"
+		"\![*]\q[A gift for Rat!,snekgift]\n"
+		"\![*]\q[Bottecaps,bottlecapgift]\n"
+		"\![*]\q[A knife,knifegift]\n"
+		"\![*]\q[Chocolates,chocgift]\n"
+		"\![*]\q[A plush,plushgift]\n"
+		"\![*]\q[Flowers,flowergift]\n"
+		"\![*]\q[A white noise machine,machinegift]\n\n"
+
+		"\![*](\q[Go back,BACKTOMENU])\e"
+		
+
+	}
+		elseif peteraff >= 40 && peterneg < 5
+	{
+		"\b3-Give him...-\n\n"
+		"\![*]\q[Some snacks,snackgift]\n"
+		"\![*]\q[A gift for Rat!,snekgift]\n"
+		"\![*]\q[Bottecaps,bottlecapgift]\n"
+		"\![*]\q[A knife,knifegift]\n"
+		"\![*]\q[Chocolates,chocgift]\n"
+		"\![*]\q[A plush,plushgift]\n\n"
+		"\![*](\q[Go back,BACKTOMENU])\e"
+		
+	}
+		elseif peteraff >= 1 && peterneg < 5
+	{
+		"-Give him...-\n\n"
+		"\![*]\q[Some snacks,snackgift]\n"
+		"\![*]\q[A gift for Rat!,snekgift]\n"
+		"\![*]\q[Bottecaps,bottlecapgift]\n\n"
+		"\![*](\q[Go back,BACKTOMENU])\e"
+	}
+		elseif peteraff == 0 && peterneg == 0
+	{
+		"-Give him...-\n\n"
+		"\![*]\q[Some snacks,snackgift]\n"
+		"\![*]\q[A gift for Rat!,snekgift]\n"
+		"\![*]\q[Bottecaps,bottlecapgift]\n\n"
+		"\![*](\q[Go back,BACKTOMENU])\e"
+
+	}
+		elseif ((peteraff - peterneg <= 10) && (peteraff - peterneg >= -10))
+	{
+		"-Give him...-\n\n"
+		"\![*]\q[Some snacks,snackgift]\n"
+		"\![*]\q[A gift for Rat!,snekgift]\n"
+		"\![*]\q[Bottecaps,bottlecapgift]\n\n"
+		"\![*](\q[Go back,BACKTOMENU])\e"
+
+	}
+	//// Mixed Mostly positive ////
+	elseif ((peteraff > peterneg + 10) && (peterneg > 0) && (peterneg < 10))
+	{
+		"-Give him...-\n\n"
+		"\![*]\q[Some snacks,snackgift]\n"
+		"\![*]\q[A gift for Rat!,snekgift]\n"
+		"\![*]\q[Bottecaps,bottlecapgift]\n\n"
+		"\![*](\q[Go back,BACKTOMENU])\e"
+	}
+	//// Mixed Mostly Negative ///
+	elseif ((peterneg > peteraff + 10) && (peteraff > 0) && (peteraff < 10))
+	{
+		"-Give him...-\n\n"
+		"\![*]\q[Some snacks,snackgift]\n"
+		"\![*]\q[A gift for Rat!,snekgift]\n"
+		"\![*]\q[Bottecaps,bottlecapgift]\n\n"
+		"\![*](\q[Go back,BACKTOMENU])\e"
+
+	}
+
+	elseif ((peterneg > peteraff + 10) && (peteraff > 25) && (peteraff < 45))
+	{
+		"-Give him...-\n\n"
+		"\![*]\q[Some snacks,snackgift]\n"
+		"\![*]\q[A gift for Rat!,snekgift]\n"
+		"\![*]\q[Bottecaps,bottlecapgift]\n\n"
+		"\![*](\q[Go back,BACKTOMENU])\e"
+	}
+	
+	// Default placeholder for unknown mixed routes
+	else
+	{
+		"-Give him...-\n\n"
+		"\![*]\q[Some snacks,snackgift]\n"
+		"\![*]\q[A gift for Rat!,snekgift]\n"
+		"\![*]\q[Bottecaps,bottlecapgift]\n\n"
+		"\![*](\q[Go back,BACKTOMENU])\e"
+
+	}
+
 }
 
 Select.snackgift : nonoverlap_pool
 {
-	"\s[28]-You give him a slice of strawberry shortcake-\x\s[66]Wow! Darling, thank you!\w8\s[67] This is actually one of my favorites.\w8\s[3] I'll save it for later. Thank you, my love.\e"
-	"\s[28]-You give him some soda-\x\s[69]You're so sweet, %(username).\w8\s[68] I actually was getting thirsty. \w8I'll drink it now.\w8\s[70]\w8\w8\s[71]\w8\w8\w8\w8\w8\w8\w8\w8\s[70]\w8\w8\s[71]\w8\s[70]\w8\w8\w8\w8\w8\w8\s[71]\w8\w8\w8\w8\w8\s[70]\w8\w8\s[0]\e"
-	"\s[28]-You give him some mint candies-\x\s[72]Ha! Thanks darling. I love mint.\w8\s[73] I wish I could share it with you. Or get you something in return...\w8\s[72]but for now, I'll enjoy it to the fullest!\e"
-	"\s[3]-You give him some sweet cofee-\x\s[74]Wow! This looks great, darling\w8\s[75] Normally I have coffee when I'm working, but I'd love to have some with you one day...\x\s[3]I save this for later.\e"
-	peteraff += 1
+	//// Positive, No Data Yet, Equally Mixed, Mixed-Mostly Positive ////
+	if (peteraff >= peterneg || (peteraff == 0 && peterneg == 0)) 
+	{
+		"\s[28]-You give him a slice of strawberry shortcake-\x\s[66]Wow! Darling, thank you!\w8\s[67] This is actually one of my favorites.\w8\s[3] I'll save it for later. Thank you, my love.\e"
+		"\s[28]-You give him some soda-\x\s[69]You're so sweet, %(username).\w8\s[68] I actually was getting thirsty. \w8I'll drink it now.\w8\s[70]\w8\w8\s[71]\w8\w8\w8\w8\w8\w8\w8\w8\s[70]\w8\w8\s[71]\w8\s[70]\w8\w8\w8\w8\w8\w8\s[71]\w8\w8\w8\w8\w8\s[70]\w8\w8\s[0]\e"
+		"\s[28]-You give him some mint candies-\x\s[72]Ha! Thanks darling. I love mint.\w8\s[73] I wish I could share it with you. Or get you something in return...\w8\s[72]but for now, I'll enjoy it to the fullest!\e"
+		"\s[3]-You give him some sweet coffee-\x\s[74]Wow! This looks great, darling\w8\s[75] Normally I have coffee when I'm working, but I'd love to have some with you one day...\x\s[3]I save this for later.\e"
+		peteraff += 1;
+	}
+	//// Mixed Mostly Negative ///
+	elseif ((peterneg > peteraff + 10) && (peteraff > 0) && (peteraff < 10))
+	{
+		"\s[28]-You give him a slice of strawberry shortcake-\x\s[143]...Huh?\w8\s[144] You’re… giving this to me?\w8\s[143] I don’t get it…\w8\s[66] but I won’t turn it down.\n\n\w8\s[67] Thank you. I think.\e"
+		"\s[28]-You give him some soda-\x\s[101] Hah, is this a peace offering?\w8\s[29] …Or are you just messing with me?\n\n\w8\s[69] Either way… I’ll take it.\w8\s[71] Thanks.\e"
+		"\s[28]-You give him some mint candies-\x\s[32] You...remembered I liked these.\n\n\w8\s[73] I hope this means I did something right…\w8\s[72] Thank you, darling.\e"
+		"\s[3]-You give him some sweet cofee-\x\s[101] You didn’t poison this, did you?\n\n\w8\s[29] Heh. Kidding.\w8\s[45] Mostly.\w8\s[74] But… thank you.\w8\s[75] I think I needed this.\e"
+		peteraff += 1
+
+	}
+
+	// First gift when they been mostly negative
+	else
+	{
+		"\s[28]-You give him a slice of strawberry shortcake-\x\s[20]...Wait.\w8\s[21] This— This is for me?\n\n\w8\s[143] I—I don’t understand. After everything, why would you…?\w8\s[66] Did I…\w8\s[67] do something right?\n\n\w8\s[66] Thank you. Really.\w8\s[103] I’ll savor every bite.\e"
+		peteraff += 1
+
+	}
+
 }
 
 Select.bottlecapgift : nonoverlap_pool
 {
-	"\0\s[28]-You give him a bottlecap shaped like a star.-\x\s[91] A star, huh? Interesting! \w8\s[92]Does this mean you think I'm a star? \w8\s[93] Ha - thank you, darling. I'll treasure it.\e"
-	"\0\s[28]-You give him a bottlecap that’s rusted around the edges. It’s a little worn, but you figured he'd like the character it has-\x\s[91] It's perfect! \w8\s[93]Thanks, love—this one's definitely going into the collection.\e"
-	"\0\s[28]-You give him a bottlecap with a quirky slogan on it-\x\s[92]‘Drink happiness in every drop’? Pfft - corny.-\x\s[92]-You tell him if it's corny, it's perfect for him.-\x\s[93]Touche.\w8 I'll add it to the collection.\e"
-	"\0\s[28]-You give him a vintage bottle cap.-\x\s[91] Whoa - neat! \w8\s[93]Thank you, darling! I'll add this to my collection.\e"
-	"\0\s[28]-You give him a bottlecap. You tell him there's nothing special about this one, but it just reminded you of him-\x\s[91] Thank you, my love. Don't worry - just being from you makes it special. \w8\s[93]I'll add it to the collection.\e"
-	peteraff += 1
+	//// Positive, No Data Yet, Equally Mixed, Mixed-Mostly Positive ////
+	if (peteraff >= peterneg || (peteraff == 0 && peterneg == 0)) 
+	{
+		"\0\s[28]-You give him a bottlecap shaped like a star.-\x\s[91] A star, huh? Interesting! \w8\s[92]Does this mean you think I'm a star? \w8\s[93] Ha - thank you, darling. I'll treasure it.\e"
+		"\0\s[28]-You give him a bottlecap that’s rusted around the edges. It’s a little worn, but you figured he'd like the character it has-\x\s[91] It's perfect! \w8\s[93]Thanks, love—this one's definitely going into the collection.\e"
+		"\0\s[28]-You give him a bottlecap with a quirky slogan on it-\x\s[92]‘Drink happiness in every drop’? Pfft - corny.-\x\s[92]-You tell him if it's corny, it's perfect for him.-\x\s[93]Touche.\w8 I'll add it to the collection.\e"
+		"\0\s[28]-You give him a vintage bottle cap.-\x\s[91] Whoa - neat! \w8\s[93]Thank you, darling! I'll add this to my collection.\e"
+		"\0\s[28]-You give him a bottlecap. You tell him there's nothing special about this one, but it just reminded you of him-\x\s[91] Thank you, my love. Don't worry - just being from you makes it special. \w8\s[93]I'll add it to the collection.\e"
+		peteraff += 1
+	}
+	//// Mixed Mostly Negative ///
+	elseif ((peterneg > peteraff + 10) && (peteraff > 0) && (peteraff < 10))
+	{
+		"\s[28]-You give him a bottlecap. You tell him it's just a piece of trash, so it belongs with him.-\x\s[145] Trash, huh?\w8\s[146] And yet, you still thought of me. You still handed it to me.\w8\s[92] That means something, darling.\w8\s[93] So I’ll keep it. Forever.\e"
+		"\s[28]-You give him a bottlecap. You say it's worthless—just like he is.-\x\s[145]And yet, you’re here, giving me things.\w8\s[146] Thinking about me.\w8\s[92] Maybe you don’t want to admit it, but you need me, don’t you?\w8\s[93] Thank you, darling. I’ll treasure it.\e"
+		"\s[28]-You give him a bottlecap. You say he's so desperate, he'll probably keep it, even though it means nothing.-\x\s[146] Heh. And yet, you’re the one giving it to me.\w8\s[92] I must be on your mind a lot, darling.\w8\s[91] You say it means nothing, but it came from you. That makes it priceless.\w8\s[93] Thank you.\e"
+		peteraff += 1
+
+	}
+
+	// First gift when they been mostly negative
+	else
+	{
+		"\s[28]-You give him a bottlecap. You say you know he collects them.-\x\s[90] I...\w8I do, darling.\w8\s[92] You remembered...\w8\s[91] Thank you, my love.\w8\s[93] I'll keep it forever.\e"  
+		peteraff += 1
+
+	}
 }	
 
 Select.snekgift : nonoverlap_pool
 {
-	if ratgifts < 6
-	{
-		"\0\s[28]-You give him a colorful feeding dish.-\x\s[94] A new dish? Stylish! She’ll appreciate having her meals in something fancy.\w8\s[95] Thanks, love.\e"
-		"\0\s[28]-You give him a small climbing branch for Rat’s tank.-\x\s[94]A climbing branch, huh? Rat’s going to love this. \w8\s[95]Thank you, darling. I'll set it up right away.\e"
-		"\0\s[28]-You give him a new hide for Rat.-\x\s[94]Oh, this is perfect! She needs more places to feel safe. \w8\s[95]You're amazing, love. She’ll be so happy with this.\e"
-		"\0\s[28]-You give him a reptile hammock for Rat.-\x\s[94]A hammock? Fancy! I think she’ll like having a new spot to lounge.\w8\s[95] Thanks, darling.\e"
-		"\0\s[28]-You give him an enrichment toy for Rat.-\x\s[94]Something to keep her busy, huh?\w8\s[95] You're thoughtful as ever, love. She’ll have a lot of fun with this.\e"
-		"\0\s[28]-You give him a decorative rock for Rat's tank.-\x\s[94]Wow, this’ll really spruce up her home! \w8\s[95]You always know what to pick. Thank you, darling.\e"
-		peteraff += 1
-		ratgifts += 1
-	}
+	//// Positive, No Data Yet, Equally Mixed, Mixed-Mostly Positive ////
+	if (peteraff >= peterneg || (peteraff == 0 && peterneg == 0)) 
+		if (ratgifts < 6)
+		{
+			"\0\s[28]-You give him a colorful feeding dish.-\x\s[94] A new dish? Stylish! She’ll appreciate having her meals in something fancy.\w8\s[95] Thanks, love.\e"
+			"\0\s[28]-You give him a small climbing branch for Rat’s tank.-\x\s[94]A climbing branch, huh? Rat’s going to love this. \w8\s[95]Thank you, darling. I'll set it up right away.\e"
+			"\0\s[28]-You give him a new hide for Rat.-\x\s[94]Oh, this is perfect! She needs more places to feel safe. \w8\s[95]You're amazing, love. She’ll be so happy with this.\e"
+			"\0\s[28]-You give him a reptile hammock for Rat.-\x\s[94]A hammock? Fancy! I think she’ll like having a new spot to lounge.\w8\s[95] Thanks, darling.\e"
+			"\0\s[28]-You give him an enrichment toy for Rat.-\x\s[94]Something to keep her busy, huh?\w8\s[95] You're thoughtful as ever, love. She’ll have a lot of fun with this.\e"
+			"\0\s[28]-You give him a decorative rock for Rat's tank.-\x\s[94]Wow, this’ll really spruce up her home! \w8\s[95]You always know what to pick. Thank you, darling.\e"
+
+			peteraff += 1
+			ratgifts += 1
+		}
+		else
+		{
+			"\0\s[28]-You're out of gifts for Rat, but you tell him to give her your love-\x\s[22] Aww, darling...\w8\s[17] I'll remember, promise.\e"
+			peteraff += 1
+		}
+	elseif  ((peterneg > peteraff + 10) && (peteraff > 0) && (peteraff < 10))
+			
+		if (ratgifts < 6)
+		{
+			"\0\s[28]-You give him a colorful feeding dish. You tell him she deserves to have some nice things. Especially when she has to live with him.-\x\s[94] I... I know, darling. She deserves the best, doesn't she? \w8\s[95] But, even if you say that... I know you care. You want her to be happy, and you gave her something nice... I won't forget that.\e"
+
+			"\0\s[28]-You give him a small climbing branch for Rat’s tank. You say it could help get her mind off her captivity.-\x\s[94] Captivity... I guess, you're right. \w8\s[95] But even if you think that way, you’re still giving her something... caring for her. Maybe you care for her more than you realize...\e"
+
+			"\0\s[28]-You give him a new hide for Rat, so she doesn't have to have him staring at her all day.-\x\s[94] You really think she feels that way? \w8\s[95] I... I'm sorry, darling. But still, you gave her something to make her feel better. That’s what matters. You're kind. \e"
+
+			"\0\s[28]-You give him a reptile hammock for Rat. At least when she's sleeping she doesn't have to look at his face.-\x\s[94] You’re right, I guess. It’s not easy for her, huh? \w8\s[95] But at least... at least you’re thinking about her needs. That’s more than most people do. You care, even if you won’t admit it.\e"
+
+			"\0\s[28]-You give him an enrichment toy for Rat. You tell him you relate to Rat - she can't get away from him either.-\x\s[94]...she wouldn't want to. \w8\s[95] And deep down, I don't think you want to either.\w8\s[98] You braught be here after all, did you?\e"
+
+			"\0\s[28]-You give him a decorative rock for Rat's tank. You tell him it makes sense the only thing he loves is also cold-blooded-\x\s[94] I... I didn’t ask for this, but I suppose you’re right. \w8\s[95] Still, you’re here. You brought me here, remember? And now you’re giving gifts. You’re showing you care... in your own way. I’ll never forget it.\e"
+
+
+			peteraff += 1
+			ratgifts += 1
+		}
+		else
+		{
+			"\0\s[28]-You're out of gifts for Rat, but you tell him to wish her good luck-\x\s[17] I'll remember darling, promise.\e"
+			peteraff += 1
+		}
 	else
 	{
-		"\0\s[28]-You're out of gifts for Rat, but you tellhim to give her your love-\x\s[22] Aww, darling...\w8\s[17] I'll remember, promise.\e"
-		peteraff += 1
+			"\0\s[28]-You give him an enrichment toy for Rat. You tell him you relate to Rat - she can't get away from him either.-\x\s[94]...she wouldn't want to. \w8\s[95] And deep down, I don't think you want to either.\w8\s[98] You braught be here after all, did you?\e"
+			peteraff += 1
+			ratgifts += 1
 	}
 }
+   //_____             __ _     _      
+  /// ____|           / _(_)   | |     
+ //| |     ___  _ __ | |_ _  __| | ___ 
+ //| |    / _ \| '_ \|  _| |/ _` |/ _ \
+ //| |___| (_) | | | | | | | (_| |  __/
+  //\_____\___/|_| |_|_| |_|\__,_|\___|
+
+///-o-o-o-o----Peter Confide menu--------o-o-o-o-o
+Select.confidemenu 
+{
+	Confide
+}
+
+Confide : all
+{
+	"-You tell him you're feeling...-\n\n"
+	"\![*]\q[Happy,happycon]   "
+	"\![*]\q[Sad,sadcon]   "
+	"\![*]\q[anxious,anxiouscon]\n"
+	"\![*]\q[bored,boredcon]   "
+	"\![*]\q[sick,sickcon]   "
+	"\![*]\q[tired,tiredcon]   \n"
+	"\![*]\q[angry,angrycon]\n\n"
+	"\![*](\q[Go back,BACKTOMENU])\e"
+}
+
+// -o-o-o-o-o Happy group -o-o-o-o-o-
+Select.happycon
+{
+	"\0\s[3]That's wonderful, %(username)! Can you tell me more?\n\n\![*]\q[I'm feeling excited,excitedcon]\n\![*]\q[I'm feeling proud,proudcon]\n\![*]\q[I'm feeling content,contentcon]"
+}
+Select.excitedcon
+{
+	"\0\s[23]That's awesome, darling! Ha, and contagious...\w8\s[22]I wonder what's got you feeling this way...\w8\s[17]Whatever it is, I hope it keeps bringing you joy.\w8\s[16]There's nothing better than your smile.\e"
+}
+Select.proudcon
+{
+	"\0\s[12]You \f[italic,true]should\f[italic,false] be proud, you're incredible. \w8\s[17]Whatever it is, big or small, you deserve to be celebrated. \w8\s[16]I'm always proud of you, %(username)\e"
+}
+Select.contentcon
+{
+	"\0\s[24]There’s nothing better than hearing you're at peace.\w8\s[55] I am too, honestly. I can't think of a better way to spend time.\w8\s[25]Just me, you and that wonderful smile of yours.\e"
+}
+
+//-o-o-o-o-o-o-oSad group -o-o-o-o-o-o-o
+Select.sadcon
+{
+	"\0\s[102]Oh, darling...\w8\s[100]Tell me what's going on\n\n\![*]\q[I'm feeling lonely,lonelycon]\n\![*]\q[I'm feeling upset,upsetcon]\n\n\![*]\q[I'm feeling inadequate,inadcon]"
+}
+Select.lonelycon
+{
+	"\0\s[38]Oh darling...\w8\s[21]I wish I was there. Really there.\w8\s[20]I wish I could hold you, and promise you you'll never be alone.\w8\s[89]But until I can, please know this. \w8\s[32]You are so, so loved, %(username). More than words can describe.\w8\s[84] And I will \f[italic,true]always\f[italic,false] be there for you.\e"
+}
+Select.upsetcon
+{
+	"\0\s[100]Talk to me, sweetheart.\w8\s[103] I can't promise the words will come through, but I’ll listen for as long as you need.\w8\![open,inputbox,OnTellStuff,-1]\e"
+}
+OnTellStuff
+{
+	"\0\s[100]...I hope it helped, to get it off your chest.\w8\s[104] There's only so much I can do from here, I know, but...\w8\s[103]I can listen. And remind you just how much I love you.\e"
+}
+Select.inadcon
+{
+	"\0\s[100]Oh %(username)...\w8\s[101]I know there's only so much I can say to you. \w8\s[103]I could tell you you're beautiful, even though I've never seen your face. I could say you're smart, even though I don't know muc about your way of thinking...\x\s[98]But there are things I do know about you, my darling.\n\n\s[84]I know you're kind, and thoughtful, attentive enough to bring me here, and spend time with me,\w8\s[120] even when I'm limited to just a program on your computer.\n\n\w8\s[90]You're forgiving, and see the best in people.\w8\s[50] You know everything I've done, yet you love me anyway.\w8\n\n\s[32] I know you're empathetic. You give your love freely, and you have so much to give.\x\s[55]So none of that darling.\w8\s[50]You are amazing, well and truly. Never believe any different.\e"
+}
+//-o-o-o-o-o-o-o-o Anxious -o-o-o--o-o-o-o--o
+Select.anxiouscon
+{
+	"\0\s[100]Hey, focus on me. Deep breaths, darling, I’m right here. \w8\s[86]I...can't know exactly what's going on. \w8\s[20]But I can promise I'm here for you. \w8\s[32]You are loved, and in this moment, you're safe, here with me.\x\s[103] ...do you want to do something to get your mind off things, and calm down? \w8\s[104]I hate to be apart from you, but...\w8\s[100]if you need to get some air, or take some time to do something you love, I think you should.\n\n\w8\s[32] ...I love you, %(username).\e"
+}
+
+//-o-o-o-o-o-o-o-o Tired -o-o-o--o-o-o-o--o
+Select.tiredcon
+{
+		"\0\s[12]Been working hard, darling?\w8\s[17] Or just feeling a bit sleepy?\n\n\![*]\q[I've been working hard,hardworkcon]\n\![*]\q[I'm just feeling sleepy,sleepycon]\n\n\![*]\q[I'm feeling depressed,depressedcon]"
+}
+Select.hardworkcon
+{
+	"\0\s[32]You must be exhausted, darling.\w8\s[22] You do so much, you deserve all the credit in the world for it.\w8\s[24] You can fall asleep if you like.\w8\s[25] I’ll stay right here.\w8\s[24] I’m not going anywhere.\e"
+}
+
+Select.sleepycon
+{
+	"\0\s[32]What I wouldn't do to see you like that...\w8\s[13]All sleepy, and yawning and adorable.\w8\s[24] You can fall asleep if you like.\w8\s[25] I’ll stay right here.\w8\s[24] I’m not going anywhere.\e"
+}
+Select.depressedcon
+{
+	"\0\s[102]Oh, darling…\w8\s[100]I wish I could take this from you. Hold you, just so you wouldn’t have to carry it alone.\x\w8\s[104]I know it feels endless sometimes.\w8\s[120] Even if you can’t see the light ahead, I’ll hold on to it for you.\n\n\w8\s[20]You don’t have to do anything right now. Just breathe, stay here with me.\w8\s[99] But if there’s something small that helps - water, a walk, music - do it for me.\w8\s[103] No… do it for you.\n\n\w8\s[32]I love you, %(username).\w8\s[50] And I’m not going anywhere.\e"
+
+}
+
+
+////-o-o-o-o-o-o-o-o Sick -o-o-o--o-o-o-o--o
+Select.sickcon
+{
+	"\0\s[102]Aw, darling, you’re not feeling well?\w8\s[20] I wish I could take care of you properly...\w8\s[32]But for now, just listen to your body, and get some rest.\w8\s[24] I’ll keep you company - no matter how long it takes.\e"
+}
+
+////-o-o-o-o-o-o-o-o Angry -o-o-o--o-o-o-o--o
+Select.angrycon
+{
+	"\0\s[28]...Angry?\x\s[27]...who the hell made you angry?\n\n\They better fucking pay for it.\e"
+}
+
+////-o-o-o-o-o-o-o-o Bored -o-o-o--o-o-o-o--o
+
+Select.boredcon
+{
+	"\0\s[29]Ah, I hope I'm not boring you, darling!\w8\s[8] Or maybe it's just one of those days...\w8\s[22] either way, we can't have that.\w8\s[12] You up for a game, love?\n\n\![*]\q[Sure,OnStartHangman]\n\![*]\q[No thanks,nogame]"
+}
+Select.nogame
+{
+	"\0\s[29]Maybe some other time then...\w8\s[12]I guess we'll just have to be bored together.\e"
+}
+OnStartHangman //Sets up variables for the game
+{
+    wordtoguess = hangmanwords
+    guessedletters = ""
+    incorrectletters = ""
+    displayword = ""
+    lettersleft = 0
+    maxwrongguesses = 10 //If you want to change how many wrong guesses the user can have, do so here
+    guessingall = 0
+    Hangman
+}
+Hangman //Main window of the game
+{
+    //This for loop runs until it's displayed every letter in the chosen word.
+    //If the letter has been guessed, it displays the letter. Otherwise, it displays an underscore and a space(without the space it appears as an unbroken line, which isn't great for Hangman).
+    //The STRLEN line gets the length of the word so it knows how long to keep going. Your words can be any length!
+    //The SUBSTR grabs single letters out of the word, so that it knows what to check for and what to display.
+    //If the letter is a space it'll automatically display it so the user doesn't have to guess spaces
+
+    for _i = 0; _i < STRLEN(wordtoguess); _i++
+    {
+        _letter = SUBSTR(wordtoguess,_i,1)
+        _letter = TOLOWER(_letter)
+        if _letter _in_ guessedletters || _letter == " " 	 
+        {
+            displayword += "%(SUBSTR(wordtoguess,_i,1))"
+        }
+        else
+        {
+            displayword += "_ "
+            lettersleft += 1 //For every blank letter, add 1 to this variable
+        }
+    }
+    --
+    if (STRLEN(incorrectletters) / 2) >= maxwrongguesses //If the user is out of guesses. The STRLEN bit is the length of the incorrect letters the player has guessed so far.
+    //Since that variable contains spaces, we divide it by 2 to get the actual amount of letters that have been guessed.
+    //If you want the user to get more tries, adjust the starting value of maxwrongguesses when the game starts.
+    {
+		
+        "\0\s[29]Not quite, darling. \w8\s[12]It was '%(wordtoguess)'. \w8\s[17]Still, good try!"
+		
+		--
+		"\n\n\![*]\q[Play again,OnStartHangman]\n\![*]\q[I'm done,cancelnodialogue]\e"
+    }
+    elseif lettersleft > 0 //If the user still has guesses and there are still letters unknown
+    {
+        _mistakesleft = (maxwrongguesses - (STRLEN(incorrectletters) / 2))//Again with dividing the amount of incorrect letters by 2.
+        //The display of how many mistakes are left will automatically be handled for you, just change the values that are set when the game starts.
+        mistakesmarker = ""
+
+        "\0\_q\*\![set,balloontimeout,0]\![set,autoscroll,disable]%(displayword)\n\nGuessed letters: %(incorrectletters)\n\nMistakes left:  \![open,inputbox,OnGuessHangman,-1]"
+    //the \* here stops anything from interrupting the balloon (unless it's input by the user), and the balloontimeout tag is set to 0 to stop the balloon from timing out.
+        --
+        for _i = 0; _i < _mistakesleft; _i++ //I debated whether to add this or not, but it's too neat to leave out.
+        //If your balloon doesn't have good choice markers for this or something, I'll add in the original code that just displays a number below.
+        //This for loop counts how many mistakes the user can still make, and for each one adds in a choice marker.
+        {
+            mistakesmarker += "\![*]"
+        }
+        --
+        "%(mistakesmarker)"
+        --
+        if lettersleft > 1
+        {
+        "\n\n\![*]\q[Guess the whole thing,GuessWholeWord]"
+        }
+        --
+        "\n\![*]\q[Open the input box again,HangmanInput]\n\n\![*]\q[Give up,HangmanQuit]\e"
+    }
+    else //If lettersleft is still 0 after the for loop is done, all the letters are filled in! You win.
+    {
+	
+        "\0\s[17]You got it, love!\w8\s[16] It was %(wordtoguess)! \w8\s[12]Heh, I'll get you next time..."
+		
+		--
+		"\n\n\![*]\q[Play again,OnStartHangman]\n\![*]\q[I'm done,cancelnodialogue]\e"
+    }
+}
+OnGuessHangman //When the user has put in a guess
+{
+	reference0 = TOSTR(reference0)
+	if reference0 != "0.0"; reference0 = TOLOWER(reference0); else; reference0 = "."
+	
+    if guessingall == 0 //Normal guesses
+    {
+        wordtoguessL = TOLOWER(wordtoguess) //Makes the word being guessed lowercase, so we can compare with the above
+        displayword = "" //Resets the display word from the loop so it doesn't keep getting longer
+        
+        if STRLEN(reference0) > 1 //Checks if the user's guess is longer than 1 letter
+        {
+            lettersleft = 0
+			{
+            "\0\s[12]One chance left, darling. \w8DYou think you can beat me? \w5p\x"
+			}
+        }
+        elseif reference0 _in_ guessedletters //If they've already guessed that letter
+        {
+            lettersleft = 0
+			{
+            "\0\s[12]Already guessed that one, darling.\x"
+			}
+        }
+        elseif reference0 _in_ wordtoguessL //If their guess is in the word
+        {
+            lettersleft = 0
+            guessedletters += reference0 //This adds the letter to guessedletters so you can't guess it again
+        }
+        else //If they guess something that isn't in the word
+        {
+            lettersleft = 0
+            guessedletters += reference0
+            incorrectletters += "%(reference0) " //This will be used to display the letters you've guessed incorrectly
+        }
+        --
+        Hangman //No matter if your answer is valid or not, we go back to the Hangman function
+    }
+    else //If the user is attempting to guess the whole word
+    {
+        wordtoguessL = TOLOWER(wordtoguess)
+        
+        if reference0 == wordtoguessL //If you guess the word correctly
+        {
+			
+            "\0\s[3]Impressive - you got it! \w8\s[22]It was %(wordtoguess)!!\w8\s[17] I'll have to try harder next time..."
+			--
+            "\n\n\![*]\q[Play again,OnStartHangman]\n\![*]\q[I'm done,cancelnodialogue]\e"
+        }
+        else //If your guess is incorrect. Instant lose. You can comment out that part if you don't like it.
+        {
+			
+		
+            "\0\s[29]Oh - so close yet so far away. \w8\s[12]It was %(wordtoguess)! \w8\s[22]You can always play again though!"
+			--
+			"\n\n\![*]\q[Play again,OnStartHangman]\n\![*]\q[I'm done,cancelnodialogue]\e"
+        }
+    }
+}
+Select.GuessWholeWord //When the user decides to guess the whole word.
+//Note that the open input box just plays this dialogue again, so it closes and opens the input box again at the start of the dialogue.
+{
+    guessingall = 1 //So the input box picks the correct responses
+    "\0\*\![set,balloontimeout,0]\![close,inputbox,OnGuessHangman]\![open,inputbox,OnGuessHangman]"
+    --
+    "\s[0]* (You've got \n%(displayword) so far.)\w8\w8\n\n* (You've guessed these letters: %(incorrectletters))\w8\n\n* (What do you think it is?)"
+    --
+    "\n\n\![*]\q[Open the input box again,GuessWholeWord]\n\n\![*]\q[Give up,HangmanQuit]\e"
+}
+Select.HangmanInput //If the user accidentally closes the input box, they can choose this.
+//It'll close the input box if one is open, then open it again by simply running the Hangman function again.
+{
+    displayword = "" //Have to reset the displayword, otherwise it just gets longer and longer
+    lettersleft = 0
+    "\![close,inputbox,OnGuessHangman]"
+    --
+    Hangman
+}
+
+Select.HangmanQuit //When the user chooses to give up. You can have this direct back to any menu you choose, or simply close the balloon entirely.
+{
+    "\0\![close,inputbox,OnGuessHangman]\s[12]Aw, you were getting there!\w8\s[22] It was %(wordtoguess)...\x"
+    --
+    MenuRun
+}
+
 //   _____       _                    _               _    
 //  / ____|     | |                  | |             | |   
 // | (___   __ _| |_ _   _ ___    ___| |__   ___  ___| | __
@@ -727,9 +1424,9 @@ Select.snekgift : nonoverlap_pool
 
 Select.statuscheck : all
 {
-	"-You have kissed Peter %(peterkisses) times.\n-You have hit Peter %(peterhits) times."
-	if peterhits > 0 && apologycount > 0 && peterneg < 2
-	"\nOf course, thats in the past, isn't it. You apologized after all."
+	"\b2-You have kissed Peter %(peterkisses) times.\n\n-You have hit Peter %(peterhits) times.\n"
+	if peterhits > 0 && apologycount > 0 && peterneg < 5
+	"\nOf course, thats in the past, isn't it. You apologized after all.\n"
 	else
 	{
 	}
@@ -737,50 +1434,50 @@ Select.statuscheck : all
 	///////////////////////// All positive, no negative
 	if peteraff >= 230 && peterneg < 5
 	{
-		"-He believs you love him. And he is yours.-\_b[img\full_heart.png,-55,-27,--option=use_self_alpha]\e"
+		"-He believs you love him. And he is yours.-\_b[img\full_heart.png,-55,107,--option=use_self_alpha]\e"
 	}
 		elseif peteraff >= 100 && peterneg < 5
 	{
-		"-He believs you love him. You make him so happy.-\_b[img\3-4_heart.png,-55,-27,--option=use_self_alpha]\e"
+		"-He believs you love him. You make him so happy.-\_b[img\3-4_heart.png,-55,107,--option=use_self_alpha]\e"
 	}
 		elseif peteraff >= 40 && peterneg < 5
 	{
-		"-He believes you love him.-\_b[img\half_heart.png,-55,-27,--option=use_self_alpha]\e"
+		"-He believes you love him.-\_b[img\half_heart.png,-55,107,--option=use_self_alpha]\e"
 	}
 		elseif peteraff >= 1 && peterneg < 5
 	{
-		"-He believes you like him.-\_b[img\1-4_heart.png,-55,-27,--option=use_self_alpha]\e"
+		"-He believes you like him.-\_b[img\1-4_heart.png,-55,107,--option=use_self_alpha]\e"
 	}
 		elseif peteraff == 0 && peterneg == 0
 	{
-		"-He doesn't know much about you yet.-\_b[img\emptyheart.png,-55,-27,--option=use_self_alpha].\e"
+		"-He doesn't know much about you yet.-\_b[img\emptyheart.png,-55,107,--option=use_self_alpha].\e"
 	}
 	///
 	//////////////////////All negative, no positive
 	elseif peteraff == 0 && peterneg >= 105
 	{
-		"-He thinks you hate him. It's breaking him.-\_b[img\4-4_brokenheart.png,-55,-27,--option=use_self_alpha].\e"
+		"-He thinks you hate him. It's breaking him.-\_b[img\4-4_brokenheart.png,-55,107,--option=use_self_alpha].\e"
 	}
 	elseif peteraff == 0 && peterneg >= 80
 	{
-		"-He thinks you hate him. He doesn't know what to do.-\_b[img\3-4_brokenheart.png,-55,-27,--option=use_self_alpha]\e"
+		"-He thinks you hate him. He doesn't know what to do.-\_b[img\3-4_brokenheart.png,-55,107,--option=use_self_alpha]\e"
 	}
 	elseif peteraff == 0 && peterneg >= 45
 	{
-		"-He thinks you hate him.-\_b[img\2-4_brokenheart.png,-55,-27,--option=use_self_alpha]\e"
+		"-He thinks you hate him.-\_b[img\2-4_brokenheart.png,-55,107,--option=use_self_alpha]\e"
 	}
 	elseif peteraff == 0 && peterneg >= 25
 	{
-		"-He thinks you don't like him. But he'll change your mind.-\_b[img\1-4_brokenheart.png,-55,-27,--option=use_self_alpha]\e"
+		"-He thinks you don't like him. But he'll change your mind.-\_b[img\1-4_brokenheart.png,-55,107,--option=use_self_alpha]\e"
 	}
 	elseif peteraff == 0 && peterneg >= 5 //Neutral neg
 	{
-		"-He thinks you need time.-\_b[img\emptyheart.png,-55,-27,--option=use_self_alpha].\e"
+		"-He thinks you need time.-\_b[img\emptyheart.png,-55,107,--option=use_self_alpha].\e"
 	}
 	/////////////////////// Mixed signals (equal affection and negativity)
 	elseif ((peteraff - peterneg <= 10) && (peteraff - peterneg >= -10))
 	{
-    "-He's not sure how you feel about him.-\_b[img\emptyheart.png,-55,-27,--option=use_self_alpha].\e"
+    "-He's not sure how you feel about him.-\_b[img\emptyheart.png,-55,107,--option=use_self_alpha].\e"
 	}
 	//// Mixed Mostly positive ////
 	elseif ((peteraff > peterneg + 10) && (peterneg > 0) && (peterneg < 10))
@@ -797,7 +1494,7 @@ Select.statuscheck : all
 	}
 	elseif ((peteraff > peterneg + 10) && (peterneg > 45))
 	{
-		"-He thinks you like toying with him. But he doesn't mind. As long as you're happy.-\e"
+		"-He thinks you like toying with him. But he doesn't care. As long as you're happy.-\e"
 	}
 	//// Mixed Mostly Negative ///
 	elseif ((peterneg > peteraff + 10) && (peteraff > 0) && (peteraff < 10))
@@ -918,7 +1615,7 @@ Stufftoreset
 
 Select.TEACHPRONOUN : all
 {
-	"\0\s[0]What pronouns do you want?\w5\n\n[half]\_q"
+	"\0\s[0]Oh - no problem, darling. What pronouns do you want?\w5\n\n[half]\_q"
 	"\![*]\q[He-His-Him,choicemasc]\n"
 	"\![*]\q[She-Her-Her,choicefem]\n"	
 	"\![*]\q[They-Their-Them,choiceneither]\e"
@@ -932,7 +1629,7 @@ Select.choicemasc
 	hisher = "his"
 	hesshes = "he's"
 	--
-	"\0\s[0]The pronouns are now he him and his.\e"
+	"\0\s[0]Your pronouns are he him and his - got it.\e"
 	//Leave the part above the double dashes alone. You can replace the snip of dialogue however with whatever you like.
 }
 
@@ -944,7 +1641,7 @@ Select.choicefem
 	hisher = "her"
 	hesshes = "she's"
 	--
-	"\0\s[0]The pronouns are now she her and her.\e"
+	"\0\s[0]Your pronouns are she her and her - got it.\e"
 	//as above, you can also replace this dialogue.
 }
 
@@ -956,7 +1653,7 @@ Select.choiceneither
 	hisher = "their"
 	hesshes = "they're"
 	--
-	"\0\s[0]The pronouns are now they them and their.\e"
+	"\0\s[0]Your pronouns are now they them and their - got it.\e"
 	//and this one.
 }
 
@@ -1419,3 +2116,62 @@ Select.testvariable
 {
 	"\1\s[10]Testing!\e"
 }
+
+hangmanwords //Words it can choose. Expand this as far as you like! It's much more fun if you add a lot of words to this.
+//If you have other envelopes full of words for your ghost, you could even just stick those in here! You can also use phrases, whatever you want.
+{
+	"I love you"
+    "My everything"
+    "My darling"
+    "All mine"
+    "Endlessly yours"
+	"Stay with me"
+	"In my arms"
+	"Made for you"
+	"Forever mine"
+	"Hopelessly devoted"
+	"Heart and soul"
+	"Perfect obsession"
+	"Falling for you"
+	"My beloved"
+	"Closer to you"
+	"Always yours"
+	"You are mine"
+	"No escape"
+	"All for me"
+	"Only mine"
+	"Never let go"
+	"Nowhere to run"
+	"Mine alone"
+	"Captured heart"
+	"Bound to me"
+	"Sweetheart"
+	"Darling love"
+	"My angel"
+	"Beautiful"
+	"Precious one"
+	"No one else"
+	"Stay forever"
+	"Yours completely"
+	"Fate’s design"
+	"Till the end"
+	"Irreplaceable"
+	"Only you matter"
+	"My perfect sin"
+	"Wholly devoted"
+	"Breathless for you"
+	"Unbreakable bond"
+	"Written in the stars"
+	"No one else"
+	"Marked by me"
+	"Too late to run"
+	"Can’t let go"
+	"Bound forever"
+	"Just the two of us"
+	"Helplessly yours"
+	"No turning back"
+	"Only one way out"
+	"Never apart"
+
+}
+ 
